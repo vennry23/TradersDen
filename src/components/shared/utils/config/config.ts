@@ -81,18 +81,11 @@ export const getDefaultAppIdAndUrl = () => {
 };
 
 export const getAppId = () => {
-    let app_id = null;
-    const config_app_id = window.localStorage.getItem('config.app_id');
-    const current_domain = getCurrentProductionDomain() ?? '';
+    let app_id = window.localStorage.getItem('config.app_id');
 
-    if (config_app_id) {
-        app_id = config_app_id;
-    } else if (isStaging()) {
-        app_id = APP_IDS.STAGING;
-    } else if (isTestLink()) {
-        app_id = APP_IDS.LOCALHOST;
-    } else {
-        app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? 68848; // 🔹 Ensure fallback is 68848
+    if (!app_id || app_id === '36300') { // 🛑 Force correct app ID
+        app_id = '68848';
+        localStorage.setItem('config.app_id', app_id);
     }
 
     return app_id;
