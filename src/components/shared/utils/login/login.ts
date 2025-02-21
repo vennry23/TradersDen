@@ -1,5 +1,5 @@
 import { website_name } from '@/utils/site-config';
-import { domain_app_ids, getAppId } from '../config/config';
+import { getAppId } from '../config/config';  // ✅ Ensure this import exists
 import { CookieStorage, isStorageSupported, LocalStore } from '../storage/storage';
 import { getStaticUrl, urlForCurrentDomain } from '../url';
 import { deriv_urls } from '../url/constants';
