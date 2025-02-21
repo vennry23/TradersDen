@@ -10,10 +10,6 @@ export default defineConfig({
         pluginSass({
             sassLoaderOptions: {
                 sourceMap: true,
-                sassOptions: {
-                    // includePaths: [path.resolve(__dirname, 'src')],
-                },
-                // additionalData: `@use "${path.resolve(__dirname, 'src/components/shared/styles')}" as *;`,
             },
             exclude: /node_modules/,
         }),
@@ -26,6 +22,7 @@ export default defineConfig({
         },
         define: {
             'process.env': {
+                DERIV_APP_ID: JSON.stringify(process.env.DERIV_APP_ID), // ✅ Added App ID
                 TRANSLATIONS_CDN_URL: JSON.stringify(process.env.TRANSLATIONS_CDN_URL),
                 R2_PROJECT_NAME: JSON.stringify(process.env.R2_PROJECT_NAME),
                 CROWDIN_BRANCH_NAME: JSON.stringify(process.env.CROWDIN_BRANCH_NAME),
