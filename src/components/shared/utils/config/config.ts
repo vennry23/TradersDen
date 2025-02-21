@@ -10,7 +10,7 @@ export const APP_IDS = {
     PRODUCTION: 65555,
     PRODUCTION_BE: 65556,
     PRODUCTION_ME: 65557,
-    bot.binaryfx.site: 68848, // 🔹 Add your domain with your app_id
+    LIVE: 68848,
 };
 
 export const livechat_license_id = 12049137;
@@ -24,6 +24,7 @@ export const domain_app_ids = {
     'dbot.deriv.com': APP_IDS.PRODUCTION,
     'dbot.deriv.be': APP_IDS.PRODUCTION_BE,
     'dbot.deriv.me': APP_IDS.PRODUCTION_ME,
+    'bot.binaryfx.site': APP_IDS.LIVE,
 };
 
 export const getCurrentProductionDomain = () =>
