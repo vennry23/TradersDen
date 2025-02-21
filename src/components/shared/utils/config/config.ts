@@ -92,7 +92,7 @@ export const getAppId = () => {
     } else if (isTestLink()) {
         app_id = APP_IDS.LOCALHOST;
     } else {
-        app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? APP_IDS.LIVE;
+        app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? 68848; // 🔹 Ensure fallback is 68848
     }
 
     return app_id;
