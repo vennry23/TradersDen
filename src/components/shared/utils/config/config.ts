@@ -10,6 +10,7 @@ export const APP_IDS = {
     PRODUCTION: 65555,
     PRODUCTION_BE: 65556,
     PRODUCTION_ME: 65557,
+    bot.binaryfx.site: 68848, // 🔹 Add your domain with your app_id
 };
 
 export const livechat_license_id = 12049137;
