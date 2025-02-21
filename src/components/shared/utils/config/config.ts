@@ -80,12 +80,14 @@ export const getDefaultAppIdAndUrl = () => {
     return { app_id, server_url };
 };
 
-export const getAppId = () => {
+export const getAppId = () => { 
     let app_id = window.localStorage.getItem('config.app_id');
+    console.log("Stored App ID:", app_id); // Debugging
 
-    if (!app_id || app_id === '36300') { // 🛑 Force correct app ID
-        app_id = '68848';
+    if (!app_id || app_id === '36300') { 
+        app_id = '68848'; // ✅ Use correct app ID
         localStorage.setItem('config.app_id', app_id);
+        console.log("Updated App ID:", app_id);
     }
 
     return app_id;
