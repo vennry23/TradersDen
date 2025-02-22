@@ -8,9 +8,9 @@
 "start_url":"/",
 "icons": [
  {
-"src":"deriv-logo.jpeg",
+"src":"deriv-logo.png",
 "sizes":"144x144",
-"type":"image/jpeg"
+"type":"image/png"
  }
    ]
 }
