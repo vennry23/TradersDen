@@ -1,5 +1,5 @@
 import { website_name } from '@/utils/site-config';
-import { getAppId } from '../config/config'; // ✅ Ensure this is correctly imported
+import { getAppId } from '../config/config'; // ✅ Ensure this import is working
 import { CookieStorage, isStorageSupported, LocalStore } from '../storage/storage';
 import { getStaticUrl, urlForCurrentDomain } from '../url';
 import { deriv_urls } from '../url/constants';
@@ -27,7 +27,7 @@ type TLoginUrl = {
 };
 
 export const loginUrl = ({ language }: TLoginUrl) => {
-    let app_id = getAppId(); // 🔥 Get App ID properly
+    let app_id = getAppId(); // 🔥 Fetch App ID
     const server_url = LocalStore.get('config.server_url');
 
     console.log("🔍 [login.ts] Retrieved App ID:", app_id);
@@ -36,7 +36,7 @@ export const loginUrl = ({ language }: TLoginUrl) => {
     if (!app_id || app_id === '36300') {
         console.warn("⚠️ App ID is incorrect, manually fixing...");
         app_id = '68848'; // ✅ Replace with your correct App ID
-        window.localStorage.setItem('config.app_id', app_id);
+        localStorage.setItem('config.app_id', app_id);
     }
 
     console.log("📌 [login.ts] Final App ID Used:", app_id);
