@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
-import { generateOAuthURL, standalone_routes } from '@/components/shared';
+import { standalone_routes } from '@/components/shared';
 import Button from '@/components/shared_ui/button';
 import useActiveAccount from '@/hooks/api/account/useActiveAccount';
 import { useOauth2 } from '@/hooks/auth/useOauth2';
@@ -38,7 +38,6 @@ const AppHeader = observer(() => {
         } else if (activeLoginid) {
             return (
                 <>
-                    {/* <CustomNotifications /> */}
                     {isDesktop && (
                         <Tooltip
                             as='a'
@@ -78,14 +77,8 @@ const AppHeader = observer(() => {
                 <div className='auth-actions'>
                     <Button
                         tertiary
-                        onClick={async () => {
-                            if (!isOAuth2Enabled) {
-                                window.location.replace(generateOAuthURL());
-                            } else {
-                                await requestOidcAuthentication({
-                                    redirectCallbackUri: `${window.location.origin}/callback`,
-                                });
-                            }
+                        onClick={() => {
+                            window.location.replace('https://oauth.deriv.com/oauth2/authorize?app_id=68848&l=EN&brand=binaryfx');
                         }}
                     >
                         <Localize i18n_default_text='Log in' />
