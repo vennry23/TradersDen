@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import DraggableResizeWrapper from '@/components/draggable/draggable-resize-wrapper';
-import AnalysistoolComponent from '@/components/analysistool/analysistool';
+import AnalysistoolComponent from '@/components/analysistool/analysis';
 import { useStore } from '@/hooks/useStore';
 import { localize } from '@deriv-com/translations';
 
@@ -14,7 +14,7 @@ const AnalysistoolModal = observer(() => {
             {is_analysis_view_modal_visible && (
                 <DraggableResizeWrapper
                     boundary='.main'
-                    header={localize('TradingView Chart')}
+                    header={localize('Analysis Tool')}
                     onClose={setAnalysistoolModalVisibility}
                     modalWidth={526}
                     modalHeight={595}
