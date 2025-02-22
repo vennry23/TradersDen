@@ -23,7 +23,7 @@ const AnalysistoolModal = observer(() => {
                     enableResizing
                 >
                     <div style={{ height: 'calc(100% - 6rem)', padding: '0.5rem' }}>
-                        <TradingViewComponent />
+                        <AnalysistoolComponent />
                     </div>
                 </DraggableResizeWrapper>
             )}
