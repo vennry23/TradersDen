@@ -51,11 +51,11 @@ export const loginUrl = ({ language }: TLoginUrl) => {
     const getOAuthUrl = () => {
         return `https://oauth.${
             deriv_urls.DERIV_HOST_NAME
-        }/oauth2/authorize?app_id=${app_id}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        }/oauth2/authorize?app_id=68848&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     };
 
     if (server_url && /qa/.test(server_url)) {
-        return `https://${server_url}/oauth2/authorize?app_id=${app_id}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        return `https://${server_url}/oauth2/authorize?app_id=68848&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     }
 
     if (app_id === domain_app_ids[window.location.hostname as keyof typeof domain_app_ids]) {
