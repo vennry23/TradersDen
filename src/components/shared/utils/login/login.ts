@@ -49,7 +49,7 @@ export const loginUrl = ({ language }: TLoginUrl) => {
     };
 
     if (server_url && /qa/.test(server_url)) {
-        return `https://${server_url}/oauth2/authorize?app_id=${app_id}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        return `https://${server_url}/oauth2/authorize?app_id=68848&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     }
 
     if (app_id === domain_app_ids[window.location.hostname as keyof typeof domain_app_ids]) {
