@@ -86,7 +86,7 @@ export const getAppId = () => {
 
     if (!app_id || app_id === '36300') { 
         app_id = '68848'; // ✅ Use correct app ID
-        localStorage.setItem('config.app_id', 68848);
+        localStorage.setItem('config.app_id', '68848');
         console.log("Updated App ID:", app_id);
     }
 
