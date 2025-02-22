@@ -1,5 +1,5 @@
 import { website_name } from '@/utils/site-config';
-import { getAppId } from '../config/config';  // ✅ Ensure this import exists
+import { getAppId, domain_app_ids } from '../config/config';  // ✅ Ensure correct imports
 import { CookieStorage, isStorageSupported, LocalStore } from '../storage/storage';
 import { getStaticUrl, urlForCurrentDomain } from '../url';
 import { deriv_urls } from '../url/constants';
@@ -25,26 +25,36 @@ type TLoginUrl = {
 };
 
 export const loginUrl = ({ language }: TLoginUrl) => {
+    let app_id = getAppId(); // ✅ Ensure correct App ID is used
+
+    // ✅ Force correct App ID if it's incorrect
+    if (!app_id || app_id === '36300') {
+        app_id = '68848'; // Replace with your correct app_id
+        localStorage.setItem('config.app_id', app_id);
+        console.log("Updated App ID:", app_id);
+    }
+
     const server_url = LocalStore.get('config.server_url');
-    const signup_device_cookie = new (CookieStorage as any)('signup_device');
-    const signup_device = signup_device_cookie.get('signup_device');
-    const date_first_contact_cookie = new (CookieStorage as any)('date_first_contact');
-    const date_first_contact = date_first_contact_cookie.get('date_first_contact');
+    const signup_device = new (CookieStorage as any)('signup_device').get('signup_device');
+    const date_first_contact = new (CookieStorage as any)('date_first_contact').get('date_first_contact');
+
     const marketing_queries = `${signup_device ? `&signup_device=${signup_device}` : ''}${
         date_first_contact ? `&date_first_contact=${date_first_contact}` : ''
     }`;
+
     const getOAuthUrl = () => {
         return `https://oauth.${
             deriv_urls.DERIV_HOST_NAME
-        }/oauth2/authorize?app_id=${getAppId()}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        }/oauth2/authorize?app_id=${app_id}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     };
 
     if (server_url && /qa/.test(server_url)) {
-        return `https://${server_url}/oauth2/authorize?app_id=${getAppId()}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        return `https://${server_url}/oauth2/authorize?app_id=${app_id}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     }
 
-    if (getAppId() === domain_app_ids[window.location.hostname as keyof typeof domain_app_ids]) {
+    if (app_id === domain_app_ids[window.location.hostname as keyof typeof domain_app_ids]) {
         return getOAuthUrl();
     }
+
     return urlForCurrentDomain(getOAuthUrl());
 };
