@@ -83,7 +83,7 @@ export const getDefaultAppIdAndUrl = () => {
 export const getAppId = () => {
     let app_id = window.localStorage.getItem('config.app_id');
 
-    if (!app_id || app_id === '36300') {
+    if (!app_id || app_id === '68848') {
         console.warn("⚠️ App ID is invalid, forcing correct App ID...");
         app_id = '68848'; // ✅ Replace with the correct app ID
         window.localStorage.setItem('config.app_id', app_id);
