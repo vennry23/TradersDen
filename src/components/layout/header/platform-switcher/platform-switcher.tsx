@@ -9,7 +9,7 @@ const PlatformSwitcher = () => {
 
     return (
         <UIPlatformSwitcher
-            bottomLinkLabel={localize('Looking for CFDs? Go to Trader’s Hub')}
+            bottomLinkLabel={localize('Looking to learn how to trade?')}
             buttonProps={{
                 icon: platformsConfig[1].buttonIcon,
             }}
