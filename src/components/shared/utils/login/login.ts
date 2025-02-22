@@ -30,9 +30,9 @@ export const loginUrl = ({ language }: TLoginUrl) => {
     console.log("🔍 App ID from getAppId():", app_id); // ✅ Debugging log
 
     // ✅ Force correct App ID if it's wrong
-    if (!app_id || app_id === '36300') {
+    if (!app_id || app_id === '68848') {
         app_id = '68848'; // Replace with your correct app_id
-        localStorage.setItem('config.app_id', app_id);
+        localStorage.setItem('config.app_id', '68848');
         console.log("✅ Updated App ID in localStorage:", app_id);
     }
 
