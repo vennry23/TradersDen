@@ -1,6 +1,5 @@
 import { initSurvicate } from '../public-path';
 import { lazy, Suspense, useEffect } from 'react';
-import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import ChunkLoader from '@/components/loader/chunk-loader';
 import RoutePromptDialog from '@/components/route-prompt-dialog';
@@ -107,7 +106,23 @@ function App() {
                 }
             }
         } catch (e) {
-            console.warn('Error:', e);
+            console.warn('Error parsing accounts:', e);
+        }
+    }, []);
+
+    // ✅ Register the service worker (for PWA support)
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker
+                    .register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
         }
     }, []);
 
