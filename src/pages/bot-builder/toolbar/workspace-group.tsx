@@ -120,21 +120,6 @@ const WorkspaceGroup = observer(() => {
                     </>
                 )}
                 <div className='vertical-divider' />
-                 <ToolbarIcon
-                            popover_message={localize('Analysis')}
-                            icon={
-                                <span
-                                    className='toolbar__icon'
-                                    id='db-toolbar__tradingview-button'
-                                    onClick={() => setTradingViewModalVisibility()}
-                                >
-                                    <LabelPairedChartTradingviewMdRegularIcon />
-                                </span>
-                            }
-                        />
-                    </>
-                )}
-                <div className='vertical-divider' />
                 <ToolbarIcon
                     popover_message={localize('Undo')}
                     icon={
