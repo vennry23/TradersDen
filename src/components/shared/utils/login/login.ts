@@ -35,7 +35,7 @@ export const loginUrl = (language: string): string => {
     console.log("✅ App ID Used:", app_id);
 
     const oauth_url = `https://oauth.${deriv_urls.DERIV_HOST_NAME}/oauth2/authorize` +
-                      `?app_id=${app_id}&l=${language}&brand=${website_name.toLowerCase()}`;
+                      `?app_id=68848&l=${language}&brand=${website_name.toLowerCase()}`;
 
     console.log("✅ Final Login URL:", oauth_url);
     return oauth_url;
