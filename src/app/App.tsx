@@ -1,5 +1,5 @@
 import { initSurvicate } from '../public-path';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import ChunkLoader from '@/components/loader/chunk-loader';
@@ -25,9 +25,7 @@ const router = createBrowserRouter(
         <Route
             path='/'
             element={
-                <Suspense
-                    fallback={<ChunkLoader message={localize('Please wait while we connect to the server...')} />}
-                >
+                <Suspense fallback={<ChunkLoader message={localize('Please wait while we connect to the server...')} />}>
                     <TranslationProvider defaultLang='EN' i18nInstance={i18nInstance}>
                         <StoreProvider>
                             <RoutePromptDialog />
@@ -39,7 +37,6 @@ const router = createBrowserRouter(
                 </Suspense>
             }
         >
-            {/* All child routes will be passed as children to Layout */}
             <Route index element={<AppRoot />} />
             <Route path='endpoint' element={<Endpoint />} />
             <Route path='callback' element={<CallbackPage />} />
@@ -48,57 +45,33 @@ const router = createBrowserRouter(
 );
 
 function App() {
-    React.useEffect(() => {
+    useEffect(() => {
         initSurvicate();
         window?.dataLayer?.push({ event: 'page_load' });
+
         return () => {
-            const survicate_box = document.getElementById('survicate-box');
-            if (survicate_box) {
-                survicate_box.style.display = 'none';
+            const survicateBox = document.getElementById('survicate-box');
+            if (survicateBox) {
+                survicateBox.style.display = 'none';
             }
         };
     }, []);
 
-    // const updateAccountParamInURL = (account_data: TAuthData['account_list'][number], fallback_currency = '') => {
-    //     const search_params = new URLSearchParams(window.location.search);
-    //     const account_param = account_data.loginid.startsWith('VR')
-    //         ? 'demo'
-    //         : account_data.currency || fallback_currency;
-    //     search_params.set('account', account_param);
-    //     window.history.pushState({}, '', `${window.location.pathname}?${search_params.toString()}`);
-    // };
+    useEffect(() => {
+        const accountsList = localStorage.getItem('accountsList');
+        const clientAccounts = localStorage.getItem('clientAccounts');
+        const activeLoginid = localStorage.getItem('active_loginid');
+        const urlParams = new URLSearchParams(window.location.search);
+        const accountCurrency = urlParams.get('account');
 
-    React.useEffect(() => {
-        const accounts_list = localStorage.getItem('accountsList');
-        const client_accounts = localStorage.getItem('clientAccounts');
-        const active_loginid = localStorage.getItem('active_loginid');
-        const url_params = new URLSearchParams(window.location.search);
-        const account_currency = url_params.get('account');
-
-        if (!account_currency) {
-            try {
-                if (!client_accounts) return;
-                const parsed_client_accounts = JSON.parse(client_accounts) as TAuthData['account_list'];
-                const selected_account = Object.entries(parsed_client_accounts).find(
-                    ([/* eslint-disable-line @typescript-eslint/no-unused-vars */ _, account]) =>
-                        account.loginid === active_loginid
-                );
-                if (!selected_account) return;
-                const [/* eslint-disable-line @typescript-eslint/no-unused-vars */ _, account] = selected_account;
-                //updateAccountParamInURL(account);
-            } catch (e) {
-                console.warn('Error', e); // eslint-disable-line no-console
-            }
-        }
-
-        if (!accounts_list || !client_accounts) return;
+        if (!accountsList || !clientAccounts) return;
 
         try {
-            const parsed_accounts = JSON.parse(accounts_list);
-            const parsed_client_accounts = JSON.parse(client_accounts) as TAuthData['account_list'];
-            const is_valid_currency = account_currency
-                ? Object.values(parsed_client_accounts).some(
-                      account => account.currency.toUpperCase() === account_currency.toUpperCase()
+            const parsedAccounts = JSON.parse(accountsList);
+            const parsedClientAccounts = JSON.parse(clientAccounts) as TAuthData['account_list'];
+            const isValidCurrency = accountCurrency
+                ? Object.values(parsedClientAccounts).some(
+                      (account) => account.currency.toUpperCase() === accountCurrency.toUpperCase()
                   )
                 : false;
 
@@ -108,44 +81,33 @@ function App() {
             };
 
             // Handle demo account
-            if (account_currency?.toUpperCase() === 'DEMO') {
-                const demo_account = Object.entries(parsed_accounts).find(([key]) => key.startsWith('VR'));
+            if (accountCurrency?.toUpperCase() === 'DEMO') {
+                const demoAccount = Object.entries(parsedAccounts).find(([key]) => key.startsWith('VR'));
 
-                if (demo_account) {
-                    const [loginid, token] = demo_account;
+                if (demoAccount) {
+                    const [loginid, token] = demoAccount;
                     updateLocalStorage(String(token), loginid);
                     return;
                 }
             }
 
             // Handle real account with valid currency
-            if (account_currency?.toUpperCase() !== 'DEMO' && is_valid_currency) {
-                const real_account = Object.entries(parsed_client_accounts).find(
+            if (accountCurrency?.toUpperCase() !== 'DEMO' && isValidCurrency) {
+                const realAccount = Object.entries(parsedClientAccounts).find(
                     ([loginid, account]) =>
-                        !loginid.startsWith('VR') && account.currency.toUpperCase() === account_currency?.toUpperCase()
+                        !loginid.startsWith('VR') && account.currency.toUpperCase() === accountCurrency?.toUpperCase()
                 );
 
-                if (real_account) {
-                    const [loginid, account] = real_account;
+                if (realAccount) {
+                    const [loginid, account] = realAccount;
                     if ('token' in account) {
                         updateLocalStorage(String(account?.token), loginid);
                     }
                     return;
                 }
             }
-
-            // Handle invalid currency case
-            if (!is_valid_currency) {
-                const selected_account = Object.entries(parsed_client_accounts).find(
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    ([_, account]) => account.loginid === active_loginid
-                );
-                if (!selected_account) return;
-                const [_, account] = selected_account; // eslint-disable-line @typescript-eslint/no-unused-vars
-                //updateAccountParamInURL(account, 'USD');
-            }
         } catch (e) {
-            console.warn('Error', e); // eslint-disable-line no-console
+            console.warn('Error:', e);
         }
     }, []);
 
