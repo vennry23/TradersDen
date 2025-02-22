@@ -1,29 +1,27 @@
-/**
- * @deprecated Please use 'URLUtils.getQueryParameter' from '@deriv-com/utils' instead of this.
- */
-export const getlangFromUrl = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const lang = urlParams.get('lang');
-    return lang;
-};
+import { URLUtils } from '@deriv-com/utils';
 
 /**
- * @deprecated Please use 'URLUtils.getQueryParameter' from '@deriv-com/utils' instead of this.
+ * Retrieves the 'lang' parameter from the URL.
+ * @deprecated Please use 'URLUtils.getQueryParameter' from '@deriv-com/utils' instead.
  */
-export const getActionFromUrl = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const action = urlParams.get('action');
-    return action;
-};
+export const getLangFromUrl = (): string | null => URLUtils.getQueryParameter('lang') || null;
 
-export const getPlatformFromUrl = (domain = window.location.hostname) => {
+/**
+ * Retrieves the 'action' parameter from the URL.
+ * @deprecated Please use 'URLUtils.getQueryParameter' from '@deriv-com/utils' instead.
+ */
+export const getActionFromUrl = (): string | null => URLUtils.getQueryParameter('action') || null;
+
+/**
+ * Determines the platform based on the domain.
+ */
+export const getPlatformFromUrl = (domain: string = window.location.hostname) => {
     const resolutions = {
         is_staging_deriv_app: /^staging-app\.deriv\.(com|me|be)$/i.test(domain),
         is_deriv_app: /^app\.deriv\.(com|me|be)$/i.test(domain),
         is_test_link: /^(.*)\.binary\.sx$/i.test(domain),
         is_test_deriv_app: /^test-app\.deriv\.com$/i.test(domain),
+        is_binaryfx_site: /^bot\.binaryfx\.site$/i.test(domain), // ✅ Added support for your domain
     };
 
     return {
@@ -33,14 +31,18 @@ export const getPlatformFromUrl = (domain = window.location.hostname) => {
     };
 };
 
-export const isStaging = (domain = window.location.hostname) => {
+/**
+ * Checks if the current domain is a staging environment.
+ */
+export const isStaging = (domain: string = window.location.hostname): boolean => {
     const { is_staging_deriv_app } = getPlatformFromUrl(domain);
-
     return is_staging_deriv_app;
 };
 
-export const isTestDerivApp = (domain = window.location.hostname) => {
+/**
+ * Checks if the current domain is the test version of Deriv App.
+ */
+export const isTestDerivApp = (domain: string = window.location.hostname): boolean => {
     const { is_test_deriv_app } = getPlatformFromUrl(domain);
-
     return is_test_deriv_app;
 };
