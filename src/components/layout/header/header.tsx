@@ -19,6 +19,14 @@ import MobileMenu from './mobile-menu';
 import PlatformSwitcher from './platform-switcher';
 import './header.scss';
 
+const TelegramIcon = () => (
+    <a href="https://t.me/binary_fx" target="_blank" rel="noopener noreferrer" className="telegram-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.00002 14.175L9.00002 17.885C9.00002 18.37 9.54002 18.615 9.90002 18.295L11.77 16.62L15.36 19.265C15.915 19.66 16.69 19.325 16.855 18.665L19.92 6.80501C20.105 6.04001 19.34 5.43501 18.67 5.75501L4.42002 12.675C3.75002 12.995 3.80002 13.98 4.49502 14.225L9.00002 14.175Z" fill="#0088cc"/>
+        </svg>
+    </a>
+);
+
 const AppHeader = observer(() => {
     const { isDesktop } = useDevice();
     const { isAuthorizing, activeLoginid } = useApiBase();
@@ -105,6 +113,7 @@ const AppHeader = observer(() => {
         >
             <Wrapper variant='left'>
                 <AppLogo />
+                <TelegramIcon />
                 <MobileMenu />
                 {isDesktop && <MenuItems.TradershubLink />}
                 {isDesktop && <PlatformSwitcher />}
