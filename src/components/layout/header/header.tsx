@@ -121,9 +121,6 @@ const AppHeader = observer(() => {
                 <AppLogo />
                 <MobileMenu />
                 <TelegramIcon />
-                {isDesktop && <MenuItems.TradershubLink />}
-                {isDesktop && <PlatformSwitcher />}
-                {isDesktop && <MenuItems />}
             </Wrapper>
             <Wrapper variant='right'>{renderAccountSection()}</Wrapper>
         </Header>
