@@ -21,7 +21,7 @@ import './header.scss';
 
 const TelegramIcon = () => (
     <a href="https://t.me/binary_fx" target="_blank" rel="noopener noreferrer" className="telegram-icon">
-       <svg width="256px" height="256px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <svg width="25px" height="25px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 
 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
 
