@@ -82,14 +82,6 @@ const LocalComponent = observer(() => {
                     data-testid='dt-load-strategy-file-input'
                 />
 
-                <SectionMessage
-                    message={localize(
-                        'Importing XML files from Binary Bot and other third-party platforms may take longer.'
-                    )}
-                    icon={<LegacyInfo1pxIcon fill='#e18d00' iconSize='xs' />}
-                    className='load-strategy__section_message'
-                />
-
                 <div
                     data-testid='dt__local-dropzone-area'
                     className='load-strategy__local-dropzone-area'
