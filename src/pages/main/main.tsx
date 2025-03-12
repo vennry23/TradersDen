@@ -11,6 +11,7 @@ import TradingViewModal from '@/components/trading-view-chart/trading-view-modal
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
 import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
 import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
+import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
 import RunPanel from '../../components/run-panel';
@@ -24,35 +25,25 @@ const Tutorial = lazy(() => import('../tutorials'));
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
     const { dashboard, summary_card } = useStore();
-    const { active_tab, setActiveTab } = dashboard;
+    const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'analysis', 'signals'];
     const location = useLocation();
     const navigate = useNavigate();
 
-    let tab_value = active_tab;
-    const GetHashedValue = (tab) => {
-        tab_value = location.hash?.split('#')[1];
-        if (!tab_value) return tab;
-        return Number(hash.indexOf(String(tab_value)));
-    };
-    const active_hash_tab = GetHashedValue(active_tab);
-
-    useEffect(() => {
+    React.useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
             clear();
             api_base.setIsRunning(false);
         }
     }, [clear, connectionStatus]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (init_render.current) {
-            setActiveTab(Number(active_hash_tab));
             init_render.current = false;
         } else {
-            navigate(`#${hash[active_tab] || hash[0]}`);
+            navigate(`#${active_tab}`);
         }
     }, [active_tab]);
 
@@ -60,14 +51,14 @@ const AppWrapper = observer(() => {
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} onTabItemClick={setActiveTab}>
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemClick={setActiveTab} top>
                         <div label='Dashboard' id='id-dbot-dashboard'>
                             <Dashboard />
                         </div>
                         <div label='Bot Builder' id='id-bot-builder' />
-                        <div label='Charts' id='id-charts'>
+                        <div label='Charts' id={is_chart_modal_visible || is_trading_view_modal_visible ? 'id-charts--disabled' : 'id-charts'}>
                             <Suspense fallback={<ChunkLoader message='Loading chart...' />}>
-                                <Chart />
+                                <Chart show_digits_stats={false} />
                             </Suspense>
                         </div>
                         <div label='Tutorials' id='id-tutorials'>
@@ -75,11 +66,11 @@ const AppWrapper = observer(() => {
                                 <Tutorial />
                             </Suspense>
                         </div>
-                        <div label='Analysis Tool' id='id-analysis'>
-                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='600px'></iframe>
+                        <div label='Analysis Tool' id='id-analysis-tool'>
+                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' title='Analysis Tool'></iframe>
                         </div>
                         <div label='Signals' id='id-signals'>
-                            <iframe src='https://binaryfx.site/signals' width='100%' height='600px'></iframe>
+                            <iframe src='https://binaryfx.site/signals' width='100%' height='500px' title='Signals'></iframe>
                         </div>
                     </Tabs>
                 </div>
@@ -95,7 +86,7 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <Dialog is_visible={false} title='Dialog' />
+            <Dialog is_visible={false} title='Dialog'>Dialog Content</Dialog>
         </React.Fragment>
     );
 });
