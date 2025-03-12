@@ -26,7 +26,7 @@ export const DBOT_ONBOARDING = [
         target: '#id-bot-builder',
         content: (
             <TourSteps
-                label={<Localize i18n_default_text='Get started on Deriv Bot' />}
+                label={<Localize i18n_default_text='Get started on Binary FX' />}
                 content={[
                     <>
                         <Localize i18n_default_text='Create your bot using our drag-and-drop blocks or click Quick Strategy to choose from the ready-to-use bot templates.' />
@@ -483,7 +483,7 @@ export const BOT_BUILDER_MOBILE: TMobileTourConfig[] = [
 
 export const DBOT_ONBOARDING_MOBILE: TMobileTourConfig[] = [
     {
-        header: <Localize i18n_default_text='Get started on Deriv Bot' />,
+        header: <Localize i18n_default_text='Get started on Binary FX' />,
         content: [
             <span key='get-started-on-deriv-bot-wrapper'>
                 <Localize
@@ -591,7 +591,7 @@ export const getTourDialogInfo = (is_mobile: boolean) => {
     return is_mobile ? (
         <Localize
             key='tour-dialog-info-mobile'
-            i18n_default_text='Here’s a quick guide on how to use Deriv Bot on the go.'
+            i18n_default_text='Here’s a quick guide on how to use Binary FX on the go.'
         />
     ) : (
         <Localize
@@ -620,7 +620,7 @@ export const getTourDialogAction = (is_mobile: boolean) => {
 };
 
 export const onboarding_tour_header = (
-    <Localize key='onboarding-tour-header' i18n_default_text='Get started on Deriv Bot' />
+    <Localize key='onboarding-tour-header' i18n_default_text='Get started on Binary FX' />
 );
 
 export const getBotBuilderTourHeader = (is_mobile: boolean) => {
