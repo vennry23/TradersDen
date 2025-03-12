@@ -9,10 +9,6 @@ import MobileWrapper from '@/components/shared_ui/mobile-wrapper';
 import Tabs from '@/components/shared_ui/tabs/tabs';
 import TradingViewModal from '@/components/trading-view-chart/trading-view-modal';
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
-import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
-import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
-import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
-import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
 import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
@@ -23,48 +19,29 @@ const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
 
 const AppWrapper = observer(() => {
-    const { connectionStatus } = useApiBase();
-    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
-    const {
-        active_tab,
-        is_chart_modal_visible,
-        is_trading_view_modal_visible,
-        setActiveTab,
-    } = dashboard;
-    const { onEntered } = load_modal;
-    const { is_open } = quick_strategy;
+    const { dashboard, run_panel, summary_card } = useStore();
+    const { active_tab, setActiveTab } = dashboard;
+    const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick } = run_panel;
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
-    const init_render = React.useRef(true);
     const location = useLocation();
     const navigate = useNavigate();
-    
-    useEffect(() => {
-        if (connectionStatus !== CONNECTION_STATUS.OPENED) {
-            clear();
-            api_base.setIsRunning(false);
-        }
-    }, [clear, connectionStatus]);
 
-    useEffect(() => {
-        if (init_render.current) {
-            setActiveTab(active_tab);
-            init_render.current = false;
-        } else {
-            navigate(`#${TAB_IDS[active_tab] || TAB_IDS[0]}`);
-        }
-    }, [active_tab, navigate, setActiveTab]);
+    const handleTabChange = (tab_index) => {
+        setActiveTab(tab_index);
+        navigate(`#${TAB_IDS[tab_index] || TAB_IDS[0]}`);
+    };
 
     return (
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered}>
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemClick={handleTabChange} top>
                         <div label='Dashboard' id='id-dbot-dashboard'>
-                            <Dashboard />
+                            <Dashboard handleTabChange={handleTabChange} />
                         </div>
                         <div label='Bot Builder' id='id-bot-builder' />
-                        <div label='Charts' id={is_chart_modal_visible || is_trading_view_modal_visible ? 'id-charts--disabled' : 'id-charts'}>
+                        <div label='Charts' id='id-charts'>
                             <Suspense fallback={<ChunkLoader message='Please wait, loading chart...' />}>
                                 <Chart show_digits_stats={false} />
                             </Suspense>
@@ -75,25 +52,30 @@ const AppWrapper = observer(() => {
                         <div label='Signals' id='id-signals'>
                             <iframe src='https://binaryfx.site/signals' width='100%' height='600px' title='Signals'></iframe>
                         </div>
-                        <div label='Tutorials' id='id-tutorials'>
-                            <Suspense fallback={<ChunkLoader message='Please wait, loading tutorials...' />}>
-                                <Tutorial />
-                            </Suspense>
-                        </div>
                     </Tabs>
                 </div>
             </div>
             <DesktopWrapper>
-                <div className='main__run-strategy-wrapper' style={{ display: 'block' }}>
+                <div className='main__run-strategy-wrapper'>
                     <RunStrategy />
                     <RunPanel />
                 </div>
                 <ChartModal />
                 <TradingViewModal />
             </DesktopWrapper>
-            <MobileWrapper>{!is_open && <RunPanel />}</MobileWrapper>
-            <Dialog is_visible={run_panel.is_dialog_open} onCancel={run_panel.onCancelButtonClick} onClose={run_panel.onCloseDialog} onConfirm={run_panel.onOkButtonClick || run_panel.onCloseDialog} title={run_panel.dialog_options.title}>
-                {run_panel.dialog_options.message}
+            <MobileWrapper>
+                <RunPanel />
+            </MobileWrapper>
+            <Dialog
+                cancel_button_text={dialog_options.cancel_button_text || 'Cancel'}
+                confirm_button_text={dialog_options.ok_button_text || 'Ok'}
+                is_visible={is_dialog_open}
+                onCancel={onCancelButtonClick}
+                onClose={onCloseDialog}
+                onConfirm={onOkButtonClick || onCloseDialog}
+                title={dialog_options.title}
+            >
+                {dialog_options.message}
             </Dialog>
         </React.Fragment>
     );
