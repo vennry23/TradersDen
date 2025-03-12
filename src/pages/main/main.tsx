@@ -11,17 +11,8 @@ import TradingViewModal from '@/components/trading-view-chart/trading-view-modal
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
 import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
 import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
-import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
-import {
-    LabelPairedChartLineCaptionRegularIcon,
-    LabelPairedObjectsColumnCaptionRegularIcon,
-    LabelPairedPuzzlePieceTwoCaptionBoldIcon,
-} from '@deriv/quill-icons/LabelPaired';
-import { LegacyGuide1pxIcon } from '@deriv/quill-icons/Legacy';
-import { Localize, localize } from '@deriv-com/translations';
-import { useDevice } from '@deriv-com/ui';
 import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
@@ -32,33 +23,31 @@ const Tutorial = lazy(() => import('../tutorials'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
-    const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
-    const { onEntered } = load_modal;
-    const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick } = run_panel;
+    const { dashboard, summary_card } = useStore();
+    const { active_tab, setActiveTab } = dashboard;
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'analysis_tool', 'signals'];
-    const { isDesktop } = useDevice();
+    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial', 'analysis', 'signals'];
     const location = useLocation();
     const navigate = useNavigate();
 
     let tab_value = active_tab;
     const GetHashedValue = (tab) => {
         tab_value = location.hash?.split('#')[1];
-        return tab_value ? Number(hash.indexOf(String(tab_value))) : tab;
+        if (!tab_value) return tab;
+        return Number(hash.indexOf(String(tab_value)));
     };
     const active_hash_tab = GetHashedValue(active_tab);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
             clear();
             api_base.setIsRunning(false);
         }
     }, [clear, connectionStatus]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (init_render.current) {
             setActiveTab(Number(active_hash_tab));
             init_render.current = false;
@@ -67,47 +56,36 @@ const AppWrapper = observer(() => {
         }
     }, [active_tab]);
 
-    const handleTabChange = React.useCallback(
-        (tab_index) => {
-            setActiveTab(tab_index);
-            const el_id = TAB_IDS[tab_index];
-            if (el_id) {
-                document.getElementById(el_id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        },
-        [active_tab]
-    );
-
     return (
-        <>
+        <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
-                        <div label={<Localize i18n_default_text='Dashboard' />} id='id-dbot-dashboard'>
-                            <Dashboard handleTabChange={handleTabChange} />
+                    <Tabs active_index={active_tab} onTabItemClick={setActiveTab}>
+                        <div label='Dashboard' id='id-dbot-dashboard'>
+                            <Dashboard />
                         </div>
-                        <div label={<Localize i18n_default_text='Bot Builder' />} id='id-bot-builder' />
-                        <div label={<Localize i18n_default_text='Charts' />} id='id-charts'>
-                            <Suspense fallback={<ChunkLoader message={localize('Loading chart...')} />}>
-                                <Chart show_digits_stats={false} />
+                        <div label='Bot Builder' id='id-bot-builder' />
+                        <div label='Charts' id='id-charts'>
+                            <Suspense fallback={<ChunkLoader message='Loading chart...' />}>
+                                <Chart />
                             </Suspense>
                         </div>
-                        <div label={<Localize i18n_default_text='Tutorials' />} id='id-tutorials'>
-                            <Suspense fallback={<ChunkLoader message={localize('Loading tutorials...')} />}>
-                                <Tutorial handleTabChange={handleTabChange} />
+                        <div label='Tutorials' id='id-tutorials'>
+                            <Suspense fallback={<ChunkLoader message='Loading tutorials...' />}>
+                                <Tutorial />
                             </Suspense>
                         </div>
-                        <div label={<Localize i18n_default_text='Analysis Tool' />} id='id-analysis-tool'>
-                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='600px' frameBorder='0'></iframe>
+                        <div label='Analysis Tool' id='id-analysis'>
+                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='600px'></iframe>
                         </div>
-                        <div label={<Localize i18n_default_text='Signals' />} id='id-signals'>
-                            <iframe src='https://binaryfx.site/signals' width='100%' height='600px' frameBorder='0'></iframe>
+                        <div label='Signals' id='id-signals'>
+                            <iframe src='https://binaryfx.site/signals' width='100%' height='600px'></iframe>
                         </div>
                     </Tabs>
                 </div>
             </div>
             <DesktopWrapper>
-                <div className='main__run-strategy-wrapper' style={{ display: 'flex' }}>
+                <div className='main__run-strategy-wrapper'>
                     <RunStrategy />
                     <RunPanel />
                 </div>
@@ -117,10 +95,8 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <Dialog cancel_button_text={dialog_options.cancel_button_text || localize('Cancel')} confirm_button_text={dialog_options.ok_button_text || localize('Ok')} is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog}>
-                {dialog_options.message}
-            </Dialog>
-        </>
+            <Dialog is_visible={false} title='Dialog' />
+        </React.Fragment>
     );
 });
 
