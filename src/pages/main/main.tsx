@@ -14,6 +14,14 @@ import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observab
 import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
+import {
+    LabelPairedChartLineCaptionRegularIcon,
+    LabelPairedObjectsColumnCaptionRegularIcon,
+    LabelPairedPuzzlePieceTwoCaptionBoldIcon,
+} from '@deriv/quill-icons/LabelPaired';
+import { LegacyGuide1pxIcon } from '@deriv/quill-icons/Legacy';
+import { Localize, localize } from '@deriv-com/translations';
+import { useDevice } from '@deriv-com/ui';
 import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
@@ -24,53 +32,64 @@ const Tutorial = lazy(() => import('../tutorials'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, summary_card } = useStore();
-    const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
+    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
+    const {
+        active_tab,
+        is_chart_modal_visible,
+        is_trading_view_modal_visible,
+        setActiveTab,
+    } = dashboard;
+    const { onEntered } = load_modal;
+    const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
+    const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
-    const init_render = React.useRef(true);
+    const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
-            clear();
-            api_base.setIsRunning(false);
+            const is_bot_running = document.getElementById('db-animation__stop-button') !== null;
+            if (is_bot_running) {
+                clear();
+                stopBot();
+                api_base.setIsRunning(false);
+            }
         }
-    }, [clear, connectionStatus]);
+    }, [clear, connectionStatus, stopBot]);
 
-    React.useEffect(() => {
-        if (init_render.current) {
-            init_render.current = false;
-        } else {
-            navigate(`#${active_tab}`);
-        }
-    }, [active_tab]);
+    const handleTabChange = React.useCallback(
+        (tab_index: number) => {
+            setActiveTab(tab_index);
+        },
+        [setActiveTab]
+    );
 
     return (
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemClick={setActiveTab} top>
-                        <div label='Dashboard' id='id-dbot-dashboard'>
-                            <Dashboard />
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
+                        <div label={<><LabelPairedObjectsColumnCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
+                            <Dashboard handleTabChange={handleTabChange} />
                         </div>
-                        <div label='Bot Builder' id='id-bot-builder' />
-                        <div label='Charts' id={is_chart_modal_visible || is_trading_view_modal_visible ? 'id-charts--disabled' : 'id-charts'}>
-                            <Suspense fallback={<ChunkLoader message='Loading chart...' />}>
+                        <div label={<><LabelPairedPuzzlePieceTwoCaptionBoldIcon height='24px' width='24px' /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
+                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}>
                                 <Chart show_digits_stats={false} />
                             </Suspense>
                         </div>
-                        <div label='Tutorials' id='id-tutorials'>
-                            <Suspense fallback={<ChunkLoader message='Loading tutorials...' />}>
-                                <Tutorial />
+                        <div label={<><LegacyGuide1pxIcon height='16px' width='16px' /><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
+                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading tutorials...')} />}>
+                                <Tutorial handleTabChange={handleTabChange} />
                             </Suspense>
                         </div>
-                        <div label='Analysis Tool' id='id-analysis-tool'>
-                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' title='Analysis Tool'></iframe>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
+                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                        <div label='Signals' id='id-signals'>
-                            <iframe src='https://binaryfx.site/signals' width='100%' height='500px' title='Signals'></iframe>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
+                            <iframe src='https://binaryfx.site/signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                     </Tabs>
                 </div>
@@ -86,7 +105,9 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <Dialog is_visible={false} title='Dialog'>Dialog Content</Dialog>
+            <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
+                {message}
+            </Dialog>
         </React.Fragment>
     );
 });
