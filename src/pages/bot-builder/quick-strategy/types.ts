@@ -114,12 +114,12 @@ export type TApiHelpersInstance = {
 };
 
 export type TRsStrategyName =
-    | `d'alembert`
+    | `binaryfx d'alembert`
     | `martingale`
     | `oscar's-grind`
     | `reverse martingale`
     | `reverse d'alembert`
-    | `1-3-2-6`
+    | `Martingale pro`
     | `accumulators_martingale`
     | `accumulators_dalembert`
     | `accumulators_martingale_on_stat_reset`
