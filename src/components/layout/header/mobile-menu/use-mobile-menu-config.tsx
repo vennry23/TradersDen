@@ -55,7 +55,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
         [
             {
                 as: 'a',
-                href: standalone_routes.deriv_com,
+                href: 'https://binaryfx.site',
                 label: localize('Binaryfx.site'),
                 LeftComponent: BrandDerivLogoCoralIcon,
             },
