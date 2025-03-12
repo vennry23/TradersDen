@@ -75,11 +75,16 @@ const AppWrapper = observer(() => {
                         <div label='Signals' id='id-signals'>
                             <iframe src='https://binaryfx.site/signals' width='100%' height='600px' title='Signals'></iframe>
                         </div>
+                        <div label='Tutorials' id='id-tutorials'>
+                            <Suspense fallback={<ChunkLoader message='Please wait, loading tutorials...' />}>
+                                <Tutorial />
+                            </Suspense>
+                        </div>
                     </Tabs>
                 </div>
             </div>
             <DesktopWrapper>
-                <div className='main__run-strategy-wrapper'>
+                <div className='main__run-strategy-wrapper' style={{ display: 'block' }}>
                     <RunStrategy />
                     <RunPanel />
                 </div>
