@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,14 +24,20 @@ const Tutorial = lazy(() => import('../tutorials'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, summary_card } = useStore();
-    const { active_tab, setActiveTab } = dashboard;
+    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
+    const {
+        active_tab,
+        is_chart_modal_visible,
+        is_trading_view_modal_visible,
+        setActiveTab,
+    } = dashboard;
+    const { onEntered } = load_modal;
+    const { is_open } = quick_strategy;
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
+    const init_render = React.useRef(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const [showAnalysis, setShowAnalysis] = useState(false);
-    const [showSignals, setShowSignals] = useState(false);
     
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
@@ -41,32 +47,33 @@ const AppWrapper = observer(() => {
     }, [clear, connectionStatus]);
 
     useEffect(() => {
-        if (showAnalysis || showSignals) {
-            document.querySelector('.main__run-strategy-wrapper').style.display = 'block';
+        if (init_render.current) {
+            setActiveTab(active_tab);
+            init_render.current = false;
         } else {
-            document.querySelector('.main__run-strategy-wrapper').style.display = '';
+            navigate(`#${TAB_IDS[active_tab] || TAB_IDS[0]}`);
         }
-    }, [showAnalysis, showSignals]);
+    }, [active_tab, navigate, setActiveTab]);
 
     return (
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} onTabItemClick={setActiveTab}>
-                        <div label='Dashboard'><Dashboard /></div>
-                        <div label='Bot Builder'></div>
-                        <div label='Charts'>
-                            <Suspense fallback={<ChunkLoader message='Loading chart...' />}>
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered}>
+                        <div label='Dashboard' id='id-dbot-dashboard'>
+                            <Dashboard />
+                        </div>
+                        <div label='Bot Builder' id='id-bot-builder' />
+                        <div label='Charts' id={is_chart_modal_visible || is_trading_view_modal_visible ? 'id-charts--disabled' : 'id-charts'}>
+                            <Suspense fallback={<ChunkLoader message='Please wait, loading chart...' />}>
                                 <Chart show_digits_stats={false} />
                             </Suspense>
                         </div>
-                        <div label='Analysis Tool'>
-                            <iframe src='https://your-analysis-tool-url.com' width='100%' height='600px'></iframe>
-                            <button onClick={() => setShowAnalysis(!showAnalysis)}>Toggle Analysis</button>
+                        <div label='Analysis Tool' id='id-analysis-tool'>
+                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='600px' title='Analysis Tool'></iframe>
                         </div>
-                        <div label='Signals'>
-                            <iframe src='https://your-signals-url.com' width='100%' height='600px'></iframe>
-                            <button onClick={() => setShowSignals(!showSignals)}>Toggle Signals</button>
+                        <div label='Signals' id='id-signals'>
+                            <iframe src='https://binaryfx.site/signals' width='100%' height='600px' title='Signals'></iframe>
                         </div>
                     </Tabs>
                 </div>
@@ -79,10 +86,10 @@ const AppWrapper = observer(() => {
                 <ChartModal />
                 <TradingViewModal />
             </DesktopWrapper>
-            <MobileWrapper>
-                <RunPanel />
-            </MobileWrapper>
-            <Dialog is_visible={false} />
+            <MobileWrapper>{!is_open && <RunPanel />}</MobileWrapper>
+            <Dialog is_visible={run_panel.is_dialog_open} onCancel={run_panel.onCancelButtonClick} onClose={run_panel.onCloseDialog} onConfirm={run_panel.onOkButtonClick || run_panel.onCloseDialog} title={run_panel.dialog_options.title}>
+                {run_panel.dialog_options.message}
+            </Dialog>
         </React.Fragment>
     );
 });
