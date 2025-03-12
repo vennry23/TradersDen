@@ -56,32 +56,8 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
             {
                 as: 'a',
                 href: standalone_routes.deriv_com,
-                label: localize('Deriv.com'),
+                label: localize('Binaryfx.site'),
                 LeftComponent: BrandDerivLogoCoralIcon,
-            },
-            {
-                as: 'a',
-                href: standalone_routes.deriv_app,
-                label: localize("Trader's Hub"),
-                LeftComponent: LegacyHomeOldIcon,
-            },
-            {
-                as: 'a',
-                href: standalone_routes.trade,
-                label: localize('Trade'),
-                LeftComponent: LegacyChartsIcon,
-            },
-            {
-                as: 'a',
-                href: standalone_routes.personal_details,
-                label: localize('Account Settings'),
-                LeftComponent: LegacyProfileSmIcon,
-            },
-            {
-                as: 'a',
-                href: standalone_routes.cashier_deposit,
-                label: localize('Cashier'),
-                LeftComponent: LegacyCashierIcon,
             },
             {
                 as: 'button',
@@ -92,28 +68,10 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
         ],
         (
             [
-                {
-                    as: 'a',
-                    href: standalone_routes.help_center,
-                    label: localize('Help center'),
-                    LeftComponent: LegacyHelpCentreIcon,
-                },
-                {
-                    as: 'a',
-                    href: standalone_routes.account_limits,
-                    label: localize('Account limits'),
-                    LeftComponent: LegacyAccountLimitsIcon,
-                },
-                {
-                    as: 'a',
-                    href: standalone_routes.responsible,
-                    label: localize('Responsible trading'),
-                    LeftComponent: LegacyResponsibleTradingIcon,
-                },
                 cs_chat_whatsapp
                     ? {
                           as: 'a',
-                          href: URLConstants.whatsApp,
+                          href: 'https://wa.link/ugr27w',
                           label: localize('WhatsApp'),
                           LeftComponent: LegacyWhatsappIcon,
                           target: '_blank',
