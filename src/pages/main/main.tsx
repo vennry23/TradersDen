@@ -32,6 +32,8 @@ const AppWrapper = observer(() => {
         navigate(`#${TAB_IDS[tab_index] || TAB_IDS[0]}`);
     };
 
+    const is_analysis_or_signals_active = active_tab === 3 || active_tab === 4;
+
     return (
         <React.Fragment>
             <div className='main'>
@@ -56,7 +58,7 @@ const AppWrapper = observer(() => {
                 </div>
             </div>
             <DesktopWrapper>
-                <div className='main__run-strategy-wrapper'>
+                <div className={classNames('main__run-strategy-wrapper', { 'visible': is_analysis_or_signals_active })}>
                     <RunStrategy />
                     <RunPanel />
                 </div>
