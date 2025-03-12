@@ -20,7 +20,7 @@ import PlatformSwitcher from './platform-switcher';
 import './header.scss';
 
 const TelegramIcon = () => (
-    <a href="https://t.me/binaryf_sitex" target="_blank" rel="noopener noreferrer" className="telegram-icon">
+    <a href="https://t.me/binaryf_site" target="_blank" rel="noopener noreferrer" className="telegram-icon">
        <svg width="25px" height="25px" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 
 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
