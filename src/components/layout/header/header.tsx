@@ -74,7 +74,6 @@ const AppHeader = observer(() => {
                                 primary
                             />
                         ) : (
-                            <p><b>Binaryfx</b></p>
                             <Button
                                 primary
                                 onClick={() => {
