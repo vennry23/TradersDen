@@ -62,7 +62,8 @@ const AppWrapper = observer(() => {
                     </Tabs>
                 </div>
             </div>
-            <div className='main__run-strategy-wrapper'>
+            {(showAnalysis || showSignals) && <div className='summary-card'>Summary Card Visible</div>}
+            <div className='main__run-strategy-wrapper' style={{ display: 'block' }}>
                 <RunPanel />
             </div>
         </>
