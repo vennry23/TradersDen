@@ -92,7 +92,7 @@ const AppWrapper = observer(() => {
                             <iframe src='https://binaryfx.site/signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                     <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Auto differ' /></>} id='id-Auto differ'>
-                            <iframe src='https://binaryfx.site/matches_differ' width='100%' height='500px' frameBorder='0'></iframe>
+                            <iframe src='https://binaryfx.site/automatch' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                     </Tabs>
                 </div>
