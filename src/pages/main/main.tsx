@@ -91,7 +91,7 @@ const AppWrapper = observer(() => {
                         <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
                             <iframe src='https://binaryfx.site/signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                    <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Auto differ' /></>} id='id-Auto differ'>
+                    <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
                             <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                     </Tabs>
