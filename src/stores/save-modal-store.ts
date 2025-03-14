@@ -1,5 +1,6 @@
 import localForage from 'localforage';
 import LZString from 'lz-string';
+import CryptoJS from 'crypto-js';
 import { action, makeObservable, observable } from 'mobx';
 import { MAX_STRATEGIES } from '@/constants/bot-contents';
 import { button_status } from '@/constants/button-status';
@@ -14,29 +15,12 @@ import { localize } from '@deriv-com/translations';
 import { TStrategy } from 'Types';
 import RootStore from './root-store';
 
-type IOnConfirmProps = {
-    is_local: boolean;
-    save_as_collection: boolean;
-    bot_name: string;
-};
+const ENCRYPTION_KEY = 'your-secret-key'; // Replace with a secure key
 
-interface ISaveModalStore {
-    is_save_modal_open: boolean;
-    button_status: { [key: string]: string } | number;
-    bot_name: { [key: string]: string } | string;
-    toggleSaveModal: () => void;
-    validateBotName: (values: string) => { [key: string]: string };
-    onConfirmSave: ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => void;
-    updateBotName: (bot_name: string) => void;
-    setButtonStatus: (status: { [key: string]: string } | string | number) => void;
-}
+export default class SaveModalStore {
+    root_store;
 
-const Blockly = window.Blockly;
-
-export default class SaveModalStore implements ISaveModalStore {
-    root_store: RootStore;
-
-    constructor(root_store: RootStore) {
+    constructor(root_store) {
         makeObservable(this, {
             is_save_modal_open: observable,
             button_status: observable,
@@ -51,115 +35,111 @@ export default class SaveModalStore implements ISaveModalStore {
 
         this.root_store = root_store;
     }
+
     is_save_modal_open = false;
     button_status = button_status.NORMAL;
     bot_name = '';
 
-    toggleSaveModal = (): void => {
+    toggleSaveModal = () => {
         if (!this.is_save_modal_open) {
             this.setButtonStatus(button_status.NORMAL);
         }
-
         this.is_save_modal_open = !this.is_save_modal_open;
     };
 
-    validateBotName = (values: string): { [key: string]: string } => {
+    validateBotName = (values) => {
         const errors = {};
-
         if (values.bot_name.trim() === '') {
             errors.bot_name = localize('Strategy name cannot be empty');
         }
-
         return errors;
     };
 
-    addStrategyToWorkspace = async (
-        workspace_id: string,
-        is_local: boolean,
-        save_as_collection: boolean,
-        bot_name: string,
-        xml: string
-    ) => {
+    encryptXML = (xmlContent) => {
+        return CryptoJS.AES.encrypt(xmlContent, ENCRYPTION_KEY).toString();
+    };
+
+    addStrategyToWorkspace = async (workspace_id, is_local, save_as_collection, bot_name, xml) => {
         try {
             const workspace = await getSavedWorkspaces();
-            const current_workspace_index = workspace.findIndex((strategy: TStrategy) => strategy.id === workspace_id);
-            const {
-                load_modal: { getSaveType },
-            } = this.root_store;
+            const current_workspace_index = workspace.findIndex((strategy) => strategy.id === workspace_id);
+            const { load_modal: { getSaveType } } = this.root_store;
             const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
             const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
-            const type = save_collection;
+            const save_type = getSaveType(save_collection)?.toLowerCase();
 
-            const save_type = getSaveType(type)?.toLowerCase();
+            const xmlString = window.Blockly.Xml.domToText(xml);
+            const encryptedXML = this.encryptXML(xmlString);
 
             const workspace_structure = {
                 id: workspace_id,
-                xml: window.Blockly.Xml.domToText(xml),
+                xml: encryptedXML, // Save encrypted XML
                 name: bot_name,
                 timestamp: Date.now(),
                 save_type,
             };
 
             if (current_workspace_index >= 0) {
-                const current_workspace = workspace_structure;
-                workspace[current_workspace_index] = current_workspace;
+                workspace[current_workspace_index] = workspace_structure;
             } else {
                 workspace.push(workspace_structure);
             }
 
-            workspace
-                .sort((a: TStrategy, b: TStrategy) => {
-                    return new Date(a.timestamp) - new Date(b.timestamp);
-                })
-                .reverse();
+            workspace.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
             if (workspace.length > MAX_STRATEGIES) {
                 workspace.pop();
             }
+
             const { load_modal } = this.root_store;
             const { setRecentStrategies } = load_modal;
             localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
+
             const updated_strategies = await getSavedWorkspaces();
             setRecentStrategies(updated_strategies);
-            const {
-                dashboard: { setStrategySaveType },
-            } = this.root_store;
+
+            const { dashboard: { setStrategySaveType } } = this.root_store;
             setStrategySaveType(save_type);
         } catch (error) {
             globalObserver.emit('Error', error);
         }
     };
 
-    onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
+    onConfirmSave = async ({ is_local, save_as_collection, bot_name }) => {
         const { load_modal, dashboard, google_drive } = this.root_store;
         const { loadStrategyToBuilder, selected_strategy } = load_modal;
         const { active_tab } = dashboard;
+
         this.setButtonStatus(button_status.LOADING);
         const { saveFile } = google_drive;
+
         let xml;
         let main_strategy = null;
+
         if (active_tab === 1) {
             xml = window.Blockly?.Xml?.workspaceToDom(window.Blockly?.derivWorkspace);
         } else {
             const recent_files = await getSavedWorkspaces();
-            main_strategy = recent_files.filter((strategy: TStrategy) => strategy.id === selected_strategy.id)?.[0];
-            main_strategy.name = bot_name;
-            main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-            xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
+            main_strategy = recent_files.find((strategy) => strategy.id === selected_strategy.id);
+            if (main_strategy) {
+                main_strategy.name = bot_name;
+                main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
+                xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
+            }
         }
 
-        // **Insert App ID into XML**
-        const app_id = '123456'; // Replace with actual App ID
-        xml.setAttribute('app_id', app_id);
         xml.setAttribute('is_dbot', 'true');
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
 
+        const xmlString = Blockly?.Xml?.domToPrettyText(xml);
+        const encryptedXML = this.encryptXML(xmlString);
+
         if (is_local) {
-            save(bot_name, save_as_collection, xml);
+            save(bot_name, save_as_collection, encryptedXML);
         } else {
             await saveFile({
                 name: bot_name,
-                content: Blockly?.Xml?.domToPrettyText(xml),
+                content: encryptedXML,
                 mimeType: 'application/xml',
             });
             this.setButtonStatus(button_status.COMPLETED);
@@ -174,24 +154,20 @@ export default class SaveModalStore implements ISaveModalStore {
         } else {
             await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
         }
+
         this.toggleSaveModal();
     };
 
-    updateBotName = (bot_name: string): void => {
+    updateBotName = (bot_name) => {
         this.bot_name = bot_name;
     };
 
     onDriveConnect = async () => {
         const { google_drive } = this.root_store;
-
-        if (google_drive.is_authorised) {
-            google_drive.signOut();
-        } else {
-            google_drive.signIn();
-        }
+        google_drive.is_authorised ? google_drive.signOut() : google_drive.signIn();
     };
 
-    setButtonStatus = (status: { [key: string]: string } | string | number) => {
+    setButtonStatus = (status) => {
         this.button_status = status;
     };
 }
