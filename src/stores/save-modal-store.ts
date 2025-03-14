@@ -24,6 +24,16 @@ function simpleHash(str) {
     return hash.toString(16);
 }
 
+function downloadFile(filename, content) {
+    const blob = new Blob([content], { type: 'application/xml' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 type IOnConfirmProps = {
     is_local: boolean;
     save_as_collection: boolean;
@@ -142,12 +152,13 @@ export default class SaveModalStore implements ISaveModalStore {
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
         xml.setAttribute('signature', simpleHash(Blockly.Xml.domToPrettyText(xml)));
 
+        const xmlContent = Blockly.Xml.domToPrettyText(xml);
         if (is_local) {
-            save(bot_name, save_as_collection, xml);
+            downloadFile(`${bot_name}.xml`, xmlContent);
         } else {
             await google_drive.saveFile({
                 name: bot_name,
-                content: Blockly.Xml.domToPrettyText(xml),
+                content: xmlContent,
                 mimeType: 'application/xml',
             });
             this.setButtonStatus(button_status.COMPLETED);
