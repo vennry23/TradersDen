@@ -5,6 +5,12 @@ export const pipe = (...fns) => {
     };
 };
 
+/** Helper function to generate a unique block signature */
+export const generateBlockSignature = (type, fields) => {
+    const fieldString = fields.map(field => `${field.name}:${field.value}`).join('|');
+    return `${type}:${fieldString}`;
+};
+
 /** Helper function to parse block information from XML */
 export const extractBlocksFromXml = xml => {
     const parser = new DOMParser();
@@ -19,7 +25,9 @@ export const extractBlocksFromXml = xml => {
                 value: field.textContent.trim(),
             };
         });
-        return { type, fields };
+        
+        const signature = generateBlockSignature(type, fields);
+        return { type, fields, signature };
     });
 
     return blocksTypeAndFields;
