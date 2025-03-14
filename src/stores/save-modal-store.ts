@@ -51,7 +51,7 @@ export default class SaveModalStore implements ISaveModalStore {
 
         this.root_store = root_store;
     }
-    
+
     is_save_modal_open = false;
     button_status = button_status.NORMAL;
     bot_name = '';
@@ -60,101 +60,85 @@ export default class SaveModalStore implements ISaveModalStore {
         if (!this.is_save_modal_open) {
             this.setButtonStatus(button_status.NORMAL);
         }
-
         this.is_save_modal_open = !this.is_save_modal_open;
     };
 
     validateBotName = (values: string): { [key: string]: string } => {
         const errors = {};
-
         if (values.bot_name.trim() === '') {
             errors.bot_name = localize('Strategy name cannot be empty');
         }
-
         return errors;
     };
 
-    addStrategyToWorkspace = async (
-        workspace_id: string,
-        is_local: boolean,
-        save_as_collection: boolean,
-        bot_name: string,
-        xml: string
-    ) => {
-        try {
-            const workspace = await getSavedWorkspaces();
-            const current_workspace_index = workspace.findIndex((strategy: TStrategy) => strategy.id === workspace_id);
-            const {
-                load_modal: { getSaveType },
-            } = this.root_store;
-            const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-            const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
-            const type = save_collection;
-
-            const save_type = getSaveType(type)?.toLowerCase();
-
-            const workspace_structure = {
-                id: workspace_id,
-                xml: window.Blockly.Xml.domToText(xml),
-                name: bot_name,
-                timestamp: Date.now(),
-                save_type,
-            };
-
-            if (current_workspace_index >= 0) {
-                workspace[current_workspace_index] = workspace_structure;
-            } else {
-                workspace.push(workspace_structure);
-            }
-
-            workspace.sort((a: TStrategy, b: TStrategy) => b.timestamp - a.timestamp);
-
-            if (workspace.length > MAX_STRATEGIES) {
-                workspace.pop();
-            }
-            
-            const { load_modal } = this.root_store;
-            const { setRecentStrategies } = load_modal;
-            localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
-            const updated_strategies = await getSavedWorkspaces();
-            setRecentStrategies(updated_strategies);
-            
-            const { dashboard: { setStrategySaveType } } = this.root_store;
-            setStrategySaveType(save_type);
-        } catch (error) {
-            globalObserver.emit('Error', error);
+    // Pure JavaScript SHA-256 implementation
+    sha256 = (ascii) => {
+        function rightRotate(value, amount) {
+            return (value >>> amount) | (value << (32 - amount));
         }
+
+        let mathPow = Math.pow;
+        let maxWord = mathPow(2, 32);
+        let words = [];
+        let asciiBitLength = ascii.length * 8;
+        let hash = [], k = [], primeCounter = k.length;
+        let isComposite = {};
+
+        for (let candidate = 2; primeCounter < 64; candidate++) {
+            if (!isComposite[candidate]) {
+                for (let i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+                hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+                k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+            }
+        }
+
+        ascii += '\x80';
+        while ((ascii.length % 64) - 56) ascii += '\x00';
+
+        for (let i = 0; i < ascii.length; i++) {
+            words[i >> 2] |= ascii.charCodeAt(i) << (((3 - i) % 4) * 8);
+        }
+
+        words[words.length] = (asciiBitLength / maxWord) | 0;
+        words[words.length] = asciiBitLength;
+
+        for (let j = 0; j < words.length; ) {
+            let w = words.slice(j, (j += 16));
+            let oldHash = hash.slice(0);
+
+            for (let i = 0; i < 64; i++) {
+                let w15 = w[i - 15], w2 = w[i - 2];
+                let a = hash[0], e = hash[4];
+                let temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
+                            ((e & hash[5]) ^ (~e & hash[6])) + k[i] + (w[i] = i < 16 ? w[i] :
+                            (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] +
+                            (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+
+                let temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
+                            ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+
+                hash = [(temp1 + temp2) | 0].concat(hash);
+                hash[4] = (hash[4] + temp1) | 0;
+            }
+
+            for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+
+        return hash.map(h => ('00000000' + h.toString(16)).slice(-8)).join('');
     };
 
     onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
         const { load_modal, dashboard, google_drive } = this.root_store;
-        const { loadStrategyToBuilder, selected_strategy } = load_modal;
-        const { active_tab } = dashboard;
         this.setButtonStatus(button_status.LOADING);
         const { saveFile } = google_drive;
-        let xml;
-        let main_strategy = null;
 
-        if (active_tab === 1) {
-            xml = window.Blockly?.Xml?.workspaceToDom(window.Blockly?.derivWorkspace);
-        } else {
-            const recent_files = await getSavedWorkspaces();
-            main_strategy = recent_files.find((strategy: TStrategy) => strategy.id === selected_strategy.id);
-            if (main_strategy) {
-                main_strategy.name = bot_name;
-                main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-                xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
-            }
-        }
-
+        let xml = Blockly.Xml.workspaceToDom(Blockly.derivWorkspace);
         xml.setAttribute('is_dbot', 'true');
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
 
-        // Convert XML to string and generate SHA-256 signature
-        const xmlString = Blockly?.Xml?.domToPrettyText(xml);
-        const hash = await this.generateSHA256(xmlString);
-
-        // Attach hash to the XML
+        // Generate SHA-256 hash and add it to XML
+        const xmlText = Blockly.Xml.domToText(xml);
+        const hash = this.sha256(xmlText);
         xml.setAttribute('signature', hash);
 
         if (is_local) {
@@ -162,21 +146,14 @@ export default class SaveModalStore implements ISaveModalStore {
         } else {
             await saveFile({
                 name: bot_name,
-                content: Blockly?.Xml?.domToPrettyText(xml),
+                content: Blockly.Xml.domToPrettyText(xml),
                 mimeType: 'application/xml',
             });
             this.setButtonStatus(button_status.COMPLETED);
         }
 
         this.updateBotName(bot_name);
-
-        if (active_tab === 0) {
-            const workspace_id = selected_strategy.id ?? Blockly?.utils?.genUid();
-            await this.addStrategyToWorkspace(workspace_id, is_local, save_as_collection, bot_name, xml);
-            if (main_strategy) await loadStrategyToBuilder(main_strategy);
-        } else {
-            await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
-        }
+        await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
         this.toggleSaveModal();
     };
 
@@ -186,7 +163,6 @@ export default class SaveModalStore implements ISaveModalStore {
 
     onDriveConnect = async () => {
         const { google_drive } = this.root_store;
-
         if (google_drive.is_authorised) {
             google_drive.signOut();
         } else {
@@ -196,16 +172,5 @@ export default class SaveModalStore implements ISaveModalStore {
 
     setButtonStatus = (status: { [key: string]: string } | string | number) => {
         this.button_status = status;
-    };
-
-    generateSHA256 = async (data: string) => {
-        const encoder = new TextEncoder();
-        const dataBuffer = encoder.encode(data);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-        
-        // Convert buffer to hex string
-        return Array.from(new Uint8Array(hashBuffer))
-            .map((b) => b.toString(16).padStart(2, '0'))
-            .join('');
     };
 }
