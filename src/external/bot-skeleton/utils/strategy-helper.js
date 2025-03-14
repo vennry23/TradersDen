@@ -78,3 +78,13 @@ export const compareXml = (xml1, xml2) => {
 
     return true;
 };
+
+/** Validate if the XML is from the current application */
+export const isXmlFromApp = xml => {
+    try {
+        const blocks = extractBlocksFromXml(xml);
+        return blocks.every(block => block.signature.includes('custom_signature'));
+    } catch (error) {
+        return false;
+    }
+};
