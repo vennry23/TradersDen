@@ -112,7 +112,7 @@ export default class LoadModalStore {
     readFile = (drop_event: DragEvent, file: File): void => {
         const reader = new FileReader();
         const file_name = file?.name.replace(/\.[^/.]+$/, '') || '';
-        const encryptionKey = 'YOUR_SECRET_KEY_HERE'; // Replace with your actual key
+        const encryptionKey = '94532412'; // Replace with your actual key
 
         reader.onload = action(async e => {
             try {
