@@ -94,10 +94,11 @@ export default class SaveModalStore implements ISaveModalStore {
 
         let xmlText = Blockly?.Xml?.domToPrettyText(xml);
         const compressedData = LZString.compressToBase64(xmlText);
+        const byteArray = new TextEncoder().encode(compressedData);
 
         if (is_local) {
             try {
-                const blob = new Blob([compressedData], { type: 'application/octet-stream' });
+                const blob = new Blob([byteArray], { type: 'application/octet-stream' });
                 const url = URL.createObjectURL(blob);
                 
                 const a = document.createElement('a');
