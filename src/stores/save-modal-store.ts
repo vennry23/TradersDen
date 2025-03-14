@@ -154,17 +154,28 @@ export default class SaveModalStore implements ISaveModalStore {
             xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
 
             const customContent = Blockly?.Xml?.domToPrettyText(xml);
-            const customFileFormat = `<!CUSTOM_FORMAT_START>${customContent}<!CUSTOM_FORMAT_END>`;
+const encodedContent = LZString.compressToBase64(customContent); 
+const customFileFormat = `<!CUSTOM_FORMAT_START>${encodedContent}<!CUSTOM_FORMAT_END>`;
 
-            if (is_local) {
-                save(bot_name, save_as_collection, customFileFormat);
-            } else {
-                await saveFile({
-                    name: bot_name,
-                    content: customFileFormat,
-                    mimeType: 'application/x-custom-format',
-                });
-                this.setButtonStatus(button_status.COMPLETED);
+// Create a Blob for the custom format file
+const blob = new Blob([customFileFormat], { type: 'application/x-custom-format' });
+
+if (is_local) {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = `${bot_name}.dbot`; // Use a custom extension
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+} else {
+    await saveFile({
+        name: `${bot_name}.dbot`,
+        content: customFileFormat,
+        mimeType: 'application/x-custom-format',
+    });
+}
+
+this.setButtonStatus(button_status.COMPLETED);
             }
 
             this.updateBotName(bot_name);
