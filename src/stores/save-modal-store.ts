@@ -62,13 +62,15 @@ export default class SaveModalStore implements ISaveModalStore {
         this.is_save_modal_open = !this.is_save_modal_open;
     }
 
-    validateBotName(values: unknown): { [key: string]: string } {
-        const errors: { [key: string]: string } = {};
-        if (typeof values !== 'string' || values.trim() === '') {
-            errors.bot_name = localize('Strategy name cannot be empty');
-        }
-        return errors;
+    validateBotName(values: { bot_name?: unknown }): { [key: string]: string } {
+    const errors: { [key: string]: string } = {};
+
+    if (!values.bot_name || typeof values.bot_name !== 'string' || values.bot_name.trim() === '') {
+        errors.bot_name = localize('Strategy name cannot be empty');
     }
+
+    return errors;
+}
 
     async addStrategyToWorkspace(
         workspace_id: string,
