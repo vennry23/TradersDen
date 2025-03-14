@@ -7,7 +7,6 @@ import { button_status } from '@/constants/button-status';
 import {
     getSavedWorkspaces,
     observer as globalObserver,
-    save,
     save_types,
     saveWorkspaceToRecent,
 } from '@/external/bot-skeleton';
@@ -59,50 +58,16 @@ export default class SaveModalStore {
         return CryptoJS.AES.encrypt(xmlContent, ENCRYPTION_KEY).toString();
     };
 
-    addStrategyToWorkspace = async (workspace_id, is_local, save_as_collection, bot_name, xml) => {
-        try {
-            const workspace = await getSavedWorkspaces();
-            const current_workspace_index = workspace.findIndex((strategy) => strategy.id === workspace_id);
-            const { load_modal: { getSaveType } } = this.root_store;
-            const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-            const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
-            const save_type = getSaveType(save_collection)?.toLowerCase();
-
-            const xmlString = window.Blockly.Xml.domToText(xml);
-            const encryptedXML = this.encryptXML(xmlString);
-
-            const workspace_structure = {
-                id: workspace_id,
-                xml: encryptedXML, // Save encrypted XML
-                name: bot_name,
-                timestamp: Date.now(),
-                save_type,
-            };
-
-            if (current_workspace_index >= 0) {
-                workspace[current_workspace_index] = workspace_structure;
-            } else {
-                workspace.push(workspace_structure);
-            }
-
-            workspace.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-            if (workspace.length > MAX_STRATEGIES) {
-                workspace.pop();
-            }
-
-            const { load_modal } = this.root_store;
-            const { setRecentStrategies } = load_modal;
-            localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
-
-            const updated_strategies = await getSavedWorkspaces();
-            setRecentStrategies(updated_strategies);
-
-            const { dashboard: { setStrategySaveType } } = this.root_store;
-            setStrategySaveType(save_type);
-        } catch (error) {
-            globalObserver.emit('Error', error);
-        }
+    triggerDownload = (filename, content) => {
+        const blob = new Blob([content], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     onConfirmSave = async ({ is_local, save_as_collection, bot_name }) => {
@@ -135,12 +100,12 @@ export default class SaveModalStore {
         const encryptedXML = this.encryptXML(xmlString);
 
         if (is_local) {
-            save(bot_name, save_as_collection, encryptedXML);
+            this.triggerDownload(`${bot_name}.txt`, encryptedXML); // Downloads encrypted XML as a text file
         } else {
             await saveFile({
                 name: bot_name,
                 content: encryptedXML,
-                mimeType: 'application/xml',
+                mimeType: 'application/octet-stream',
             });
             this.setButtonStatus(button_status.COMPLETED);
         }
