@@ -59,96 +59,54 @@ export default class SaveModalStore implements ISaveModalStore {
         if (!this.is_save_modal_open) {
             this.setButtonStatus(button_status.NORMAL);
         }
-
         this.is_save_modal_open = !this.is_save_modal_open;
     };
 
     validateBotName = (values: string): { [key: string]: string } => {
         const errors = {};
-
-        if (values.bot_name.trim() === '') {
+        if (values.trim() === '') {
             errors.bot_name = localize('Strategy name cannot be empty');
         }
-
         return errors;
     };
 
-    addStrategyToWorkspace = async (
-        workspace_id: string,
-        is_local: boolean,
-        save_as_collection: boolean,
-        bot_name: string,
-        xml: string
-    ) => {
-        try {
-            const workspace = await getSavedWorkspaces();
-            const current_workspace_index = workspace.findIndex((strategy: TStrategy) => strategy.id === workspace_id);
-            const {
-                load_modal: { getSaveType },
-            } = this.root_store;
-            const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-            const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
-            const type = save_collection;
-
-            const save_type = getSaveType(type)?.toLowerCase();
-
-            const workspace_structure = {
-                id: workspace_id,
-                xml: window.Blockly.Xml.domToText(xml),
-                name: bot_name,
-                timestamp: Date.now(),
-                save_type,
-            };
-
-            if (current_workspace_index >= 0) {
-                const current_workspace = workspace_structure;
-                workspace[current_workspace_index] = current_workspace;
-            } else {
-                workspace.push(workspace_structure);
-            }
-
-            workspace
-                .sort((a: TStrategy, b: TStrategy) => {
-                    return new Date(a.timestamp) - new Date(b.timestamp);
-                })
-                .reverse();
-
-            if (workspace.length > MAX_STRATEGIES) {
-                workspace.pop();
-            }
-            const { load_modal } = this.root_store;
-            const { setRecentStrategies } = load_modal;
-            localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
-            const updated_strategies = await getSavedWorkspaces();
-            setRecentStrategies(updated_strategies);
-            const {
-                dashboard: { setStrategySaveType },
-            } = this.root_store;
-            setStrategySaveType(save_type);
-        } catch (error) {
-            globalObserver.emit('Error', error);
-        }
-    };
+    async generateSHA256Hash(message: string): Promise<string> {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+    }
 
     onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
         const { load_modal, dashboard, google_drive } = this.root_store;
         const { loadStrategyToBuilder, selected_strategy } = load_modal;
         const { active_tab } = dashboard;
+
         this.setButtonStatus(button_status.LOADING);
         const { saveFile } = google_drive;
+
         let xml;
         let main_strategy = null;
+
         if (active_tab === 1) {
             xml = window.Blockly?.Xml?.workspaceToDom(window.Blockly?.derivWorkspace);
         } else {
             const recent_files = await getSavedWorkspaces();
-            main_strategy = recent_files.filter((strategy: TStrategy) => strategy.id === selected_strategy.id)?.[0];
-            main_strategy.name = bot_name;
-            main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-            xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
+            main_strategy = recent_files.find((strategy: TStrategy) => strategy.id === selected_strategy.id);
+            if (main_strategy) {
+                main_strategy.name = bot_name;
+                main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
+                xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
+            }
         }
+
         xml.setAttribute('is_dbot', 'true');
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
+
+        const xmlString = Blockly?.Xml?.domToPrettyText(xml);
+        const hash = await this.generateSHA256Hash(xmlString);
+        xml.setAttribute('signature', hash);
 
         if (is_local) {
             save(bot_name, save_as_collection, xml);
@@ -170,6 +128,7 @@ export default class SaveModalStore implements ISaveModalStore {
         } else {
             await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
         }
+        
         this.toggleSaveModal();
     };
 
@@ -179,7 +138,6 @@ export default class SaveModalStore implements ISaveModalStore {
 
     onDriveConnect = async () => {
         const { google_drive } = this.root_store;
-
         if (google_drive.is_authorised) {
             google_drive.signOut();
         } else {
