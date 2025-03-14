@@ -21,7 +21,7 @@ type IOnConfirmProps = {
 interface ISaveModalStore {
     is_save_modal_open: boolean;
     button_status: { [key: string]: string } | number;
-    bot_name: { [key: string]: string } | string;
+    bot_name: string;
     toggleSaveModal: () => void;
     validateBotName: (values: string) => { [key: string]: string };
     onConfirmSave: ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => void;
@@ -43,7 +43,6 @@ export default class SaveModalStore implements ISaveModalStore {
             validateBotName: action.bound,
             onConfirmSave: action.bound,
             updateBotName: action.bound,
-            onDriveConnect: action.bound,
             setButtonStatus: action.bound,
         });
 
@@ -71,7 +70,7 @@ export default class SaveModalStore implements ISaveModalStore {
 
     onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
         const { load_modal, dashboard, google_drive } = this.root_store;
-        const { loadStrategyToBuilder, selected_strategy } = load_modal;
+        const { selected_strategy } = load_modal;
         const { active_tab } = dashboard;
         this.setButtonStatus(button_status.LOADING);
         const { saveFile } = google_drive;
@@ -92,18 +91,26 @@ export default class SaveModalStore implements ISaveModalStore {
 
         xml.setAttribute('is_dbot', 'true');
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
-        
+
         let xmlText = Blockly?.Xml?.domToPrettyText(xml);
         const compressedData = LZString.compressToBase64(xmlText);
 
         if (is_local) {
-            const blob = new Blob([compressedData], { type: 'application/octet-stream' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `${bot_name}.myapp`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            try {
+                const blob = new Blob([compressedData], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${bot_name}.myapp`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            } catch (error) {
+                console.error("File download error:", error);
+            }
         } else {
             await saveFile({
                 name: `${bot_name}.myapp`,
@@ -119,15 +126,6 @@ export default class SaveModalStore implements ISaveModalStore {
 
     updateBotName = (bot_name: string): void => {
         this.bot_name = bot_name;
-    };
-
-    onDriveConnect = async () => {
-        const { google_drive } = this.root_store;
-        if (google_drive.is_authorised) {
-            google_drive.signOut();
-        } else {
-            google_drive.signIn();
-        }
     };
 
     setButtonStatus = (status: { [key: string]: string } | string | number) => {
