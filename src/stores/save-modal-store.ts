@@ -14,7 +14,7 @@ import { localize } from '@deriv-com/translations';
 import { TStrategy } from 'Types';
 import RootStore from './root-store';
 
-const ENCRYPTION_KEY = 'your-secret-key'; // Replace with a secure key
+const ENCRYPTION_KEY = '94532412'; // Replace with a secure key
 
 export default class SaveModalStore {
     root_store;
