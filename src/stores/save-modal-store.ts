@@ -20,9 +20,20 @@ type IOnConfirmProps = {
     bot_name: string;
 };
 
+interface ISaveModalStore {
+    is_save_modal_open: boolean;
+    button_status: { [key: string]: string } | number;
+    bot_name: { [key: string]: string } | string;
+    toggleSaveModal: () => void;
+    validateBotName: (values: string) => { [key: string]: string };
+    onConfirmSave: ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => void;
+    updateBotName: (bot_name: string) => void;
+    setButtonStatus: (status: { [key: string]: string } | string | number) => void;
+}
+
 const Blockly = window.Blockly;
 
-export default class SaveModalStore {
+export default class SaveModalStore implements ISaveModalStore {
     root_store: RootStore;
 
     constructor(root_store: RootStore) {
@@ -40,41 +51,82 @@ export default class SaveModalStore {
 
         this.root_store = root_store;
     }
+    
     is_save_modal_open = false;
     button_status = button_status.NORMAL;
     bot_name = '';
 
     toggleSaveModal = (): void => {
-        console.log('Toggling save modal:', !this.is_save_modal_open);
         if (!this.is_save_modal_open) {
             this.setButtonStatus(button_status.NORMAL);
         }
+
         this.is_save_modal_open = !this.is_save_modal_open;
     };
 
     validateBotName = (values: string): { [key: string]: string } => {
-        console.log('Validating bot name:', values);
         const errors = {};
+
         if (values.bot_name.trim() === '') {
             errors.bot_name = localize('Strategy name cannot be empty');
         }
+
         return errors;
     };
 
-    async hashXMLContent(xmlString) {
-        console.log('Hashing XML content...');
-        const encoder = new TextEncoder();
-        const data = encoder.encode(xmlString);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hash = Array.from(new Uint8Array(hashBuffer))
-            .map(byte => byte.toString(16).padStart(2, '0'))
-            .join('');
-        console.log('Generated hash:', hash);
-        return hash;
-    }
+    addStrategyToWorkspace = async (
+        workspace_id: string,
+        is_local: boolean,
+        save_as_collection: boolean,
+        bot_name: string,
+        xml: string
+    ) => {
+        try {
+            const workspace = await getSavedWorkspaces();
+            const current_workspace_index = workspace.findIndex((strategy: TStrategy) => strategy.id === workspace_id);
+            const {
+                load_modal: { getSaveType },
+            } = this.root_store;
+            const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
+            const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
+            const type = save_collection;
 
-    async onConfirmSave({ is_local, save_as_collection, bot_name }: IOnConfirmProps) {
-        console.log('Saving bot:', bot_name, 'is_local:', is_local, 'save_as_collection:', save_as_collection);
+            const save_type = getSaveType(type)?.toLowerCase();
+
+            const workspace_structure = {
+                id: workspace_id,
+                xml: window.Blockly.Xml.domToText(xml),
+                name: bot_name,
+                timestamp: Date.now(),
+                save_type,
+            };
+
+            if (current_workspace_index >= 0) {
+                workspace[current_workspace_index] = workspace_structure;
+            } else {
+                workspace.push(workspace_structure);
+            }
+
+            workspace.sort((a: TStrategy, b: TStrategy) => b.timestamp - a.timestamp);
+
+            if (workspace.length > MAX_STRATEGIES) {
+                workspace.pop();
+            }
+            
+            const { load_modal } = this.root_store;
+            const { setRecentStrategies } = load_modal;
+            localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
+            const updated_strategies = await getSavedWorkspaces();
+            setRecentStrategies(updated_strategies);
+            
+            const { dashboard: { setStrategySaveType } } = this.root_store;
+            setStrategySaveType(save_type);
+        } catch (error) {
+            globalObserver.emit('Error', error);
+        }
+    };
+
+    onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
         const { load_modal, dashboard, google_drive } = this.root_store;
         const { loadStrategyToBuilder, selected_strategy } = load_modal;
         const { active_tab } = dashboard;
@@ -84,33 +136,33 @@ export default class SaveModalStore {
         let main_strategy = null;
 
         if (active_tab === 1) {
-            xml = Blockly?.Xml?.workspaceToDom(Blockly?.derivWorkspace);
+            xml = window.Blockly?.Xml?.workspaceToDom(window.Blockly?.derivWorkspace);
         } else {
             const recent_files = await getSavedWorkspaces();
             main_strategy = recent_files.find((strategy: TStrategy) => strategy.id === selected_strategy.id);
             if (main_strategy) {
-                console.log('Found main strategy:', main_strategy);
                 main_strategy.name = bot_name;
                 main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
-                xml = Blockly.utils.xml.textToDom(main_strategy.xml);
+                xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
             }
         }
 
         xml.setAttribute('is_dbot', 'true');
         xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
-        
-        const xmlString = Blockly.Xml.domToPrettyText(xml);
-        const hash = await this.hashXMLContent(xmlString);
-        xml.setAttribute('signature', hash); // Add the SHA-256 hash as a signature
 
-        console.log('Saving XML with signature:', xmlString);
+        // Convert XML to string and generate SHA-256 signature
+        const xmlString = Blockly?.Xml?.domToPrettyText(xml);
+        const hash = await this.generateSHA256(xmlString);
+
+        // Attach hash to the XML
+        xml.setAttribute('signature', hash);
 
         if (is_local) {
             save(bot_name, save_as_collection, xml);
         } else {
             await saveFile({
                 name: bot_name,
-                content: Blockly.Xml.domToPrettyText(xml),
+                content: Blockly?.Xml?.domToPrettyText(xml),
                 mimeType: 'application/xml',
             });
             this.setButtonStatus(button_status.COMPLETED);
@@ -120,25 +172,21 @@ export default class SaveModalStore {
 
         if (active_tab === 0) {
             const workspace_id = selected_strategy.id ?? Blockly?.utils?.genUid();
-            console.log('Adding strategy to workspace:', workspace_id);
             await this.addStrategyToWorkspace(workspace_id, is_local, save_as_collection, bot_name, xml);
             if (main_strategy) await loadStrategyToBuilder(main_strategy);
         } else {
-            console.log('Saving workspace to recent');
             await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
         }
-
         this.toggleSaveModal();
-    }
+    };
 
-    updateBotName(bot_name: string): void {
-        console.log('Updating bot name:', bot_name);
+    updateBotName = (bot_name: string): void => {
         this.bot_name = bot_name;
-    }
+    };
 
     onDriveConnect = async () => {
-        console.log('Toggling Google Drive connection');
         const { google_drive } = this.root_store;
+
         if (google_drive.is_authorised) {
             google_drive.signOut();
         } else {
@@ -146,8 +194,18 @@ export default class SaveModalStore {
         }
     };
 
-    setButtonStatus(status: { [key: string]: string } | string | number) {
-        console.log('Setting button status:', status);
+    setButtonStatus = (status: { [key: string]: string } | string | number) => {
         this.button_status = status;
-    }
+    };
+
+    generateSHA256 = async (data: string) => {
+        const encoder = new TextEncoder();
+        const dataBuffer = encoder.encode(data);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+        
+        // Convert buffer to hex string
+        return Array.from(new Uint8Array(hashBuffer))
+            .map((b) => b.toString(16).padStart(2, '0'))
+            .join('');
+    };
 }
