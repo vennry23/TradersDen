@@ -89,7 +89,7 @@ const AppWrapper = observer(() => {
                             <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                         <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
-                            <iframe src='analysis.html' width='100%' height='500px' frameBorder='0'></iframe>
+                            <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
                     <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
                             <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
