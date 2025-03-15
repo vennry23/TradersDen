@@ -1,175 +1,194 @@
-import React from 'react';
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
-import { v4 as uuidv4 } from 'uuid';
-import CryptoJS from 'crypto-js';
+
+import localForage from 'localforage';
+import LZString from 'lz-string';
+import { action, makeObservable, observable } from 'mobx';
+import { MAX_STRATEGIES } from '@/constants/bot-contents';
+import { button_status } from '@/constants/button-status';
 import {
     getSavedWorkspaces,
-    load,
-    removeExistingWorkspace,
+    observer as globalObserver,
+    save,
     save_types,
     saveWorkspaceToRecent,
 } from '@/external/bot-skeleton';
-import { inject_workspace_options, updateXmlValues } from '@/external/bot-skeleton/scratch/utils';
-import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
-import { TStores } from '@deriv/stores/types';
 import { localize } from '@deriv-com/translations';
 import { TStrategy } from 'Types';
-import {
-    rudderStackSendUploadStrategyCompletedEvent,
-    rudderStackSendUploadStrategyFailedEvent,
-    rudderStackSendUploadStrategyStartEvent,
-} from '../analytics/rudderstack-common-events';
-import { getStrategyType } from '../analytics/utils';
-import { tabs_title } from '../constants/load-modal';
-import { waitForDomElement } from '../utils/dom-observer';
 import RootStore from './root-store';
 
-export default class LoadModalStore {
-    root_store: RootStore;
-    core: TStores;
-    imported_strategy_type = 'pending';
+type IOnConfirmProps = {
+    is_local: boolean;
+    save_as_collection: boolean;
+    bot_name: string;
+};
 
-    constructor(root_store: RootStore, core: any) {
+interface ISaveModalStore {
+    is_save_modal_open: boolean;
+    button_status: { [key: string]: string } | number;
+    bot_name: { [key: string]: string } | string;
+    toggleSaveModal: () => void;
+    validateBotName: (values: string) => { [key: string]: string };
+    onConfirmSave: ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => void;
+    updateBotName: (bot_name: string) => void;
+    setButtonStatus: (status: { [key: string]: string } | string | number) => void;
+}
+
+const Blockly = window.Blockly;
+
+export default class SaveModalStore implements ISaveModalStore {
+    root_store: RootStore;
+
+    constructor(root_store: RootStore) {
         makeObservable(this, {
-            is_load_modal_open: observable,
-            loaded_local_file: observable,
-            recent_strategies: observable,
-            selected_strategy_id: observable,
-            setLoadedLocalFile: action.bound,
-            setRecentStrategies: action.bound,
-            setSelectedStrategyId: action.bound,
-            toggleLoadModal: action.bound,
-            handleFileChange: action.bound,
-            readFile: action.bound,
+            is_save_modal_open: observable,
+            button_status: observable,
+            bot_name: observable,
+            toggleSaveModal: action.bound,
+            validateBotName: action.bound,
+            onConfirmSave: action.bound,
+            updateBotName: action.bound,
+            onDriveConnect: action.bound,
+            setButtonStatus: action.bound,
         });
 
         this.root_store = root_store;
-        this.core = core;
-
-        reaction(
-            () => this.is_load_modal_open,
-            async is_load_modal_open => {
-                if (is_load_modal_open) {
-                    const saved_workspaces = await getSavedWorkspaces();
-                    if (!saved_workspaces) return;
-                    this.setRecentStrategies(saved_workspaces);
-                    if (saved_workspaces.length > 0 && !this.selected_strategy_id) {
-                        this.setSelectedStrategyId(saved_workspaces[0].id);
-                    }
-                }
-            }
-        );
     }
+    is_save_modal_open = false;
+    button_status = button_status.NORMAL;
+    bot_name = '';
 
-    is_load_modal_open = false;
-    loaded_local_file: File | null = null;
-    recent_strategies: Array<TStrategy> = [];
-    selected_strategy_id = '';
-
-    setLoadedLocalFile = (loaded_local_file: File | null): void => {
-        this.loaded_local_file = loaded_local_file;
-    };
-
-    setRecentStrategies = (recent_strategies: TStrategy[]): void => {
-        this.recent_strategies = recent_strategies;
-    };
-
-    setSelectedStrategyId = (selected_strategy_id: string): void => {
-        this.selected_strategy_id = selected_strategy_id;
-    };
-
-    toggleLoadModal = (): void => {
-        this.is_load_modal_open = !this.is_load_modal_open;
-        this.setLoadedLocalFile(null);
-    };
-
-    handleFileChange = (event: React.FormEvent<HTMLFormElement> | DragEvent): boolean => {
-        this.imported_strategy_type = 'pending';
-        this.upload_id = uuidv4();
-        let files;
-
-        if (event.type === 'drop') {
-            event.stopPropagation();
-            event.preventDefault();
-            ({ files } = event.dataTransfer as DragEvent);
-        } else {
-            ({ files } = event.target);
+    toggleSaveModal = (): void => {
+        if (!this.is_save_modal_open) {
+            this.setButtonStatus(button_status.NORMAL);
         }
 
-        const [file] = files;
-
-        if (file.name.includes('xml')) {
-            this.setLoadedLocalFile(file);
-        } else {
-            return false;
-        }
-
-        this.readFile(event as DragEvent, file);
-        (event.target as HTMLInputElement).value = '';
-        return true;
+        this.is_save_modal_open = !this.is_save_modal_open;
     };
 
-    readFile = (drop_event: DragEvent, file: File): void => {
-        const reader = new FileReader();
-        const file_name = file?.name.replace(/\.[^/.]+$/, '') || '';
-        const encryptionKey = '94532412'; // Replace with your actual key
+    validateBotName = (values: string): { [key: string]: string } => {
+        const errors = {};
 
-        reader.onload = action(async e => {
-            try {
-                const encryptedText = e?.target?.result as string;
+        if (values.bot_name.trim() === '') {
+            errors.bot_name = localize('Strategy name cannot be empty');
+        }
 
-                // Decrypt the file content
-                const bytes = CryptoJS.AES.decrypt(encryptedText, encryptionKey);
-                const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+        return errors;
+    };
 
-                if (!decryptedText) {
-                    throw new Error('Decryption failed: Invalid key or corrupted file.');
-                }
+    addStrategyToWorkspace = async (
+        workspace_id: string,
+        is_local: boolean,
+        save_as_collection: boolean,
+        bot_name: string,
+        xml: string
+    ) => {
+        try {
+            const workspace = await getSavedWorkspaces();
+            const current_workspace_index = workspace.findIndex((strategy: TStrategy) => strategy.id === workspace_id);
+            const {
+                load_modal: { getSaveType },
+            } = this.root_store;
+            const local_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
+            const save_collection = save_as_collection ? save_types.UNSAVED : local_type;
+            const type = save_collection;
 
-                const load_options = {
-                    block_string: decryptedText,
-                    drop_event,
-                    from: save_types.LOCAL,
-                    workspace: null as window.Blockly.WorkspaceSvg | null,
-                    file_name,
-                    strategy_id: '',
-                    showIncompatibleStrategyDialog: false,
-                };
+            const save_type = getSaveType(type)?.toLowerCase();
 
-                this.loadStrategyOnModalLocalPreview(load_options);
-            } catch (error) {
-                console.error('Error decrypting file:', error);
-                alert('Failed to decrypt the file. Please ensure you have the correct key.');
+            const workspace_structure = {
+                id: workspace_id,
+                xml: window.Blockly.Xml.domToText(xml),
+                name: bot_name,
+                timestamp: Date.now(),
+                save_type,
+            };
+
+            if (current_workspace_index >= 0) {
+                const current_workspace = workspace_structure;
+                workspace[current_workspace_index] = current_workspace;
+            } else {
+                workspace.push(workspace_structure);
             }
-        });
 
-        reader.readAsText(file);
+            workspace
+                .sort((a: TStrategy, b: TStrategy) => {
+                    return new Date(a.timestamp) - new Date(b.timestamp);
+                })
+                .reverse();
+
+            if (workspace.length > MAX_STRATEGIES) {
+                workspace.pop();
+            }
+            const { load_modal } = this.root_store;
+            const { setRecentStrategies } = load_modal;
+            localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspace)));
+            const updated_strategies = await getSavedWorkspaces();
+            setRecentStrategies(updated_strategies);
+            const {
+                dashboard: { setStrategySaveType },
+            } = this.root_store;
+            setStrategySaveType(save_type);
+        } catch (error) {
+            globalObserver.emit('Error', error);
+        }
     };
 
-    loadStrategyOnModalLocalPreview = async load_options => {
-        const injectWorkspace = { ...inject_workspace_options, theme: window?.Blockly?.Themes?.zelos_renderer };
-
-        await waitForDomElement('#load-strategy__blockly-container');
-        const ref_preview = document.getElementById('load-strategy__blockly-container');
-        const local_workspace = await window.Blockly.inject(ref_preview, injectWorkspace);
-
-        load_options.workspace = local_workspace;
-        if (load_options.workspace) {
-            (load_options.workspace as any).RTL = isDbotRTL();
-        }
-
-        const upload_type = getStrategyType(load_options?.block_string ?? '');
-        const result = await load(load_options);
-
-        if (!result?.error) {
-            rudderStackSendUploadStrategyStartEvent({ upload_provider: 'my_computer', upload_id: this.upload_id });
+    onConfirmSave = async ({ is_local, save_as_collection, bot_name }: IOnConfirmProps) => {
+        const { load_modal, dashboard, google_drive } = this.root_store;
+        const { loadStrategyToBuilder, selected_strategy } = load_modal;
+        const { active_tab } = dashboard;
+        this.setButtonStatus(button_status.LOADING);
+        const { saveFile } = google_drive;
+        let xml;
+        let main_strategy = null;
+        if (active_tab === 1) {
+            xml = window.Blockly?.Xml?.workspaceToDom(window.Blockly?.derivWorkspace);
         } else {
-            rudderStackSendUploadStrategyFailedEvent({
-                upload_provider: 'my_computer',
-                upload_id: this.upload_id,
-                upload_type,
-                error_message: result.error,
-            });
+            const recent_files = await getSavedWorkspaces();
+            main_strategy = recent_files.filter((strategy: TStrategy) => strategy.id === selected_strategy.id)?.[0];
+            main_strategy.name = bot_name;
+            main_strategy.save_type = is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE;
+            xml = window.Blockly.utils.xml.textToDom(main_strategy.xml);
         }
+        xml.setAttribute('is_dbot', 'true');
+        xml.setAttribute('collection', save_as_collection ? 'true' : 'false');
+
+        if (is_local) {
+            save(bot_name, save_as_collection, xml);
+        } else {
+            await saveFile({
+                name: bot_name,
+                content: Blockly?.Xml?.domToPrettyText(xml),
+                mimeType: 'application/xml',
+            });
+            this.setButtonStatus(button_status.COMPLETED);
+        }
+
+        this.updateBotName(bot_name);
+
+        if (active_tab === 0) {
+            const workspace_id = selected_strategy.id ?? Blockly?.utils?.genUid();
+            await this.addStrategyToWorkspace(workspace_id, is_local, save_as_collection, bot_name, xml);
+            if (main_strategy) await loadStrategyToBuilder(main_strategy);
+        } else {
+            await saveWorkspaceToRecent(xml, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
+        }
+        this.toggleSaveModal();
+    };
+
+    updateBotName = (bot_name: string): void => {
+        this.bot_name = bot_name;
+    };
+
+    onDriveConnect = async () => {
+        const { google_drive } = this.root_store;
+
+        if (google_drive.is_authorised) {
+            google_drive.signOut();
+        } else {
+            google_drive.signIn();
+        }
+    };
+
+    setButtonStatus = (status: { [key: string]: string } | string | number) => {
+        this.button_status = status;
     };
 }
