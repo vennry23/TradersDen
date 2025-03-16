@@ -79,8 +79,8 @@ function updateTables() {
         // Generate rise/fall table row
         riseFallTable.innerHTML += `<tr>
             <td>Volatility ${symbol.replace("R_", "")} index</td>
-            <td><span class="signal-box ${riseClass}">${isBuy ? "BUY" : "----"}</span></td>
-            <td><span class="signal-box ${fallClass}">${isSell ? "SELL" : "----"}</span></td>
+            <td><span class="signal-box ${riseClass}">${isBuy ? "Rise" : "----"}</span></td>
+            <td><span class="signal-box ${fallClass}">${isSell ? "Fall" : "----"}</span></td>
         </tr>`;
 
         // Last digit analysis
