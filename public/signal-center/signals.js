@@ -96,14 +96,20 @@ function calculateTrendPercentage(symbol, ticksCount) {
 }
 
 function selectMarket(symbol, row) {
-    selectedMarket = symbol;
-    document.querySelectorAll("tr").forEach(tr => tr.classList.remove("selected"));
-    row.classList.add("selected");
-    document.getElementById("startButton").disabled = false;
+    if (selectedMarket === symbol) {
+        selectedMarket = null;
+        row.classList.remove("selected");
+        document.getElementById("startButton").disabled = true;
+    } else {
+        selectedMarket = symbol;
+        document.querySelectorAll("tr").forEach(tr => tr.classList.remove("selected"));
+        row.classList.add("selected");
+        document.getElementById("startButton").disabled = false;
+    }
 }
 
 document.getElementById("oauthButton").addEventListener("click", () => {
-    const authUrl = `https://oauth.deriv.com/oauth2/authorize?app_id=69811&response_type=token&scope=trade`;
+    const authUrl = `https://oauth.deriv.com/oauth2/authorize?app_id=69811&response_type=token&scope=read,trade`;
     window.open(authUrl, "_blank");
 });
 
@@ -111,6 +117,26 @@ function setToken(token) {
     oauthToken = token;
     alert("Logged in successfully!");
     document.getElementById("startButton").disabled = false;
+    fetchUserData();
+}
+
+async function fetchUserData() {
+    const response = await fetch("https://ws.derivws.com/websockets/v3", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${oauthToken}`
+        },
+        body: JSON.stringify({ authorize: oauthToken })
+    });
+
+    const result = await response.json();
+    if (result.authorize) {
+        const { fullname, balance } = result.authorize;
+        document.getElementById("userInfo").innerHTML = `Welcome, ${fullname}. Balance: $${balance}`;
+    } else {
+        console.error("Failed to fetch user data", result);
+    }
 }
 
 document.getElementById("startButton").addEventListener("click", () => {
