@@ -9,7 +9,7 @@ import MobileWrapper from '@/components/shared_ui/mobile-wrapper';
 import Tabs from '@/components/shared_ui/tabs/tabs';
 import TradingViewModal from '@/components/trading-view-chart/trading-view-modal';
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
-import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
+import { api_base, updateWorkspaceName, loadStrategy } from '@/external/bot-skeleton';
 import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
 import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
@@ -115,8 +115,8 @@ const AppWrapper = observer(() => {
                 throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
             }
             const text = await response.text();
-            // Run the bot with the XML content
-            runBot(text);
+            // Load the strategy into the bot builder
+            loadStrategy(text);
             // Switch to the bot builder tab
             setActiveTab(TAB_IDS.BOT_BUILDER);
         } catch (error) {
