@@ -7,7 +7,54 @@
         right: auto;
     }
 }
+.free-bots {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
 
+.free-bots__heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.free-bots__content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.free-bot {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+}
+
+.free-bot__image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.free-bot__details {
+    margin-top: 10px;
+}
+
+.free-bot__title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.free-bot__description {
+    font-size: 14px;
+    color: #666;
+}
 .main {
     display: flex;
     overflow: hidden;
