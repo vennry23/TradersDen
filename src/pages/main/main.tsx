@@ -65,23 +65,31 @@ const AppWrapper = observer(() => {
         // Fetch the XML files and parse them
         const fetchBots = async () => {
             const botFiles = [
-                'test1.xml',
-                'test22.xml',
+                'path_to_bot_1.xml',
+                'path_to_bot_2.xml',
                 // Add more paths to your XML files
             ];
             const botPromises = botFiles.map(async (file) => {
-                const response = await fetch(file);
-                const text = await response.text();
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(text, 'application/xml');
-                return {
-                    title: xml.getElementsByTagName('title')[0].textContent,
-                    description: xml.getElementsByTagName('description')[0].textContent,
-                    image: xml.getElementsByTagName('image')[0].textContent,
-                    filePath: file,
-                };
+                try {
+                    const response = await fetch(file);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${file}: ${response.statusText}`);
+                    }
+                    const text = await response.text();
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(text, 'application/xml');
+                    return {
+                        title: xml.getElementsByTagName('title')[0]?.textContent || 'No title',
+                        description: xml.getElementsByTagName('description')[0]?.textContent || 'No description',
+                        image: xml.getElementsByTagName('image')[0]?.textContent || 'default_image_path',
+                        filePath: file,
+                    };
+                } catch (error) {
+                    console.error(error);
+                    return null;
+                }
             });
-            const bots = await Promise.all(botPromises);
+            const bots = (await Promise.all(botPromises)).filter(Boolean);
             setBots(bots);
         };
 
@@ -96,10 +104,17 @@ const AppWrapper = observer(() => {
     );
 
     const handleBotClick = async (filePath: string) => {
-        const response = await fetch(filePath);
-        const text = await response.text();
-        // Assuming you have a function to run the bot with the XML content
-        runBot(text);
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
+            }
+            const text = await response.text();
+            // Assuming you have a function to run the bot with the XML content
+            runBot(text);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
