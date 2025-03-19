@@ -161,6 +161,12 @@ const AppWrapper = observer(() => {
         [setActiveTab, updateWorkspaceName]
     );
 
+    const handleOpen = useCallback(async () => {
+        await load_modal.loadFileFromRecent();
+        setActiveTab(DBOT_TABS.BOT_BUILDER);
+        // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
+    }, [load_modal, setActiveTab]);
+
     return (
         <React.Fragment>
             <div className='main'>
