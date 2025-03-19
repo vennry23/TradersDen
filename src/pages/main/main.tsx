@@ -9,7 +9,7 @@ import MobileWrapper from '@/components/shared_ui/mobile-wrapper';
 import Tabs from '@/components/shared_ui/tabs/tabs';
 import TradingViewModal from '@/components/trading-view-chart/trading-view-modal';
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
-import { api_base, updateWorkspaceName, loadStrategy } from '@/external/bot-skeleton';
+import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
 import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
 import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
@@ -26,7 +26,6 @@ import RunPanel from '../../components/run-panel';
 import ChartModal from '../chart/chart-modal';
 import Dashboard from '../dashboard';
 import RunStrategy from '../dashboard/run-strategy';
-import LoadModal from '@/components/load-modal';
 
 const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
@@ -116,8 +115,8 @@ const AppWrapper = observer(() => {
                 throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
             }
             const text = await response.text();
-            // Load the strategy into the bot builder
-            loadStrategy(text);
+            // Run the bot with the XML content
+            runBot(text);
             // Switch to the bot builder tab
             setActiveTab(TAB_IDS.BOT_BUILDER);
         } catch (error) {
@@ -182,7 +181,6 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <LoadModal />
             <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
                 {message}
             </Dialog>
