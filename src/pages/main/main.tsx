@@ -154,11 +154,8 @@ const AppWrapper = observer(() => {
     const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
         setActiveTab(DBOT_TABS.BOT_BUILDER);
         try {
-            if (typeof load_modal.loadFileFromContent === 'function') {
-                await load_modal.loadFileFromContent(bot.xmlContent);
-            } else {
-                console.error("loadFileFromContent is not defined on load_modal");
-            }
+            // Call the new loadFileFromContent method
+            await load_modal.loadFileFromContent(bot.xmlContent);
             updateWorkspaceName(bot.xmlContent);
         } catch (error) {
             console.error("Error loading bot file:", error);
