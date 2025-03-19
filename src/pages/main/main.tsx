@@ -65,8 +65,8 @@ const AppWrapper = observer(() => {
         // Fetch the XML files and parse them
         const fetchBots = async () => {
             const botFiles = [
-                'path_to_bot_1.xml',
-                'path_to_bot_2.xml',
+                'test1.xml',
+                'test2.xml',
                 // Add more paths to your XML files
             ];
             const botPromises = botFiles.map(async (file) => {
