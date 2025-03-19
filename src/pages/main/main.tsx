@@ -152,13 +152,14 @@ const AppWrapper = observer(() => {
     );
 
     const handleBotClick = useCallback(
-        (bot: { filePath: string; xmlContent: string }) => {
-            // Load the strategy into the bot builder
+        async (bot: { filePath: string; xmlContent: string }) => {
+            // Load the strategy into the bot builder using the bot's XML content
             updateWorkspaceName(bot.xmlContent);
-            // Switch to the bot builder tab
-            setActiveTab(TAB_IDS.BOT_BUILDER);
+            // Load the file from recent and switch to the bot builder tab
+            await load_modal.loadFileFromRecent();
+            setActiveTab(DBOT_TABS.BOT_BUILDER);
         },
-        [setActiveTab, updateWorkspaceName]
+        [setActiveTab, updateWorkspaceName, load_modal]
     );
 
     const handleOpen = useCallback(async () => {
@@ -174,6 +175,7 @@ const AppWrapper = observer(() => {
                     <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
                         <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
+                            <button onClick={handleOpen}>Load Bot</button>
                         </div>
                         <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
                         <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
