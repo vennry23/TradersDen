@@ -75,12 +75,7 @@ const FreeBotsIcon = () => (
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
     const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
-    const {
-        active_tab,
-        is_chart_modal_visible,
-        is_trading_view_modal_visible,
-        setActiveTab,
-    } = dashboard;
+    const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
     const { onEntered } = load_modal;
     const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
@@ -90,7 +85,7 @@ const AppWrapper = observer(() => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [bots, setBots] = useState([]);
+    const [bots, setBots] = useState<any[]>([]);
 
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
@@ -131,8 +126,9 @@ const AppWrapper = observer(() => {
                     return null;
                 }
             });
-            const bots = (await Promise.all(botPromises)).filter(Boolean);
-            setBots(bots);
+            const botsResult = await Promise.all(botPromises);
+            const botsFiltered = botsResult.filter(Boolean);
+            setBots(botsFiltered);
         };
 
         fetchBots();
@@ -144,7 +140,7 @@ const AppWrapper = observer(() => {
         console.log('Running bot with content:', xmlContent);
     };
 
-    const handleTabChange = React.useCallback(
+    const handleTabChange = useCallback(
         (tab_index: number) => {
             setActiveTab(tab_index);
         },
@@ -154,8 +150,13 @@ const AppWrapper = observer(() => {
     const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
         setActiveTab(DBOT_TABS.BOT_BUILDER);
         try {
-            // Call the new loadFileFromContent method
-            await load_modal.loadFileFromContent(bot.xmlContent);
+            console.log('load_modal instance:', load_modal);
+            if (typeof load_modal.loadFileFromContent === 'function') {
+                await load_modal.loadFileFromContent(bot.xmlContent);
+            } else {
+                console.error("loadFileFromContent is not defined on load_modal; falling back.");
+                // Fallback: call updateWorkspaceName directly
+            }
             updateWorkspaceName(bot.xmlContent);
         } catch (error) {
             console.error("Error loading bot file:", error);
@@ -202,9 +203,7 @@ const AppWrapper = observer(() => {
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <ul className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => {
-                                            handleBotClick(bot);
-                                        }}>
+                                        <li className='free-bot' key={index} onClick={() => { handleBotClick(bot); }}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
