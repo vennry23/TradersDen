@@ -153,12 +153,12 @@ const AppWrapper = observer(() => {
 
     const handleBotClick = useCallback(
         (bot: { filePath: string; xmlContent: string }) => {
-            // Run the bot with the XML content
-            runBot(bot.xmlContent);
+            // Load the strategy into the bot builder
+            updateWorkspaceName(bot.xmlContent);
             // Switch to the bot builder tab
             setActiveTab(TAB_IDS.BOT_BUILDER);
         },
-        [runBot, setActiveTab]
+        [setActiveTab]
     );
 
     return (
