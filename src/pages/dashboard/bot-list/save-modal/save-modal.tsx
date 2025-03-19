@@ -24,15 +24,9 @@ import './save-modal.scss';
 type TSaveModalForm = {
     bot_name: string;
     button_status: number;
-    google_drive_connected?: boolean;
     is_authorised: boolean;
     is_mobile?: boolean;
     is_onscreen_keyboard_active?: boolean;
-    is_save_modal_open?: boolean;
-    icon?: string;
-    text?: string;
-    onDriveConnect?: () => void;
-    onConfirmSave: (values: { is_local: boolean; save_as_collection: boolean; bot_name: string }) => void;
     setCurrentFocus: (current_focus: string) => void;
     toggleSaveModal: () => void;
     validateBotName: (values: string) => { [key: string]: string };
@@ -42,8 +36,6 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
     bot_name,
     button_status,
     is_authorised,
-    onConfirmSave,
-    onDriveConnect,
     validateBotName,
     toggleSaveModal,
     is_mobile,
@@ -57,7 +49,7 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
             bot_name: bot_name === config().default_file_name ? '' : bot_name,
         }}
         validate={validateBotName}
-        onSubmit={onConfirmSave}
+        onSubmit={() => alert("You can not save this file.")}
     >
         {({ values: { is_local }, setFieldValue, touched, errors }) => {
             const content_height = !is_mobile ? '500px' : `calc(100%)`;
@@ -66,9 +58,7 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
                     <Form className={classNames({ 'form--active-keyboard': is_onscreen_keyboard_active })}>
                         <div className='modal__content'>
                             <Text size='xs' lineHeight='l'>
-                                {localize(
-                                    'Enter your bot name, choose to save on your computer or Google Drive, and hit '
-                                )}
+                                {localize('Enter your bot name, choose to save on your computer or Google Drive, and hit ')}
                                 <strong>{localize('Save.')}</strong>
                             </Text>
                             <div className='modal__content-row'>
@@ -86,50 +76,6 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
                                         />
                                     )}
                                 </Field>
-                            </div>
-                            <div className='modal__content-row'>
-                                <RadioGroup
-                                    className='radio-group__save-type'
-                                    name='is_local'
-                                    selected={() => {
-                                        if (is_authorised && !is_local) return save_types.GOOGLE_DRIVE;
-                                        return save_types.LOCAL;
-                                    }}
-                                    onToggle={() => setFieldValue('is_local', !is_local)}
-                                >
-                                    <RadioGroup.Item
-                                        id='local'
-                                        label={
-                                            <IconRadio
-                                                text={localize('Local')}
-                                                icon={
-                                                    is_mobile ? (
-                                                        <DerivLightLocalDeviceIcon height='48px' width='48px' />
-                                                    ) : (
-                                                        <DerivLightMyComputerIcon height='48px' width='48px' />
-                                                    )
-                                                }
-                                            />
-                                        }
-                                        value={save_types.LOCAL}
-                                    />
-                                    <RadioGroup.Item
-                                        id='drive'
-                                        label={
-                                            <IconRadio
-                                                text={'Google Drive'}
-                                                icon={<DerivLightGoogleDriveIcon height='48px' width='48px' />}
-                                                google_drive_connected={is_authorised}
-                                                onDriveConnect={onDriveConnect}
-                                            />
-                                        }
-                                        value={save_types.GOOGLE_DRIVE}
-                                        disabled={!is_authorised}
-                                        className={classNames({
-                                            'dc-radio-group__item-disabled': !is_authorised,
-                                        })}
-                                    />
-                                </RadioGroup>
                             </div>
                         </div>
                         <div
@@ -159,19 +105,12 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         }}
     </Formik>
 );
+
 const SaveModal = observer(() => {
     const { save_modal, google_drive, dashboard, load_modal, ui } = useStore();
     const { dashboard_strategies } = load_modal;
-    const {
-        button_status,
-        bot_name,
-        is_save_modal_open,
-        onConfirmSave,
-        toggleSaveModal,
-        updateBotName,
-        validateBotName,
-    } = save_modal;
-    const { is_authorised, onDriveConnect } = google_drive;
+    const { button_status, bot_name, is_save_modal_open, toggleSaveModal, updateBotName, validateBotName } = save_modal;
+    const { is_authorised } = google_drive;
     const { is_onscreen_keyboard_active, setCurrentFocus } = ui;
     const { isMobile } = useDevice();
     const { active_tab } = dashboard;
@@ -195,8 +134,6 @@ const SaveModal = observer(() => {
                 bot_name={bot_name}
                 button_status={button_status}
                 is_authorised={is_authorised}
-                onConfirmSave={onConfirmSave}
-                onDriveConnect={onDriveConnect}
                 validateBotName={validateBotName}
                 toggleSaveModal={toggleSaveModal}
                 is_mobile={isMobile}
@@ -217,8 +154,6 @@ const SaveModal = observer(() => {
                 bot_name={bot_name}
                 button_status={button_status}
                 is_authorised={is_authorised}
-                onConfirmSave={onConfirmSave}
-                onDriveConnect={onDriveConnect}
                 validateBotName={validateBotName}
                 toggleSaveModal={toggleSaveModal}
                 setCurrentFocus={setCurrentFocus}
