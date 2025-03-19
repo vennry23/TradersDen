@@ -26,49 +26,49 @@ const Tutorial = lazy(() => import('../tutorials'));
 
 const DashboardIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+        <path d="M4 4h7v7H4V4zM13 4h7v7h-7V4zM4 13h7v7H4v-7zM13 13h7v7h-7v-7z"/>
     </svg>
 );
 
 const BotBuilderIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M19 13h-6v-2h6v2zm-8 0H5v-2h6v2zm8-4h-6V7h6v2zm-8 0H5V7h6v2zm8-4h-6V3h6v2zm-8 0H5V3h6v2zm10 14H3v2h18v-2zm0-4H3v2h18v-2zm0-4H3v2h18v-2zm0-4H3v2h18V7zm0-4H3v2h18V3z" />
+        <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.3 0.77 2.5 1.97 3.08C6.35 21.55 6 22.22 6 23h12c0-.78-.35-1.45-.97-1.92C17.23 20.5 18 19.3 18 18c0-1.66-1.34-3-3-3H7zM12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
     </svg>
 );
 
 const ChartsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
+        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 10h2V7h2v3h2v-3h2v3h2V7h2v12H7V7h2v3H7z"/>
     </svg>
 );
 
 const TutorialsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
+        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zM12 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
     </svg>
 );
 
 const AnalysisToolIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+        <path d="M6 2h12v3H6V2zm3 5h6v3H9V7zM4 12h16v3H4v-3zm5 5h6v3H9v-3z"/>
     </svg>
 );
 
 const SignalsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+        <path d="M2 21h19v-3H2v3zm2-6h15v-3H4v3zm2-5h11V7H6v3z"/>
     </svg>
 );
 
 const TradingHubIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
+        <path d="M2 21h19v-3H2v3zM20 3H4v10l8 5 8-5V3zm-8 4.5c-1.11 0-2-.89-2-2s.89-2 2-2 2 .89 2 2-.89 2-2 2z"/>
     </svg>
 );
 
 const FreeBotsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
+        <path d="M10 6L8.59 7.41 13.17 12 8.59 16.59 10 18l8-8z"/>
     </svg>
 );
 
