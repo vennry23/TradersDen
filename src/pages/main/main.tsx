@@ -91,8 +91,31 @@ const AppWrapper = observer(() => {
                         <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
                             <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                    <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
                             <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
+                        </div>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
+                            <div className='free-bots'>
+                                <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
+                                <div className='free-bots__content'>
+                                    {/* Add your free bots content here */}
+                                    <div className='free-bot'>
+                                        <img src='path_to_bot_image' alt='Bot 1' className='free-bot__image' />
+                                        <div className='free-bot__details'>
+                                            <h3 className='free-bot__title'>Bot 1</h3>
+                                            <p className='free-bot__description'>Description of Bot 1</p>
+                                        </div>
+                                    </div>
+                                    <div className='free-bot'>
+                                        <img src='path_to_bot_image' alt='Bot 2' className='free-bot__image' />
+                                        <div className='free-bot__details'>
+                                            <h3 className='free-bot__title'>Bot 2</h3>
+                                            <p className='free-bot__description'>Description of Bot 2</p>
+                                        </div>
+                                    </div>
+                                    {/* Add more bots as needed */}
+                                </div>
+                            </div>
                         </div>
                     </Tabs>
                 </div>
