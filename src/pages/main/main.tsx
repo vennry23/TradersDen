@@ -38,37 +38,37 @@ const BotBuilderIcon = () => (
 
 const ChartsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+        <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
     </svg>
 );
 
 const TutorialsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
     </svg>
 );
 
 const AnalysisToolIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
     </svg>
 );
 
 const SignalsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
     </svg>
 );
 
 const TradingHubIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
     </svg>
 );
 
 const FreeBotsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
     </svg>
 );
 
