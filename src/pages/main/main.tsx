@@ -95,6 +95,11 @@ const AppWrapper = observer(() => {
         fetchBots();
     }, []);
 
+    const runBot = (xmlContent: string) => {
+        // Implement the logic to run the bot with the provided XML content
+        console.log('Running bot with content:', xmlContent);
+    };
+
     const handleTabChange = React.useCallback(
         (tab_index: number) => {
             setActiveTab(tab_index);
@@ -109,7 +114,7 @@ const AppWrapper = observer(() => {
                 throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
             }
             const text = await response.text();
-            // Assuming you have a function to run the bot with the XML content
+            // Run the bot with the XML content
             runBot(text);
             // Load the strategy into the bot builder
             setActiveTab(TAB_IDS.BOT_BUILDER);
