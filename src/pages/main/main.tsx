@@ -158,7 +158,7 @@ const AppWrapper = observer(() => {
             // Switch to the bot builder tab
             setActiveTab(TAB_IDS.BOT_BUILDER);
         },
-        [setActiveTab]
+        [setActiveTab, updateWorkspaceName]
     );
 
     return (
@@ -194,7 +194,9 @@ const AppWrapper = observer(() => {
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <ul className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => handleBotClick(bot)}>
+                                        <li className='free-bot' key={index} onClick={() => {
+                                            handleBotClick(bot);
+                                        }}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
