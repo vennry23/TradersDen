@@ -148,17 +148,17 @@ const AppWrapper = observer(() => {
                         <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
                             <div className='free-bots'>
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
-                                <div className='free-bots__content'>
+                                <ul className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <div className='free-bot' key={index} onClick={() => handleBotClick(bot.filePath)}>
+                                        <li className='free-bot' key={index} onClick={() => handleBotClick(bot.filePath)}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
                                                 <p className='free-bot__description'>{bot.description}</p>
                                             </div>
-                                        </div>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
                             </div>
                         </div>
                     </Tabs>
