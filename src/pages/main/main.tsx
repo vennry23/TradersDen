@@ -132,6 +132,41 @@ const AppWrapper = observer(() => {
                         <div label={<><LabelPairedObjectsColumnCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
                         </div>
+                        <div label={<><LabelPairedPuzzlePieceTwoCaptionBoldIcon height='24px' width='24px' /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
+                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}>
+                                <Chart show_digits_stats={false} />
+                            </Suspense>
+                        </div>
+                        <div label={<><LegacyGuide1pxIcon height='16px' width='16px' /><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
+                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading tutorials...')} />}>
+                                <Tutorial handleTabChange={handleTabChange} />
+                            </Suspense>
+                        </div>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
+                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
+                        </div>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
+                            <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
+                        </div>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
+                            <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
+                        </div>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
+                            <div className='free-bots'>
+                                <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
+                                <ul className='free-bots__content'>
+                                    {bots.map((bot, index) => (
+                                        <li className='free-bot' key={index} onClick={() => handleBotClick(bot.filePath)}>
+                                            <img src={bot.image} alt={bot.title} className='free-bot__image' />
+                                            <div className='free-bot__details'>
+                                                <h3 className='free-bot__title'>{bot.title}</h3>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </Tabs>
                 </div>
             </div>
