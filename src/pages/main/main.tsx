@@ -65,8 +65,8 @@ const AppWrapper = observer(() => {
         // Fetch the XML files and parse them
         const fetchBots = async () => {
             const botFiles = [
-                '/test1.xml',
-                '/test2.xml',
+                'test1.xml',
+                'test22.xml',
                 // Add more paths to your XML files
             ];
             const botPromises = botFiles.map(async (file) => {
@@ -78,6 +78,7 @@ const AppWrapper = observer(() => {
                     title: xml.getElementsByTagName('title')[0].textContent,
                     description: xml.getElementsByTagName('description')[0].textContent,
                     image: xml.getElementsByTagName('image')[0].textContent,
+                    filePath: file,
                 };
             });
             const bots = await Promise.all(botPromises);
@@ -93,6 +94,13 @@ const AppWrapper = observer(() => {
         },
         [setActiveTab]
     );
+
+    const handleBotClick = async (filePath: string) => {
+        const response = await fetch(filePath);
+        const text = await response.text();
+        // Assuming you have a function to run the bot with the XML content
+        runBot(text);
+    };
 
     return (
         <React.Fragment>
@@ -127,7 +135,7 @@ const AppWrapper = observer(() => {
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <div className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <div className='free-bot' key={index}>
+                                        <div className='free-bot' key={index} onClick={() => handleBotClick(bot.filePath)}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
