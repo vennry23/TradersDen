@@ -74,9 +74,8 @@ const FreeBotsIcon = () => (
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
+    const { dashboard, run_panel, quick_strategy, summary_card } = useStore();
     const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
-    const { onEntered } = load_modal;
     const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
@@ -150,30 +149,26 @@ const AppWrapper = observer(() => {
     const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
         setActiveTab(DBOT_TABS.BOT_BUILDER);
         try {
-            console.log('load_modal instance:', load_modal);
-            if (typeof load_modal.loadFileFromContent === 'function') {
-                await load_modal.loadFileFromContent(bot.xmlContent);
-            } else {
-                console.error("loadFileFromContent is not defined on load_modal; falling back.");
-                // Fallback: call updateWorkspaceName directly
-            }
+            // Instead of calling load_modal, we directly update the workspace
             updateWorkspaceName(bot.xmlContent);
+            console.log('Workspace updated with bot content:', bot.xmlContent);
         } catch (error) {
-            console.error("Error loading bot file:", error);
+            console.error("Error updating bot file:", error);
         }
-    }, [setActiveTab, updateWorkspaceName, load_modal]);
+    }, [setActiveTab, updateWorkspaceName]);
 
+    // Remove handleOpen logic that depends on load_modal; add new logic if needed
     const handleOpen = useCallback(async () => {
-        await load_modal.loadFileFromRecent();
+        // For example, you might load a default bot or clear the workspace
         setActiveTab(DBOT_TABS.BOT_BUILDER);
-        // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
-    }, [load_modal, setActiveTab]);
+        console.log('Opened bot builder without load_modal');
+    }, [setActiveTab]);
 
     return (
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={() => {}} onTabItemClick={handleTabChange} top>
                         <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
                             <button onClick={handleOpen}>Load Bot</button>
@@ -227,7 +222,16 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
+            <Dialog 
+                cancel_button_text={cancel_button_text || localize('Cancel')} 
+                confirm_button_text={ok_button_text || localize('Ok')} 
+                has_close_icon 
+                is_visible={is_dialog_open} 
+                onCancel={onCancelButtonClick} 
+                onClose={onCloseDialog} 
+                onConfirm={onOkButtonClick || onCloseDialog} 
+                title={title}
+            >
                 {message}
             </Dialog>
         </React.Fragment>
