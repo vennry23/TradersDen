@@ -6,7 +6,7 @@ import ChunkLoader from '@/components/loader/chunk-loader';
 import DesktopWrapper from '@/components/shared_ui/desktop-wrapper';
 import Dialog from '@/components/shared_ui/dialog';
 import MobileWrapper from '@/components/shared_ui/mobile-wrapper';
-import Tabs from '@/components/shared-ui/tabs/tabs';
+import Tabs from '@/components/shared_ui/tabs/tabs';
 import TradingViewModal from '@/components/trading-view-chart/trading-view-modal';
 import { DBOT_TABS, TAB_IDS } from '@/constants/bot-contents';
 import { api_base, updateWorkspaceName } from '@/external/bot-skeleton';
@@ -14,6 +14,12 @@ import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observab
 import { isDbotRTL } from '@/external/bot-skeleton/utils/workspace';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
+import {
+    LabelPairedChartLineCaptionRegularIcon,
+    LabelPairedObjectsColumnCaptionRegularIcon,
+    LabelPairedPuzzlePieceTwoCaptionBoldIcon,
+} from '@deriv/quill-icons/LabelPaired';
+import { LegacyGuide1pxIcon } from '@deriv/quill-icons/Legacy';
 import { Localize, localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import RunPanel from '../../components/run-panel';
@@ -23,6 +29,54 @@ import RunStrategy from '../dashboard/run-strategy';
 
 const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
+
+const DashboardIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+    </svg>
+);
+
+const BotBuilderIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+    </svg>
+);
+
+const ChartsIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+    </svg>
+);
+
+const TutorialsIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+    </svg>
+);
+
+const AnalysisToolIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+    </svg>
+);
+
+const SignalsIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+    </svg>
+);
+
+const TradingHubIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+    </svg>
+);
+
+const FreeBotsIcon = () => (
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+        <path d="M3 17h6v-6H3v6zm0-8h6V3H3v6zm8 8h6V10h-6v7zm0-9h6V3h-6v5zm8 9h6v-4h-6v4zm0-6h6V3h-6v7z" />
+    </svg>
+);
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
@@ -123,30 +177,30 @@ const AppWrapper = observer(() => {
             <div className='main'>
                 <div className='main__container'>
                     <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
+                        <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
                         </div>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4V4z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l10 20H2L12 2z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Charts' /></>} id='id-charts'>
+                        <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
+                        <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
                             <Suspense fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}>
                                 <Chart show_digits_stats={false} />
                             </Suspense>
                         </div>
-                        <div label={<><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L1 15h14L8 1z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
+                        <div label={<><TutorialsIcon /><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
                             <Suspense fallback={<ChunkLoader message={localize('Please wait, loading tutorials...')} />}>
                                 <Tutorial handleTabChange={handleTabChange} />
                             </Suspense>
                         </div>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
+                        <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
                             <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Signals' /></>} id='id-signals'>
+                        <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
                             <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
+                        <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
                             <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
                         </div>
-                        <div label={<><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 17h18v2H3v-2zm0-7h18v2H3v-2zm0-7h18v2H3V3z" fill="var(--text-general)" /></svg><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
+                        <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
                             <div className='free-bots'>
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <ul className='free-bots__content'>
