@@ -79,8 +79,7 @@ const AppWrapper = observer(() => {
                     const parser = new DOMParser();
                     const xml = parser.parseFromString(text, 'application/xml');
                     return {
-                        title: xml.getElementsByTagName('title')[0]?.textContent || 'No title',
-                        description: xml.getElementsByTagName('description')[0]?.textContent || 'No description',
+                        title: file.split('/').pop(), // Use the file name as the title
                         image: xml.getElementsByTagName('image')[0]?.textContent || 'default_image_path',
                         filePath: file,
                     };
@@ -154,7 +153,6 @@ const AppWrapper = observer(() => {
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
-                                                <p className='free-bot__description'>{bot.description}</p>
                                             </div>
                                         </li>
                                     ))}
