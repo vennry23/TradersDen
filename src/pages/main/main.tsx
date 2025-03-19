@@ -37,7 +37,7 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 24 24">
         <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
     </svg>
 );
@@ -152,12 +152,16 @@ const AppWrapper = observer(() => {
     );
 
     const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
-        // Update the workspace with the selected bot's XML content
-        updateWorkspaceName(bot.xmlContent);
-        // Switch to the Bot Builder tab
+        // Switch to the Bot Builder tab first
         setActiveTab(DBOT_TABS.BOT_BUILDER);
-        // Wait for the clicked file to load using its content
-        await load_modal.loadFileFromContent(bot.xmlContent);
+        try {
+            // Attempt to load the clicked file using its XML content
+            await load_modal.loadFileFromContent(bot.xmlContent);
+            // After the content has loaded, update the workspace
+            updateWorkspaceName(bot.xmlContent);
+        } catch (error) {
+            console.error("Error loading bot file:", error);
+        }
     }, [setActiveTab, updateWorkspaceName, load_modal]);
 
     const handleOpen = useCallback(async () => {
