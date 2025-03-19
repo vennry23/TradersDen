@@ -16,7 +16,7 @@ import LocalFooter from './local-footer';
 import Recent from './recent';
 import RecentFooter from './recent-footer';
 
-const LoadModal: React.FC = observer(() => {
+const LoadModal: React.FC = observer((): JSX.Element => {
     const { load_modal, dashboard } = useStore();
     const {
         active_index,
@@ -30,9 +30,9 @@ const LoadModal: React.FC = observer(() => {
     } = load_modal;
     const { setPreviewOnPopup } = dashboard;
     const { isDesktop } = useDevice();
-    const header_text = localize('Load strategy');
+    const header_text: string = localize('Load strategy');
 
-    const handleTabItemClick = (active_index: number) => {
+    const handleTabItemClick = (active_index: number): void => {
         setActiveTabIndex(active_index);
         rudderStackSendSwitchLoadStrategyTabEvent({
             load_strategy_tab: LOAD_MODAL_TABS[active_index + (!isDesktop ? 1 : 0)],
@@ -68,8 +68,8 @@ const LoadModal: React.FC = observer(() => {
         );
     }
 
-    const is_file_loaded = !!loaded_local_file && tab_name === tabs_title.TAB_LOCAL;
-    const has_recent_strategies = recent_strategies.length > 0 && tab_name === tabs_title.TAB_RECENT;
+    const is_file_loaded: boolean = !!loaded_local_file && tab_name === tabs_title.TAB_LOCAL;
+    const has_recent_strategies: boolean = recent_strategies.length > 0 && tab_name === tabs_title.TAB_RECENT;
 
     return (
         <Modal
@@ -86,7 +86,7 @@ const LoadModal: React.FC = observer(() => {
                 });
             }}
             onEntered={onEntered}
-            elements_to_ignore={[document.querySelector('.injectionDiv')]}
+            elements_to_ignore={[document.querySelector('.injectionDiv') as Element]}
         >
             <Modal.Body>
                 <Tabs active_index={active_index} onTabItemClick={handleTabItemClick} top header_fit_content>
