@@ -111,6 +111,8 @@ const AppWrapper = observer(() => {
             const text = await response.text();
             // Assuming you have a function to run the bot with the XML content
             runBot(text);
+            // Load the strategy into the bot builder
+            setActiveTab(TAB_IDS.BOT_BUILDER);
         } catch (error) {
             console.error(error);
         }
