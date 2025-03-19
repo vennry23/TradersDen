@@ -66,12 +66,6 @@ const TradingHubIcon = () => (
     </svg>
 );
 
-const FreeBotsIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M2 21h19v-3H2v3zM20 3H4v10l8 5 8-5V3zm-8 4.5c-1.11 0-2-.89-2-2s.89-2 2-2 2 .89 2 2-.89 2-2 2z" />
-    </svg>
-);
-
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
     const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
@@ -90,8 +84,6 @@ const AppWrapper = observer(() => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [bots, setBots] = useState([]);
-
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
             const is_bot_running = document.getElementById('db-animation__stop-button') !== null;
@@ -103,62 +95,11 @@ const AppWrapper = observer(() => {
         }
     }, [clear, connectionStatus, stopBot]);
 
-    useEffect(() => {
-        // Fetch the XML files and parse them
-        const fetchBots = async () => {
-            const botFiles = [
-                'test1.xml',
-                'test2.xml',
-                // Add more paths to your XML files
-            ];
-            const botPromises = botFiles.map(async (file) => {
-                try {
-                    const response = await fetch(file);
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch ${file}: ${response.statusText}`);
-                    }
-                    const text = await response.text();
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(text, 'application/xml');
-                    return {
-                        title: file.split('/').pop(), // Use the file name as the title
-                        image: xml.getElementsByTagName('image')[0]?.textContent || 'default_image_path',
-                        filePath: file,
-                        xmlContent: text, // Store the XML content
-                    };
-                } catch (error) {
-                    console.error(error);
-                    return null;
-                }
-            });
-            const bots = (await Promise.all(botPromises)).filter(Boolean);
-            setBots(bots);
-        };
-
-        fetchBots();
-    }, []);
-
-    const runBot = (xmlContent: string) => {
-        // Load the strategy into the bot builder
-        updateWorkspaceName(xmlContent);
-        console.log('Running bot with content:', xmlContent);
-    };
-
     const handleTabChange = React.useCallback(
         (tab_index: number) => {
             setActiveTab(tab_index);
         },
         [setActiveTab]
-    );
-
-    const handleBotClick = useCallback(
-        (bot: { filePath: string; xmlContent: string }) => {
-            // Load the strategy into the bot builder
-            updateWorkspaceName(bot.xmlContent);
-            // Switch to the bot builder tab
-            setActiveTab(TAB_IDS.BOT_BUILDER);
-        },
-        [setActiveTab, updateWorkspaceName]
     );
 
     const handleOpen = useCallback(async () => {
@@ -174,6 +115,7 @@ const AppWrapper = observer(() => {
                     <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
                         <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
+                            <button onClick={handleOpen}>Load Bot</button>
                         </div>
                         <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
                         <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
@@ -194,23 +136,6 @@ const AppWrapper = observer(() => {
                         </div>
                         <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
                             <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                        <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
-                            <div className='free-bots'>
-                                <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
-                                <ul className='free-bots__content'>
-                                    {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => {
-                                            handleBotClick(bot);
-                                        }}>
-                                            <img src={bot.image} alt={bot.title} className='free-bot__image' />
-                                            <div className='free-bot__details'>
-                                                <h3 className='free-bot__title'>{bot.title}</h3>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
                         </div>
                     </Tabs>
                 </div>
@@ -233,4 +158,4 @@ const AppWrapper = observer(() => {
     );
 });
 
-export default AppWrapper;
+export default AppWrapper;export default AppWrapper;
