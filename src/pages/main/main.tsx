@@ -85,14 +85,23 @@ const AppWrapper = observer(() => {
                                 <Tutorial handleTabChange={handleTabChange} />
                             </Suspense>
                         </div>
-                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
-                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
-                            <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                    <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
-                            <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
+                        <div label={<><LabelPairedChartLineCaptionRegularIcon height='24px' width='24px' /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
+                            <div className='free-bots-section'>
+                                <h2>Get Your Free Bots</h2>
+                                <p>Download and use our free bots to enhance your trading experience.</p>
+                                <div className='free-bots-container'>
+                                    <div className='free-bot-card'>
+                                        <h3>Bot 1</h3>
+                                        <p>Simple and effective trading strategy.</p>
+                                        <button>Download</button>
+                                    </div>
+                                    <div className='free-bot-card'>
+                                        <h3>Bot 2</h3>
+                                        <p>Advanced signals for better trades.</p>
+                                        <button>Download</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </Tabs>
                 </div>
