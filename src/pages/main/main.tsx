@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,49 +26,49 @@ const Tutorial = lazy(() => import('../tutorials'));
 
 const DashboardIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M4 4h7v7H4V4zM13 4h7v7h-7V4zM4 13h7v7H4v-7zM13 13h7v7h-7v-7z"/>
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
     </svg>
 );
 
 const BotBuilderIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M7 14c-1.66 0-3 1.34-3 3 0 1.3 0.77 2.5 1.97 3.08C6.35 21.55 6 22.22 6 23h12c0-.78-.35-1.45-.97-1.92C17.23 20.5 18 19.3 18 18c0-1.66-1.34-3-3-3H7zM12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/>
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 16h3v8h5z" />
     </svg>
 );
 
 const ChartsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 10h2V7h2v3h2v-3h2v3h2V7h2v12H7V7h2v3H7z"/>
+        <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
     </svg>
 );
 
 const TutorialsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zM12 10c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+        <path d="M10 6L8.59 7.41 13.17 12 8.59 16.59 10 18l8-8z" />
     </svg>
 );
 
 const AnalysisToolIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M6 2h12v3H6V2zm3 5h6v3H9V7zM4 12h16v3H4v-3zm5 5h6v3H9v-3z"/>
+        <path d="M3 3h2v2H3zm4 0h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zM3 7h2v2H3zm16 0h2v2h-2zm-4 0h2v2h-2zm-8 8h2v2H11zm4 0h2v2h-2zm4 0h2v2h-2zm-12 0h2v2H3zm0 4h2v2H3zm4 0h2v2H7zm12-4h2v2h-2zm-4 0h2v2h-2zm4 4h2v2h-2z" />
     </svg>
 );
 
 const SignalsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M2 21h19v-3H2v3zm2-6h15v-3H4v3zm2-5h11V7H6v3z"/>
+        <path d="M2 21h19v-3H2v3zm2-6h15v-3H4v3zm2-5h11V7H6v3z" />
     </svg>
 );
 
 const TradingHubIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M2 21h19v-3H2v3zM20 3H4v10l8 5 8-5V3zm-8 4.5c-1.11 0-2-.89-2-2s.89-2 2-2 2 .89 2 2-.89 2-2 2z"/>
+        <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.82v1.64l-7-3.82-7 3.82V8l7-3.82zM4 10.27l8 4.36 8-4.36v7.73H4V10.27z" />
     </svg>
 );
 
 const FreeBotsIcon = () => (
     <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M10 6L8.59 7.41 13.17 12 8.59 16.59 10 18l8-8z"/>
+        <path d="M2 21h19v-3H2v3zM20 3H4v10l8 5 8-5V3zm-8 4.5c-1.11 0-2-.89-2-2s.89-2 2-2 2 .89 2 2-.89 2-2 2z" />
     </svg>
 );
 
@@ -124,6 +124,7 @@ const AppWrapper = observer(() => {
                         title: file.split('/').pop(), // Use the file name as the title
                         image: xml.getElementsByTagName('image')[0]?.textContent || 'default_image_path',
                         filePath: file,
+                        xmlContent: text, // Store the XML content
                     };
                 } catch (error) {
                     console.error(error);
@@ -150,21 +151,15 @@ const AppWrapper = observer(() => {
         [setActiveTab]
     );
 
-    const handleBotClick = async (filePath: string) => {
-        try {
-            const response = await fetch(filePath);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${filePath}: ${response.statusText}`);
-            }
-            const text = await response.text();
+    const handleBotClick = useCallback(
+        (bot: { filePath: string; xmlContent: string }) => {
             // Run the bot with the XML content
-            runBot(text);
+            runBot(bot.xmlContent);
             // Switch to the bot builder tab
             setActiveTab(TAB_IDS.BOT_BUILDER);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        },
+        [runBot, setActiveTab]
+    );
 
     return (
         <React.Fragment>
@@ -199,7 +194,7 @@ const AppWrapper = observer(() => {
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <ul className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => handleBotClick(bot.filePath)}>
+                                        <li className='free-bot' key={index} onClick={() => handleBotClick(bot)}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
