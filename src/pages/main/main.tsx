@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -48,6 +48,8 @@ const AppWrapper = observer(() => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const [bots, setBots] = useState([]);
+
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
             const is_bot_running = document.getElementById('db-animation__stop-button') !== null;
@@ -58,6 +60,32 @@ const AppWrapper = observer(() => {
             }
         }
     }, [clear, connectionStatus, stopBot]);
+
+    useEffect(() => {
+        // Fetch the XML files and parse them
+        const fetchBots = async () => {
+            const botFiles = [
+                'path_to_bot_1.xml',
+                'path_to_bot_2.xml',
+                // Add more paths to your XML files
+            ];
+            const botPromises = botFiles.map(async (file) => {
+                const response = await fetch(file);
+                const text = await response.text();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(text, 'application/xml');
+                return {
+                    title: xml.getElementsByTagName('title')[0].textContent,
+                    description: xml.getElementsByTagName('description')[0].textContent,
+                    image: xml.getElementsByTagName('image')[0].textContent,
+                };
+            });
+            const bots = await Promise.all(botPromises);
+            setBots(bots);
+        };
+
+        fetchBots();
+    }, []);
 
     const handleTabChange = React.useCallback(
         (tab_index: number) => {
@@ -98,22 +126,15 @@ const AppWrapper = observer(() => {
                             <div className='free-bots'>
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <div className='free-bots__content'>
-                                    {/* Add your free bots content here */}
-                                    <div className='free-bot'>
-                                        <img src='path_to_bot_image' alt='Bot 1' className='free-bot__image' />
-                                        <div className='free-bot__details'>
-                                            <h3 className='free-bot__title'>Bot 1</h3>
-                                            <p className='free-bot__description'>Description of Bot 1</p>
+                                    {bots.map((bot, index) => (
+                                        <div className='free-bot' key={index}>
+                                            <img src={bot.image} alt={bot.title} className='free-bot__image' />
+                                            <div className='free-bot__details'>
+                                                <h3 className='free-bot__title'>{bot.title}</h3>
+                                                <p className='free-bot__description'>{bot.description}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='free-bot'>
-                                        <img src='path_to_bot_image' alt='Bot 2' className='free-bot__image' />
-                                        <div className='free-bot__details'>
-                                            <h3 className='free-bot__title'>Bot 2</h3>
-                                            <p className='free-bot__description'>Description of Bot 2</p>
-                                        </div>
-                                    </div>
-                                    {/* Add more bots as needed */}
+                                    ))}
                                 </div>
                             </div>
                         </div>
