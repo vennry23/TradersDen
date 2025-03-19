@@ -98,6 +98,8 @@ const AppWrapper = observer(() => {
     const runBot = (xmlContent: string) => {
         // Implement the logic to run the bot with the provided XML content
         console.log('Running bot with content:', xmlContent);
+        // Assuming updateWorkspaceName is a function to load the strategy into the bot builder
+        updateWorkspaceName(xmlContent);
     };
 
     const handleTabChange = React.useCallback(
