@@ -152,12 +152,13 @@ const AppWrapper = observer(() => {
     );
 
     const handleBotClick = useCallback(
-        async (bot: { filePath: string; xmlContent: string }) => {
-            // Load the strategy into the bot builder using the bot's XML content
+        (bot: { filePath: string; xmlContent: string }) => {
+            // Load the strategy into the bot builder
             updateWorkspaceName(bot.xmlContent);
-            // Load the file from recent and switch to the bot builder tab
-            await load_modal.loadFileFromRecent();
-            setActiveTab(DBOT_TABS.BOT_BUILDER);
+            // Navigate to the bot builder tab
+            setActiveTab(TAB_IDS.BOT_BUILDER);
+            // Simulate a file open action in the bot builder using the XML content
+            load_modal.loadFileFromContent(bot.xmlContent);
         },
         [setActiveTab, updateWorkspaceName, load_modal]
     );
