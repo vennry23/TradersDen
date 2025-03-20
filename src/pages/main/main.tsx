@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
@@ -38,7 +37,7 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 24 24">
         <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
     </svg>
 );
@@ -152,15 +151,22 @@ const AppWrapper = observer(() => {
         [setActiveTab]
     );
 
-    const handleBotClick = useCallback(
-        (bot: { filePath: string; xmlContent: string }) => {
-            // Load the strategy into the bot builder
+    const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
+        setActiveTab(DBOT_TABS.BOT_BUILDER);
+        try {
+            // Call the new loadFileFromContent method
+            await load_modal.loadFileFromContent(bot.xmlContent);
             updateWorkspaceName(bot.xmlContent);
-            // Switch to the bot builder tab
-            setActiveTab(TAB_IDS.BOT_BUILDER);
-        },
-        [setActiveTab, updateWorkspaceName]
-    );
+        } catch (error) {
+            console.error("Error loading bot file:", error);
+        }
+    }, [setActiveTab, updateWorkspaceName, load_modal]);
+
+    const handleOpen = useCallback(async () => {
+        await load_modal.loadFileFromRecent();
+        setActiveTab(DBOT_TABS.BOT_BUILDER);
+        // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
+    }, [load_modal, setActiveTab]);
 
     return (
         <React.Fragment>
@@ -169,6 +175,7 @@ const AppWrapper = observer(() => {
                     <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
                         <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
+                            <button onClick={handleOpen}>Load Bot</button>
                         </div>
                         <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
                         <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
