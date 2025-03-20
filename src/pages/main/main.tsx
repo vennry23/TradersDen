@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
@@ -37,7 +38,7 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 24 24">
+    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
         <path d="M3 17h4v-6H3v6zm6 0h4v-10H9v10zm6 0h4v-4h-4v4zm6 0h4v-14h-4v14z" />
     </svg>
 );
@@ -74,8 +75,14 @@ const FreeBotsIcon = () => (
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, run_panel, quick_strategy, summary_card } = useStore();
-    const { active_tab, is_chart_modal_visible, is_trading_view_modal_visible, setActiveTab } = dashboard;
+    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
+    const {
+        active_tab,
+        is_chart_modal_visible,
+        is_trading_view_modal_visible,
+        setActiveTab,
+    } = dashboard;
+    const { onEntered } = load_modal;
     const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
@@ -84,7 +91,7 @@ const AppWrapper = observer(() => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [bots, setBots] = useState<any[]>([]);
+    const [bots, setBots] = useState([]);
 
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
@@ -125,9 +132,8 @@ const AppWrapper = observer(() => {
                     return null;
                 }
             });
-            const botsResult = await Promise.all(botPromises);
-            const botsFiltered = botsResult.filter(Boolean);
-            setBots(botsFiltered);
+            const bots = (await Promise.all(botPromises)).filter(Boolean);
+            setBots(bots);
         };
 
         fetchBots();
@@ -139,39 +145,30 @@ const AppWrapper = observer(() => {
         console.log('Running bot with content:', xmlContent);
     };
 
-    const handleTabChange = useCallback(
+    const handleTabChange = React.useCallback(
         (tab_index: number) => {
             setActiveTab(tab_index);
         },
         [setActiveTab]
     );
 
-    const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
-        setActiveTab(DBOT_TABS.BOT_BUILDER);
-        try {
-            // Instead of calling load_modal, we directly update the workspace
+    const handleBotClick = useCallback(
+        (bot: { filePath: string; xmlContent: string }) => {
+            // Load the strategy into the bot builder
             updateWorkspaceName(bot.xmlContent);
-            console.log('Workspace updated with bot content:', bot.xmlContent);
-        } catch (error) {
-            console.error("Error updating bot file:", error);
-        }
-    }, [setActiveTab, updateWorkspaceName]);
-
-    // Remove handleOpen logic that depends on load_modal; add new logic if needed
-    const handleOpen = useCallback(async () => {
-        // For example, you might load a default bot or clear the workspace
-        setActiveTab(DBOT_TABS.BOT_BUILDER);
-        console.log('Opened bot builder without load_modal');
-    }, [setActiveTab]);
+            // Switch to the bot builder tab
+            setActiveTab(TAB_IDS.BOT_BUILDER);
+        },
+        [setActiveTab, updateWorkspaceName]
+    );
 
     return (
         <React.Fragment>
             <div className='main'>
                 <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={() => {}} onTabItemClick={handleTabChange} top>
+                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
                         <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
                             <Dashboard handleTabChange={handleTabChange} />
-                            <button onClick={handleOpen}>Load Bot</button>
                         </div>
                         <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
                         <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
@@ -198,7 +195,9 @@ const AppWrapper = observer(() => {
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
                                 <ul className='free-bots__content'>
                                     {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => { handleBotClick(bot); }}>
+                                        <li className='free-bot' key={index} onClick={() => {
+                                            handleBotClick(bot);
+                                        }}>
                                             <img src={bot.image} alt={bot.title} className='free-bot__image' />
                                             <div className='free-bot__details'>
                                                 <h3 className='free-bot__title'>{bot.title}</h3>
@@ -222,16 +221,7 @@ const AppWrapper = observer(() => {
             <MobileWrapper>
                 <RunPanel />
             </MobileWrapper>
-            <Dialog 
-                cancel_button_text={cancel_button_text || localize('Cancel')} 
-                confirm_button_text={ok_button_text || localize('Ok')} 
-                has_close_icon 
-                is_visible={is_dialog_open} 
-                onCancel={onCancelButtonClick} 
-                onClose={onCloseDialog} 
-                onConfirm={onOkButtonClick || onCloseDialog} 
-                title={title}
-            >
+            <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
                 {message}
             </Dialog>
         </React.Fragment>
