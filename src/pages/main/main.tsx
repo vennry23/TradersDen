@@ -25,7 +25,7 @@ const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
 
 const DashboardIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
+    <svg width="20" height="20" fill="var(--text-general)" viewBox="0 0 24 24">
         <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
     </svg>
 );
@@ -37,7 +37,7 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M21 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V3M6 15L10 11L14 15L20 9M20 9V13M20 9H16" stroke="var(--text-general)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 );
