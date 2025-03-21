@@ -43,21 +43,18 @@ const ChartsIcon = () => (
 );
 
 const TutorialsIcon = () => (
-   <svg width="24px" height="24px" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="icon">
-<rect id="Rectangle 533" x="1" y="0.5" width="15" height="11" rx="0.5" stroke="var(--fill-color1)"/>
-<path id="Polygon 1" d="M11.75 5.56699C12.0833 5.75944 12.0833 6.24056 11.75 6.43301L7.25 9.03109C6.91667 9.22354 6.5 8.98298 6.5 8.59808L6.5 3.40192C6.5 3.01702 6.91667 2.77646 7.25 2.96891L11.75 5.56699Z" stroke="var(--fill-color1)"/>
-<line id="Line 1" x1="1" y1="14.5" x2="5" y2="14.5" stroke="var(--fill-color1)" stroke-linecap="round"/>
-<line id="Line 2" x1="8" y1="14.5" x2="16" y2="14.5" stroke="var(--fill-color1)" stroke-linecap="round"/>
-<circle id="Ellipse 23" cx="5" cy="14.5" r="1.5" fill="var(--fill-color1)"/>
-</g>
-</svg>
+   <svg width="24px" height="24px" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="var(--text-general)" stroke-width="12" d="M170 96c0-45-4.962-49.999-50-50H72c-45.038.001-50 5-50 50s4.962 49.999 50 50h48c45.038-.001 50-5 50-50Z"/><path stroke="var(--text-general)" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="m82 74 34 22-34 22"/></svg>
 );
 
 const AnalysisToolIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M3 3h2v2H3zm4 0h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zM3 7h2v2H3zm16 0h2v2h-2zm-4 0h2v2h-2zm-8 8h2v2H11zm4 0h2v2h-2zm4 0h2v2h-2zm-12 0h2v2H3zm0 4h2v2H3zm4 0h2v2H7zm12-4h2v2h-2zm-4 0h2v2h-2zm4 4h2v2h-2z" />
-    </svg>
+    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.5 3.5V6.5" stroke="var(--text-general)" stroke-linecap="round"/>
+<path d="M7.5 14.5V18.5" stroke="var(--text-general)" stroke-linecap="round"/>
+<path d="M6.8 6.5C6.08203 6.5 5.5 7.08203 5.5 7.8V13.2C5.5 13.918 6.08203 14.5 6.8 14.5H8.2C8.91797 14.5 9.5 13.918 9.5 13.2V7.8C9.5 7.08203 8.91797 6.5 8.2 6.5H6.8Z" stroke="var(--text-general)"/>
+<path d="M16.5 6.5V11.5" stroke="var(--text-general)" stroke-linecap="round"/>
+<path d="M16.5 16.5V20.5" stroke="var(--text-general)" stroke-linecap="round"/>
+<path d="M15.8 11.5C15.082 11.5 14.5 12.082 14.5 12.8V15.2C14.5 15.918 15.082 16.5 15.8 16.5H17.2C17.918 16.5 18.5 15.918 18.5 15.2V12.8C18.5 12.082 17.918 11.5 17.2 11.5H15.8Z" stroke="var(--text-general)"/>
+</svg>
 );
 
 const SignalsIcon = () => (
