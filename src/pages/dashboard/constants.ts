@@ -8,7 +8,7 @@ export type TSidebarItem = {
 
 export const SIDEBAR_INTRO = (): TSidebarItem[] => [
     {
-        label: localize('Welcome to Binaryfx!'),
+        label: localize('Welcome to Deriv Lite!'),
         content: [
             {
                 data: localize(
