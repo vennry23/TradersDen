@@ -1,4 +1,4 @@
-const CACHE_NAME = "binaryfx-cache-v1";
+const CACHE_NAME = "derivlite-cache-v1";
 const urlsToCache = ["/", "/index.html", "/manifest.json"];
 
 self.addEventListener("install", (event: any) => {
