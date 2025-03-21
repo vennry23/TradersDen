@@ -68,9 +68,7 @@ const TradingHubIcon = () => (
 );
 
 const FreeBotsIcon = () => (
-    <svg width="24" height="24" fill="var(--text-general)" viewBox="0 0 24 24">
-        <path d="M2 21h19v-3H2v3zM20 3H4v10l8 5 8-5V3zm-8 4.5c-1.11 0-2-.89-2-2s.89-2 2-2 2 .89 2 2-.89 2-2 2z" />
-    </svg>
+    <svg width="20px" height="20px" viewBox="0 0 24 24" data-name="025_SCIENCE" id="_025_SCIENCE" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:"var(--text-general)";}</style></defs><path class="cls-1" d="M18,22H6a3,3,0,0,1-3-3V7A3,3,0,0,1,6,4H18a3,3,0,0,1,3,3V19A3,3,0,0,1,18,22ZM6,6A1,1,0,0,0,5,7V19a1,1,0,0,0,1,1H18a1,1,0,0,0,1-1V7a1,1,0,0,0-1-1Z"/><path class="cls-1" d="M9,13a1,1,0,0,1-1-1V10a1,1,0,0,1,2,0v2A1,1,0,0,1,9,13Z"/><path class="cls-1" d="M15,13a1,1,0,0,1-1-1V10a1,1,0,0,1,2,0v2A1,1,0,0,1,15,13Z"/><path class="cls-1" d="M12,5a1,1,0,0,1-1-1V2a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z"/><path class="cls-1" d="M15,18H9a1,1,0,0,1,0-2h6a1,1,0,0,1,0,2Z"/></svg>
 );
 
 const AppWrapper = observer(() => {
