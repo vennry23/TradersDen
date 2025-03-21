@@ -37,11 +37,13 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="24px" height="24px" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m3.5 13 3-3.5L10 13l6.5-6.5" stroke="var(--fill-color1)" stroke-linecap="round"/><path d="M1 1v15a1 1 0 0 0 1 1h15" stroke="var(--fill-color1)" stroke-linecap="round"/></svg>
+    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V3M6 15L10 11L14 15L20 9M20 9V13M20 9H16" stroke="var(--text-general)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 );
 
 const TutorialsIcon = () => (
-   <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <svg width="24px" height="24px" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="icon">
 <rect id="Rectangle 533" x="1" y="0.5" width="15" height="11" rx="0.5" stroke="var(--fill-color1)"/>
 <path id="Polygon 1" d="M11.75 5.56699C12.0833 5.75944 12.0833 6.24056 11.75 6.43301L7.25 9.03109C6.91667 9.22354 6.5 8.98298 6.5 8.59808L6.5 3.40192C6.5 3.01702 6.91667 2.77646 7.25 2.96891L11.75 5.56699Z" stroke="var(--fill-color1)"/>
