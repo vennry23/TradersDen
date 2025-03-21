@@ -37,13 +37,13 @@ const BotBuilderIcon = () => (
 );
 
 const ChartsIcon = () => (
-    <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m3.5 13 3-3.5L10 13l6.5-6.5" stroke="var(--fill-color1)" stroke-linecap="round"/><path d="M1 1v15a1 1 0 0 0 1 1h15" stroke="var(--fill-color1)" stroke-linecap="round"/></svg>
+    <svg width="24px" height="24px" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m3.5 13 3-3.5L10 13l6.5-6.5" stroke="var(--fill-color1)" stroke-linecap="round"/><path d="M1 1v15a1 1 0 0 0 1 1h15" stroke="var(--fill-color1)" stroke-linecap="round"/></svg>
 );
 
 const TutorialsIcon = () => (
    <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="icon">
-<rect id="Rectangle 533" x="1" y="0.5" width="15" height="11" rx="0.5" stroke="#333333"/>
+<rect id="Rectangle 533" x="1" y="0.5" width="15" height="11" rx="0.5" stroke="var(--fill-color1)"/>
 <path id="Polygon 1" d="M11.75 5.56699C12.0833 5.75944 12.0833 6.24056 11.75 6.43301L7.25 9.03109C6.91667 9.22354 6.5 8.98298 6.5 8.59808L6.5 3.40192C6.5 3.01702 6.91667 2.77646 7.25 2.96891L11.75 5.56699Z" stroke="var(--fill-color1)"/>
 <line id="Line 1" x1="1" y1="14.5" x2="5" y2="14.5" stroke="var(--fill-color1)" stroke-linecap="round"/>
 <line id="Line 2" x1="8" y1="14.5" x2="16" y2="14.5" stroke="var(--fill-color1)" stroke-linecap="round"/>
