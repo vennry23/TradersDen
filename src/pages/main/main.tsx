@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import React, { lazy, Suspense, useEffect, useState, useCallback, createContext, useContext } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -71,16 +71,57 @@ const FreeBotsIcon = () => (
    <svg fill="var(--text-general)" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z"/></svg>
 );
 
+// Create a context for the load modal
+const LoadModalContext = createContext<any>(null);
+
+// LoadModalProvider component
+interface LoadModalProviderProps {
+    children: React.ReactNode;
+}
+
+const LoadModalProvider: React.FC<LoadModalProviderProps> = ({ children }) => {
+    const [xmlContent, setXmlContent] = useState<string>('');
+
+    const loadFileFromContent = useCallback((xmlContent: string) => {
+        console.log('Loading XML content into Blockly:', xmlContent);
+        setXmlContent(xmlContent);
+        updateWorkspaceName(xmlContent);
+        // Add your logic here to parse the XML and load it into the Blockly workspace
+        // For example:
+        // window.Blockly.Xml.domToWorkspace(window.Blockly.Xml.textToDom(xmlContent), window.Blockly.derivWorkspace);
+    }, []);
+
+    const value = {
+        xmlContent,
+        loadFileFromContent,
+    };
+
+    return (
+        <LoadModalContext.Provider value={value}>
+            {children}
+        </LoadModalContext.Provider>
+    );
+};
+
+// Custom hook to use the load modal context
+const useLoadModal = () => {
+    const context = useContext(LoadModalContext);
+    if (!context) {
+        throw new Error('useLoadModal must be used within a LoadModalProvider');
+    }
+    return context;
+};
+
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
-    const { dashboard, load_modal, run_panel, quick_strategy, summary_card } = useStore();
+    const { dashboard, run_panel, quick_strategy, summary_card } = useStore();
     const {
         active_tab,
         is_chart_modal_visible,
         is_trading_view_modal_visible,
         setActiveTab,
     } = dashboard;
-    const { onEntered } = load_modal;
+    // const { onEntered } = load_modal; // No longer using load_modal from store
     const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
@@ -90,6 +131,7 @@ const AppWrapper = observer(() => {
     const navigate = useNavigate();
 
     const [bots, setBots] = useState([]);
+    const load_modal = useLoadModal(); // Use the custom hook
 
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
@@ -170,78 +212,80 @@ const AppWrapper = observer(() => {
         } catch (error) {
             console.error("Error loading bot file:", error);
         }
-    }, [setActiveTab, load_modal, updateWorkspaceName]);
+    }, [setActiveTab, load_modal.loadFileFromContent, updateWorkspaceName]);
 
     const handleOpen = useCallback(async () => {
-        await load_modal.loadFileFromRecent();
+        // await load_modal.loadFileFromRecent(); // No longer using this
         setActiveTab(DBOT_TABS.BOT_BUILDER);
         // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
-    }, [load_modal, setActiveTab]);
+    }, [setActiveTab]);
 
     return (
-        <React.Fragment>
-            <div className='main'>
-                <div className='main__container'>
-                    <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
-                        <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
-                            <Dashboard handleTabChange={handleTabChange} />
-                            <button onClick={handleOpen}>Load Bot</button>
-                        </div>
-                        <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
-                        <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
-                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}>
-                                <Chart show_digits_stats={false} />
-                            </Suspense>
-                        </div>
-                        <div label={<><TutorialsIcon /><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
-                            <Suspense fallback={<ChunkLoader message={localize('Please wait, loading tutorials...')} />}>
-                                <Tutorial handleTabChange={handleTabChange} />
-                            </Suspense>
-                        </div>
-                        <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
-                            <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                        <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
-                            <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                        <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
-                            <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
-                        </div>
-                        <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
-                            <div className='free-bots'>
-                                <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
-                                <ul className='free-bots__content'>
-                                    {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => {
-                                            handleBotClick(bot);
-                                        }}>
-                                            <img src={bot.image} alt={bot.title} className='free-bot__image' />
-                                            <div className='free-bot__details'>
-                                                <h3 className='free-bot__title'>{bot.title}</h3>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+        <LoadModalProvider>
+            <React.Fragment>
+                <div className='main'>
+                    <div className='main__container'>
+                        <Tabs active_index={active_tab} className='main__tabs' onTabItemChange={onEntered} onTabItemClick={handleTabChange} top>
+                            <div label={<><DashboardIcon /><Localize i18n_default_text='Dashboard' /></>} id='id-dbot-dashboard'>
+                                <Dashboard handleTabChange={handleTabChange} />
+                                <button onClick={handleOpen}>Load Bot</button>
                             </div>
-                        </div>
-                    </Tabs>
+                            <div label={<><BotBuilderIcon /><Localize i18n_default_text='Bot Builder' /></>} id='id-bot-builder' />
+                            <div label={<><ChartsIcon /><Localize i18n_default_text='Charts' /></>} id='id-charts'>
+                                <Suspense fallback={<ChunkLoader message={localize('Please wait, loading chart...')} />}>
+                                    <Chart show_digits_stats={false} />
+                                </Suspense>
+                            </div>
+                            <div label={<><TutorialsIcon /><Localize i18n_default_text='Tutorials' /></>} id='id-tutorials'>
+                                <Suspense fallback={<ChunkLoader message={localize('Please wait, loading tutorials...')} />}>
+                                    <Tutorial handleTabChange={handleTabChange} />
+                                </Suspense>
+                            </div>
+                            <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
+                                <iframe src='https://binaryfx.site/api_binaryfx' width='100%' height='500px' frameBorder='0'></iframe>
+                            </div>
+                            <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
+                                <iframe src='signals' width='100%' height='500px' frameBorder='0'></iframe>
+                            </div>
+                            <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
+                                <iframe src='https://binaryfx.site/acc-center' width='100%' height='500px' frameBorder='0'></iframe>
+                            </div>
+                            <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
+                                <div className='free-bots'>
+                                    <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
+                                    <ul className='free-bots__content'>
+                                        {bots.map((bot, index) => (
+                                            <li className='free-bot' key={index} onClick={() => {
+                                                handleBotClick(bot);
+                                            }}>
+                                                <img src={bot.image} alt={bot.title} className='free-bot__image' />
+                                                <div className='free-bot__details'>
+                                                    <h3 className='free-bot__title'>{bot.title}</h3>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </Tabs>
+                    </div>
                 </div>
-            </div>
-            <DesktopWrapper>
-                <div className='main__run-strategy-wrapper'>
-                    <RunStrategy />
+                <DesktopWrapper>
+                    <div className='main__run-strategy-wrapper'>
+                        <RunStrategy />
+                        <RunPanel />
+                    </div>
+                    <ChartModal />
+                    <TradingViewModal />
+                </DesktopWrapper>
+                <MobileWrapper>
                     <RunPanel />
-                </div>
-                <ChartModal />
-                <TradingViewModal />
-            </DesktopWrapper>
-            <MobileWrapper>
-                <RunPanel />
-            </MobileWrapper>
-            <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
-                {message}
-            </Dialog>
-        </React.Fragment>
+                </MobileWrapper>
+                <Dialog cancel_button_text={cancel_button_text || localize('Cancel')} confirm_button_text={ok_button_text || localize('Ok')} has_close_icon is_visible={is_dialog_open} onCancel={onCancelButtonClick} onClose={onCloseDialog} onConfirm={onOkButtonClick || onCloseDialog} title={title}>
+                    {message}
+                </Dialog>
+            </React.Fragment>
+        </LoadModalProvider>
     );
 });
 
