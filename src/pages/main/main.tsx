@@ -153,8 +153,8 @@ const AppWrapper = observer(() => {
     const handleBotClick = useCallback(async (bot: { filePath: string; xmlContent: string }) => {
         setActiveTab(DBOT_TABS.BOT_BUILDER);
         try {
-            console.log("Loading bot:", bot.title, bot.filePath); // Added logging
-            console.log("XML Content:", bot.xmlContent); // Log XML content
+            console.log("Loading bot:", bot.title, bot.filePath);
+            console.log("XML Content:", bot.xmlContent);
 
             if (typeof load_modal.loadFileFromContent === 'function') {
                 try {
