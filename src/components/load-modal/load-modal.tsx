@@ -39,10 +39,9 @@ const LoadModal: React.FC = observer((): JSX.Element => {
         });
     };
 
-    // Add the new method to load XML content directly
+    // Ensure loadFileFromContent is defined on load_modal
     load_modal.loadFileFromContent = async (xmlContent: string) => {
         try {
-            // Logic to load the XML content into the bot builder
             console.log('Loading XML content:', xmlContent);
             // Add your logic here to parse and load the XML content
         } catch (error) {
