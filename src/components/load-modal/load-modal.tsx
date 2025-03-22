@@ -43,7 +43,10 @@ const LoadModal: React.FC = observer((): JSX.Element => {
     load_modal.loadFileFromContent = async (xmlContent: string) => {
         try {
             console.log('Loading XML content:', xmlContent);
-            // Add your logic here to parse and load the XML content
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+            // Assuming you have a method to load the parsed XML into the bot builder
+            load_modal.loadParsedXML(xmlDoc);
         } catch (error) {
             console.error('Error loading XML content:', error);
         }
