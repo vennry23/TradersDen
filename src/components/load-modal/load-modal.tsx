@@ -49,6 +49,9 @@ const LoadModal: React.FC = observer((): JSX.Element => {
             load_modal.loadParsedXML = (xmlDoc: Document) => {
                 // Add your logic here to load the parsed XML into the bot builder
                 console.log('Parsed XML:', xmlDoc);
+                // Assuming you have a method to load the XML into the bot workspace
+                const workspace = Blockly.getMainWorkspace();
+                Blockly.Xml.domToWorkspace(xmlDoc.documentElement, workspace);
             };
             load_modal.loadParsedXML(xmlDoc);
         } catch (error) {
