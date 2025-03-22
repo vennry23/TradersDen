@@ -8,10 +8,14 @@
     }
 }
 .free-bots__content-wrapper {
-    max-height: fit-content; /* Adjust the height as needed */
+    max-height: 400px; /* Adjust the height as needed */
     overflow-y: auto;
 }
-
+.free-bots__content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 .free-bots {
     padding: 20px;
     background-color: #f9f9f9;
