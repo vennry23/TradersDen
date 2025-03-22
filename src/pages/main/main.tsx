@@ -227,18 +227,20 @@ const AppWrapper = observer(() => {
                         <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
                             <div className='free-bots'>
                                 <h2 className='free-bots__heading'><Localize i18n_default_text='Free Bots' /></h2>
-                                <ul className='free-bots__content'>
-                                    {bots.map((bot, index) => (
-                                        <li className='free-bot' key={index} onClick={() => {
-                                            handleBotClick(bot);
-                                        }}>
-                                            <BotIcon />
-                                            <div className='free-bot__details'>
-                                                <h3 className='free-bot__title'>{bot.title}</h3>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className='free-bots__content-wrapper'>
+                                    <ul className='free-bots__content'>
+                                        {bots.map((bot, index) => (
+                                            <li className='free-bot' key={index} onClick={() => {
+                                                handleBotClick(bot);
+                                            }}>
+                                                <BotIcon />
+                                                <div className='free-bot__details'>
+                                                    <h3 className='free-bot__title'>{bot.title}</h3>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </Tabs>
