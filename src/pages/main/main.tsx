@@ -68,12 +68,7 @@ const TradingHubIcon = () => (
 );
 
 const FreeBotsIcon = () => (
-    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
-<polygon points="22,16.8 22,26 6,26 6,10 15.2,10 17.2,8 4,8 4,28 24,28 24,14.8 "/>
-<path fill="none" stroke="var(--text-general)" stroke-width="2" stroke-miterlimit="10" d="M16.5,18.3L13,19l0.7-3.5l9.9-9.9
-	c0.8-0.8,2-0.8,2.8,0l0,0c0.8,0.8,0.8,2,0,2.8L16.5,18.3z"/>
-</svg>
+   <svg fill="var(--text-general)" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z"/></svg>
 );
 
 const AppWrapper = observer(() => {
