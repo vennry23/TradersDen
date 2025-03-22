@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
@@ -85,7 +84,7 @@ const AppWrapper = observer(() => {
     const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
-    const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
+    const { DASHBOARD, BOT_BUILDER, ANALYSIS_TOOL, SIGNALS } = DBOT_TABS;
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -179,6 +178,8 @@ const AppWrapper = observer(() => {
         // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
     }, [load_modal, setActiveTab]);
 
+    const showRunPanel = [DBOT_TABS.BOT_BUILDER, DBOT_TABS.CHART, DBOT_TABS.ANALYSIS_TOOL, DBOT_TABS.SIGNALS].includes(active_tab);
+
     return (
         <React.Fragment>
             <div className='main'>
@@ -231,7 +232,7 @@ const AppWrapper = observer(() => {
             <DesktopWrapper>
                 <div className='main__run-strategy-wrapper'>
                     <RunStrategy />
-                    <RunPanel />
+                    {showRunPanel && <RunPanel />}
                 </div>
                 <ChartModal />
                 <TradingViewModal />
