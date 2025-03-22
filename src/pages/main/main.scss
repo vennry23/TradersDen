@@ -7,6 +7,11 @@
         right: auto;
     }
 }
+.free-bots__content-wrapper {
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto;
+}
+
 .free-bots {
     padding: 20px;
     background-color: #f9f9f9;
