@@ -162,7 +162,7 @@ const AppWrapper = observer(() => {
         } catch (error) {
             console.error("Error loading bot file:", error);
         }
-    }, [setActiveTab, updateWorkspaceName, load_modal]);
+    }, [setActiveTab, load_modal, updateWorkspaceName]);
 
     const handleOpen = useCallback(async () => {
         await load_modal.loadFileFromRecent();
