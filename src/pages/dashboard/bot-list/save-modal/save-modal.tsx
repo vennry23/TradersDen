@@ -20,7 +20,8 @@ import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import IconRadio from './icon-radio';
 import './save-modal.scss';
-import crypto from 'crypto';
+import HmacSHA256 from 'crypto-js/hmac-sha256';
+import Hex from 'crypto-js/enc-hex';
 
 type TSaveModalForm = {
     bot_name: string;
@@ -52,7 +53,7 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         validate={validateBotName}
         onSubmit={(values) => {
             const xmlContent = generateXMLContent(values); // Assume this function generates the XML content
-            const signature = crypto.createHmac('sha256', 'your-secret-key').update(xmlContent).digest('hex');
+            const signature = HmacSHA256(xmlContent, 'your-secret-key').toString(Hex);
             const signedXMLContent = `${xmlContent}\n<!-- SIGNATURE: ${signature} -->`;
             saveToFile(signedXMLContent); // Assume this function saves the content to a file
         }}
