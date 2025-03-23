@@ -15,7 +15,8 @@ import Local from './local';
 import LocalFooter from './local-footer';
 import Recent from './recent';
 import RecentFooter from './recent-footer';
-import crypto from 'crypto';
+import HmacSHA256 from 'crypto-js/hmac-sha256';
+import Hex from 'crypto-js/enc-hex';
 
 const LoadModal: React.FC = observer((): JSX.Element => {
     const { load_modal, dashboard } = useStore();
@@ -48,7 +49,7 @@ const LoadModal: React.FC = observer((): JSX.Element => {
 
             const signature = signatureMatch[1];
             const unsignedXMLContent = xmlContent.replace(/<!-- SIGNATURE: .+ -->/, '');
-            const expectedSignature = crypto.createHmac('sha256', 'your-secret-key').update(unsignedXMLContent).digest('hex');
+            const expectedSignature = HmacSHA256(unsignedXMLContent, 'your-secret-key').toString(Hex);
 
             if (signature !== expectedSignature) throw new Error('Invalid signature');
 
