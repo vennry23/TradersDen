@@ -15,8 +15,6 @@ import Local from './local';
 import LocalFooter from './local-footer';
 import Recent from './recent';
 import RecentFooter from './recent-footer';
-import HmacSHA256 from 'crypto-js/hmac-sha256';
-import Hex from 'crypto-js/enc-hex';
 
 const LoadModal: React.FC = observer((): JSX.Element => {
     const { load_modal, dashboard } = useStore();
@@ -44,18 +42,9 @@ const LoadModal: React.FC = observer((): JSX.Element => {
     // Ensure loadFileFromContent is defined on load_modal
     load_modal.loadFileFromContent = async (xmlContent: string) => {
         try {
-            const signatureMatch = xmlContent.match(/<!-- SIGNATURE: (.+) -->/);
-            if (!signatureMatch) throw new Error('No signature found in XML content');
-
-            const signature = signatureMatch[1];
-            const unsignedXMLContent = xmlContent.replace(/<!-- SIGNATURE: .+ -->/, '');
-            const expectedSignature = HmacSHA256(unsignedXMLContent, 'your-secret-key').toString(Hex);
-
-            if (signature !== expectedSignature) throw new Error('Invalid signature');
-
-            console.log('Loading XML content:', unsignedXMLContent);
+            console.log('Loading XML content:', xmlContent);
             const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(unsignedXMLContent, 'application/xml');
+            const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
             // Define the loadParsedXML method
             load_modal.loadParsedXML = (xmlDoc: Document) => {
                 // Clear the existing workspace
