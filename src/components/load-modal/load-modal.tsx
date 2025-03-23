@@ -15,6 +15,7 @@ import Local from './local';
 import LocalFooter from './local-footer';
 import Recent from './recent';
 import RecentFooter from './recent-footer';
+import crypto from 'crypto';
 
 const LoadModal: React.FC = observer((): JSX.Element => {
     const { load_modal, dashboard } = useStore();
@@ -42,9 +43,18 @@ const LoadModal: React.FC = observer((): JSX.Element => {
     // Ensure loadFileFromContent is defined on load_modal
     load_modal.loadFileFromContent = async (xmlContent: string) => {
         try {
-            console.log('Loading XML content:', xmlContent);
+            const signatureMatch = xmlContent.match(/<!-- SIGNATURE: (.+) -->/);
+            if (!signatureMatch) throw new Error('No signature found in XML content');
+
+            const signature = signatureMatch[1];
+            const unsignedXMLContent = xmlContent.replace(/<!-- SIGNATURE: .+ -->/, '');
+            const expectedSignature = crypto.createHmac('sha256', 'your-secret-key').update(unsignedXMLContent).digest('hex');
+
+            if (signature !== expectedSignature) throw new Error('Invalid signature');
+
+            console.log('Loading XML content:', unsignedXMLContent);
             const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+            const xmlDoc = parser.parseFromString(unsignedXMLContent, 'application/xml');
             // Define the loadParsedXML method
             load_modal.loadParsedXML = (xmlDoc: Document) => {
                 // Clear the existing workspace
