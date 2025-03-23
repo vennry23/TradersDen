@@ -106,7 +106,7 @@ canvas {
 .digit-box {
     width: 35px;
     height: 35px;
-    margin-top: 5px;
+    padding-top: 1px;
     display: flex;
     justify-content: center;
     align-items: center;
