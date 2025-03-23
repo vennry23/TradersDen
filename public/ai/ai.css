@@ -99,7 +99,7 @@ canvas {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    gap: 1px;
+    gap: 3px;
     margin-top: 1rem;
 }
 
