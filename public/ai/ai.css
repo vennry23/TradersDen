@@ -96,7 +96,7 @@ canvas {
 }
 
 #digit-display-container {
-    display: center;
+    display:flex;
     justify-content:center;
     flex-wrap: wrap;
     gap: 3px;
@@ -106,10 +106,11 @@ canvas {
 .digit-box {
     width: 35px;
     height: 35px;
+    padding-top: 1px;
     display: flex;
-    justify-content: center;
+    justify-content:center;
     align-items: center;
-    font-size: 22px;
+    font-size: 1.4rem;
     font-weight:500;
     border-radius: 50%;
     border: 4px solid #d3d3d3;
@@ -138,6 +139,7 @@ canvas {
     align-items: center;
     text-align: center;
     position: relative;
+    margin-top: 15px;
 }
 
 .digit-container .arrow {
@@ -147,7 +149,7 @@ canvas {
     border-right: 10px solid transparent;
     border-bottom: 10px solid rgba(255, 223, 0, 1);
     position: absolute;
-    top: 9px;
+    top: -15px;
     display: none;
 }
 
