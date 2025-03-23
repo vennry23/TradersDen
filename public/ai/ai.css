@@ -140,6 +140,8 @@ canvas {
     text-align: center;
     position: relative;
     margin-top: 15px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .digit-container .arrow {
