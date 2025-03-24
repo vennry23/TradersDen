@@ -87,6 +87,13 @@ p1 {
     font-size: 15px;
     font-weight: 600;
 }
+
+p2 {
+    color: #5111ff;
+    margin-bottom: 1rem;
+    font-size: 18px;
+    font-weight: 600;
+}
 canvas {
     max-width: 100%;
     margin-top: 1rem;
