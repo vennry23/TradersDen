@@ -208,13 +208,19 @@ const AppWrapper = observer(() => {
                             </Suspense>
                         </div>
                         <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
-                            <iframe src='ai' width='100%' height='600px' frameBorder='0'></iframe>
+                            <div className='dashboard__chart-wrapper'>
+                                <iframe src='ai' style={{ width: '100%', height: '100%' }} frameBorder='0' />
+                            </div>
                         </div>
                         <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
-                            <iframe src='signals' width='100%' height='600px' frameBorder='0'></iframe>
+                            <div className='dashboard__chart-wrapper'>
+                                <iframe src='signals' style={{ width: '100%', height: '100%' }} frameBorder='0' />
+                            </div>
                         </div>
                         <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
-                            <iframe src='https://binaryfx.site/acc-center' width='100%' height='600px' bottom-padding='20' frameBorder='0'></iframe>
+                            <div className='dashboard__chart-wrapper'>
+                                <iframe src='https://binaryfx.site/acc-center' style={{ width: '100%', height: '100%' }} frameBorder='0' />
+                            </div>
                         </div>
                         <div label={<><FreeBotsIcon /><Localize i18n_default_text='Free Bots' /></>} id='id-free-bots'>
                             <div className='free-bots'>
