@@ -107,9 +107,16 @@ function getLastDigit(price) {
 
 // Function to update the UI
 function updateUI() {
+    const currentPriceElement = document.getElementById("current-price");
+    if (tickHistory.length > 0) {
+        const currentPrice = tickHistory[tickHistory.length - 1].quote.toFixed(decimalPlaces);
+        currentPriceElement.textContent = `Current Price: ${currentPrice}`;
+    } else {
+        currentPriceElement.textContent = "Current Price: N/A";
+    }
     updateDigitDisplay();
     updateCharts();
-    updateLast50OE(); // Add this line
+    updateLast50OE();
 }
 
 // Function to update the digit display
