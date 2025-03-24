@@ -212,7 +212,7 @@ const AppWrapper = observer(() => {
                                 'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                 'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
                             })}>
-                                <iframe src='ai' frameBorder='0' scrolling="yes" />
+                                <iframe src='ai' className="scrollable" frameBorder='0' scrolling="auto" />
                             </div>
                         </div>
                         <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
