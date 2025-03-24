@@ -5,6 +5,8 @@ body {
     background-color: #f9fafb;
     color: #333;
     line-height: 1.2;
+    height: 600px;
+    overflow:scroll;
 }
 
 .container {
@@ -12,7 +14,6 @@ body {
     max-width: 550px;
     margin: 0 auto;
     padding: 10px;
-    height: 600px;
     
     @media (max-width: 768px) {
         width: 100%;
@@ -69,9 +70,9 @@ header select:hover, header input:hover {
 }
 
 main {
-    height: calc(600px - 16.4rem);
+    height: calc(100vh - 16.4rem);
     position: relative;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 0;
     background-color: #ffffff;
 }
