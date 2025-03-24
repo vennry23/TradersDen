@@ -1,0 +1,37 @@
+.run-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 350px;
+    background: var(--general-main-1);
+    z-index: 8;
+    transition: transform 0.3s ease;
+}
+
+.run-panel__container {
+    border-left: 1px solid var(--general-section-1);
+}
+
+.run-panel--visible {
+    transform: translateX(0) !important;
+}
+
+/* Adjust main content area when panel is visible */
+.desktop-view {
+    transition: margin-right 0.3s ease;
+}
+
+.desktop-view.panel-visible {
+    margin-right: 350px;
+}
+
+/* Ensure iframe adjustments */
+.chart-container iframe {
+    width: calc(100% - 350px);
+    transition: width 0.3s ease;
+}
+
+.chart-container.panel-hidden iframe {
+    width: 100%;
+}
