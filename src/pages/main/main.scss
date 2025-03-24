@@ -336,16 +336,20 @@
         }
 
         iframe {
-            position: relative;
+            display: block;
             width: 100%;
-            height: calc(100vh - 12rem); // Adjust for header and padding
-            min-height: 600px;
-            max-height: 620px;
+            height: 100%;
             border: none;
             background: var(--general-main-1);
             transition: width 0.4s ease;
-            overflow-y: auto;
+            overflow-y: scroll !important;
             overflow-x: hidden;
+            max-height: calc(100vh - 12rem);
+
+            html, body {
+                height: 100%;
+                overflow: auto;
+            }
 
             @include mobile-or-tablet-screen {
                 width: 100%;
