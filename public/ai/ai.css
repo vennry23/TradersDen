@@ -7,7 +7,7 @@ body {
     line-height: 1.2;
     height: 520px;
     overflow-y: auto;
-    padding-bottom: 50px;
+    margin-bottom: 50px;
 }
 
 .container {
