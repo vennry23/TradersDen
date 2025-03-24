@@ -24,6 +24,15 @@ import RunStrategy from '../dashboard/run-strategy';
 const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
 
+export const DBOT_TABS = Object.freeze({
+    DASHBOARD: 0,
+    BOT_BUILDER: 1,
+    CHART: 2,
+    TUTORIAL: 3,
+    ANALYSIS_TOOL: 4,
+    SIGNALS: 5,
+} as const);
+
 const DashboardIcon = () => (
     <svg width="20" height="20" fill="var(--text-general)" viewBox="0 0 24 24">
         <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
