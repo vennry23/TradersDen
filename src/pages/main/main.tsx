@@ -237,9 +237,9 @@ const AppWrapper = observer(() => {
                 </div>
             </div>
             <DesktopWrapper>
-                <RunPanel /> {/* Move RunPanel outside main__run-strategy-wrapper */}
                 <div className='main__run-strategy-wrapper'>
                     <RunStrategy />
+                    {showRunPanel && <RunPanel />}
                 </div>
                 <ChartModal />
                 <TradingViewModal />
