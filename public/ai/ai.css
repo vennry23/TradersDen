@@ -12,7 +12,7 @@ body {
     max-width: 550px;
     margin: 0 auto;
     padding: 10px;
-    height: var(--bot-content-height);
+    height: 600px;
     
     @media (max-width: 768px) {
         width: 100%;
@@ -69,9 +69,9 @@ header select:hover, header input:hover {
 }
 
 main {
-    height: calc(100vh - 16.4rem);
+    height: calc(600px - 16.4rem);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
     padding: 0;
     background-color: #ffffff;
 }
