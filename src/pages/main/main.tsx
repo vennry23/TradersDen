@@ -212,7 +212,7 @@ const AppWrapper = observer(() => {
                                 'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                 'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
                             })}>
-                                <iframe src='ai' frameBorder='0' height='600' />
+                                <iframe src='ai' frameBorder='0' scrolling="yes" />
                             </div>
                         </div>
                         <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
@@ -220,7 +220,7 @@ const AppWrapper = observer(() => {
                                 'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                 'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
                             })}>
-                                <iframe src='signals' frameBorder='0' />
+                                <iframe src='signals' frameBorder='0' scrolling="yes" />
                             </div>
                         </div>
                         <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
