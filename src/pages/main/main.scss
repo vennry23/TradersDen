@@ -307,21 +307,48 @@
 .dashboard {
     &__chart-wrapper {
         position: relative;
-        height: calc(100vh - 12rem);
+        height: var(--tab-content-height);
         width: 100%;
         transition: all 0.4s;
+        overflow: hidden;
+
+        @include mobile-or-tablet-screen {
+            height: var(--tab-content-height-mobile);
+            background: var(--general-main-1);
+
+            .smartcharts {
+                height: calc(100% - 4rem);
+                z-index: 1;
+
+                &:has(.stxMenuActive) {
+                    z-index: 99;
+                    transition: all 1s ease-out;
+                }
+            }
+        }
+
+        &--expanded {
+            width: calc(100vw - 39.8rem);
+        }
+
+        &--modal {
+            width: 40rem;
+        }
 
         iframe {
+            display: block;
             width: 100%;
-            height: 100%;
+            height: 100vh !important;
             border: none;
             background: var(--general-main-1);
-            overflow: auto !important;
-            -webkit-overflow-scrolling: touch;
-            
-            &.scrollable {
-                min-height: 100%;
-                display: block;
+            transition: width 0.4s ease;
+            overflow-y: scroll !important;
+            max-height: none;
+            position: relative;
+
+            @include mobile-or-tablet-screen {
+                width: 100%;
+                height: calc(100vh - 10rem) !important;
             }
         }
     }
