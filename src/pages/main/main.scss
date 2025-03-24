@@ -310,6 +310,7 @@
         height: var(--tab-content-height);
         width: 100%;
         transition: all 0.4s;
+        overflow: hidden;
 
         @include mobile-or-tablet-screen {
             height: var(--tab-content-height-mobile);
@@ -328,33 +329,23 @@
 
         &--expanded {
             width: calc(100vw - 39.8rem);
-
-            iframe {
-                width: calc(100vw - 39.8rem);
-            }
         }
 
         &--modal {
             width: 40rem;
-
-            iframe {
-                width: 40rem;
-            }
         }
 
-        // New iframe styles
         iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: var(--tab-content-height);
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: var(--tab-content-height);
             border: none;
             background: var(--general-main-1);
-            transition: all 0.4s;
+            transition: width 0.4s ease;
 
             @include mobile-or-tablet-screen {
-                width: 100vw;
+                width: 100%;
                 height: var(--tab-content-height-mobile);
             }
         }
