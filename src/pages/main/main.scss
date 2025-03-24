@@ -336,7 +336,7 @@
 
         // New iframe styles
         iframe {
-            width: 100%;
+            width: calc(100vw - 39.8rem);
             height: 100%;
             border: none;
             background: var(--general-main-1);
