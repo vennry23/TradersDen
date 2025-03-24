@@ -340,6 +340,7 @@
             width: 100%;
             height: calc(100vh - 12rem); // Adjust for header and padding
             min-height: 600px;
+            max-height: 620px;
             border: none;
             background: var(--general-main-1);
             transition: width 0.4s ease;
