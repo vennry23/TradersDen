@@ -13,17 +13,32 @@
     width: 350px !important;
     transform: none !important;
     z-index: 999 !important;
+    background: var(--general-main-1) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    border-left: 1px solid var(--general-section-1);
+
+    .dc-drawer {
+        transform: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 350px !important;
+        height: 100vh !important;
+    }
     
     &__container {
         transform: none !important;
         border-left: 1px solid var(--general-section-1);
         width: 350px !important;
+        height: 100vh !important;
+        visibility: visible !important;
     }
 
     .dc-drawer--open {
         transform: none !important;
     }
 }
+
 .free-bots__content-wrapper {
     max-height: 400px; /* Adjust the height as needed */
     overflow-y: auto;
@@ -99,7 +114,7 @@
         max-width: 100%;
         width: 100%;
         width: calc(100% - 350px) !important;
-        margin-right: 350px;
+        margin-right: 350px !important;
 
         &--active {
             // css for onboard tour overlay
@@ -803,4 +818,9 @@
 
 iframe {
     width: calc(100% - 350px) !important;
+}
+
+.chart-container {
+    width: calc(100% - 350px) !important;
+    margin-right: 350px !important;
 }
