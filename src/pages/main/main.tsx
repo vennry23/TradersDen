@@ -87,7 +87,7 @@ const AppWrapper = observer(() => {
         setActiveTab,
     } = dashboard;
     const { onEntered } = load_modal;
-    const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot } = run_panel;
+    const { is_dialog_open, dialog_options, onCancelButtonClick, onCloseDialog, onOkButtonClick, stopBot, is_drawer_open } = run_panel;
     const { cancel_button_text, ok_button_text, title, message } = dialog_options as { [key: string]: string };
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER, ANALYSIS_TOOL, SIGNALS } = DBOT_TABS;
