@@ -334,19 +334,6 @@
             width: 40rem;
         }
 
-        // New iframe styles
-        iframe {
-            width: calc(100vw - 39.8rem);
-            height: 700px;
-            border: none;
-            background: var(--general-main-1);
-
-            @include mobile-or-tablet-screen {
-                height: calc(100% - 4rem);
-            }
-        }
-    }
-
     &__toolbox {
         position: absolute;
         top: 0;
