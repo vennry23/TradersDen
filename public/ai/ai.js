@@ -110,9 +110,9 @@ function updateUI() {
     const currentPriceElement = document.getElementById("current-price");
     if (tickHistory.length > 0) {
         const currentPrice = tickHistory[tickHistory.length - 1].quote.toFixed(decimalPlaces);
-        currentPriceElement.textContent = `Current Price: ${currentPrice}`;
+        currentPriceElement.textContent = `${currentPrice}`;
     } else {
-        currentPriceElement.textContent = "Current Price: N/A";
+        currentPriceElement.textContent = "N/A";
     }
     updateDigitDisplay();
     updateCharts();
