@@ -185,8 +185,6 @@ const AppWrapper = observer(() => {
         // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
     }, [load_modal, setActiveTab]);
 
-    const showRunPanel = [DBOT_TABS.BOT_BUILDER, DBOT_TABS.CHART, DBOT_TABS.ANALYSIS_TOOL, DBOT_TABS.SIGNALS].includes(active_tab);
-
     return (
         <React.Fragment>
             <div className='main'>
@@ -241,7 +239,7 @@ const AppWrapper = observer(() => {
             <DesktopWrapper>
                 <div className='main__run-strategy-wrapper'>
                     <RunStrategy />
-                    {showRunPanel && <RunPanel />}
+                    <RunPanel /> {/* Remove the conditional rendering */}
                 </div>
                 <ChartModal />
                 <TradingViewModal />

@@ -6,6 +6,23 @@
     .dc-tabs__active-line {
         right: auto;
     }
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 350px !important;
+    transform: none !important;
+    z-index: 999 !important;
+    
+    &__container {
+        transform: none !important;
+        border-left: 1px solid var(--general-section-1);
+        width: 350px !important;
+    }
+
+    .dc-drawer--open {
+        transform: none !important;
+    }
 }
 .free-bots__content-wrapper {
     max-height: 400px; /* Adjust the height as needed */
@@ -81,6 +98,8 @@
         border: none;
         max-width: 100%;
         width: 100%;
+        width: calc(100% - 350px) !important;
+        margin-right: 350px;
 
         &--active {
             // css for onboard tour overlay
@@ -780,4 +799,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+iframe {
+    width: calc(100% - 350px) !important;
 }
