@@ -6,48 +6,12 @@
     width: 350px;
     background: var(--general-main-1);
     z-index: 8;
-    transition: transform 0.3s ease;
-    transform: translateX(0) !important; /* Override the initial transform */
 }
 
 .run-panel__container {
     border-left: 1px solid var(--general-section-1);
 }
 
-.run-panel__container.dc-drawer--open {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(0) !important;
-}
-
-.dc-drawer--right.dc-drawer--open {
-    transform: translateX(0) !important;
-}
-
 .run-panel--visible {
-    transform: translateX(0) !important;
-}
-
-/* Override any transform that might hide the panel */
-.run-panel__container[style*="transform"] {
-    transform: translateX(0) !important;
-}
-
-/* Adjust main content area when panel is visible */
-.desktop-view {
-    transition: margin-right 0.3s ease;
-}
-
-.desktop-view.panel-visible {
-    margin-right: 350px;
-}
-
-/* Ensure iframe adjustments */
-.chart-container iframe {
-    width: calc(100% - 350px);
-    transition: width 0.3s ease;
-}
-
-.chart-container.panel-hidden iframe {
-    width: 100%;
+    transform: translateX(0);
 }
