@@ -22,6 +22,7 @@ import IconRadio from './icon-radio';
 import './save-modal.scss';
 import HmacSHA256 from 'crypto-js/hmac-sha256';
 import Hex from 'crypto-js/enc-hex';
+import { XmlHelper } from '@/XmlHelper';
 
 type TSaveModalForm = {
     bot_name: string;
@@ -51,11 +52,11 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
             bot_name: bot_name === config().default_file_name ? '' : bot_name,
         }}
         validate={validateBotName}
-        onSubmit={(values) => {
-            const xmlContent = generateXMLContent(values); // Assume this function generates the XML content
+        onSubmit={async (values) => {
+            const xmlContent = XmlHelper.generateXMLContent(values);
             const signature = HmacSHA256(xmlContent, 'your-secret-key').toString(Hex);
             const signedXMLContent = `${xmlContent}\n<!-- SIGNATURE: ${signature} -->`;
-            saveToFile(signedXMLContent); // Assume this function saves the content to a file
+            saveToFile(signedXMLContent);
         }}
     >
         {({ values: { is_local }, setFieldValue, touched, errors }) => {
