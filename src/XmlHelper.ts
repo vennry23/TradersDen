@@ -1,19 +1,14 @@
-import { DOMParser, XMLSerializer } from 'xmldom';
-import * as fs from 'fs';
-
 export class XmlHelper {
-    static loadXml(filePath: string): Document {
-        const xmlContent = fs.readFileSync(filePath, 'utf-8');
+    static loadXml(xmlString: string): Document {
         const parser = new DOMParser();
-        return parser.parseFromString(xmlContent, 'text/xml');
+        return parser.parseFromString(xmlString, 'text/xml');
     }
 
-    static saveXml(doc: Document, filePath: string): void {
+    static saveXml(doc: Document): string {
         try {
-            const serializer = new XMLSerializer();
             let xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n';
-            xmlString += this.formatXml(serializer.serializeToString(doc));
-            fs.writeFileSync(filePath, xmlString, 'utf-8');
+            xmlString += this.formatXml(new XMLSerializer().serializeToString(doc));
+            return xmlString;
         } catch (error) {
             console.error('Error saving XML:', error);
             throw error;
@@ -34,6 +29,33 @@ export class XmlHelper {
             }
         });
         return formatted.substring(1, formatted.length - 2);
+    }
+
+    static generateXMLContent(values: { [key: string]: any }): string {
+        try {
+            const doc = new DOMParser().parseFromString(
+                '<?xml version="1.0" encoding="UTF-8"?><appConfig version="1.0"></appConfig>',
+                'text/xml'
+            );
+            
+            const rootNode = doc.documentElement;
+            const settingsNode = doc.createElement('settings');
+            
+            Object.entries(values).forEach(([key, value]) => {
+                if (key !== 'is_local' && value !== undefined) {
+                    const settingNode = doc.createElement('setting');
+                    settingNode.setAttribute('name', key);
+                    settingNode.setAttribute('value', String(value));
+                    settingsNode.appendChild(settingNode);
+                }
+            });
+            
+            rootNode.appendChild(settingsNode);
+            return this.saveXml(doc);
+        } catch (error) {
+            console.error('Error generating XML content:', error);
+            throw error;
+        }
     }
 
     static getSetting(doc: Document, settingName: string): string | null {
