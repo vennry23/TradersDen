@@ -87,12 +87,7 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         validate={validateBotName}
         onSubmit={async (values) => {
             try {
-                const workspace = window.Blockly?.derivWorkspace;
-                if (!workspace) {
-                    throw new Error('Bot workspace not found');
-                }
-                const xmlContent = generateBotXml(values, workspace);
-                onConfirmSave({ ...values, xmlContent });
+                await onConfirmSave(values);
             } catch (error) {
                 console.error('Error saving bot:', error);
                 // Consider adding user notification here
