@@ -51,18 +51,18 @@ const generateBotXml = (values: TSaveModalValues, workspace: any) => {
             throw new Error('Blockly workspace not initialized');
         }
 
-        // Get XML DOM from Blockly workspace
-        const xml = window.Blockly.Xml.workspaceToDom(workspace);
+        // Get XML from workspace
+        const blocksXml = window.Blockly.Xml.domToPrettyText(
+            window.Blockly.Xml.workspaceToDom(workspace)
+        );
         
-        // Add metadata attributes
-        xml.setAttribute('name', values.bot_name);
-        xml.setAttribute('collection', values.save_as_collection.toString());
-        xml.setAttribute('timestamp', new Date().toISOString());
+        // Get variables if they exist
+        const variables = workspace.getAllVariables?.();
         
-        // Convert to string with proper formatting
-        return window.Blockly.Xml.domToPrettyText(xml);
+        // Generate .bfx format
+        return XmlHelper.generateBotFormat(values, blocksXml);
     } catch (error) {
-        console.error('Error generating bot XML:', error);
+        console.error('Error generating bot file:', error);
         throw error;
     }
 };

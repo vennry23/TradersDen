@@ -77,4 +77,68 @@ export class XmlHelper {
             }
         }
     }
+
+    static generateBotFormat(values: any, blocksXml: string): string {
+        try {
+            const doc = new DOMParser().parseFromString(
+                '<?xml version="1.0" encoding="UTF-8"?><botFormat></botFormat>',
+                'text/xml'
+            );
+            
+            // Add metadata
+            const metadata = doc.createElement('metadata');
+            metadata.setAttribute('name', values.bot_name);
+            metadata.setAttribute('version', '1.0');
+            metadata.setAttribute('created', new Date().toISOString());
+            metadata.setAttribute('modified', new Date().toISOString());
+            
+            // Add workspace with blocks
+            const workspace = doc.createElement('workspace');
+            const blocks = doc.createElement('blocks');
+            blocks.textContent = btoa(blocksXml); // Base64 encode blocks XML
+            
+            workspace.appendChild(blocks);
+            
+            // Add variables if they exist
+            if (values.variables) {
+                const variables = doc.createElement('variables');
+                variables.textContent = btoa(JSON.stringify(values.variables));
+                workspace.appendChild(variables);
+            }
+            
+            const rootNode = doc.documentElement;
+            rootNode.appendChild(metadata);
+            rootNode.appendChild(workspace);
+            
+            return this.saveXml(doc).replace('<?xml', '<?bfx');
+        } catch (error) {
+            console.error('Error generating BFX content:', error);
+            throw error;
+        }
+    }
+
+    static loadBotFormat(bfxString: string): { metadata: any, blocksXml: string, variables?: any } {
+        try {
+            const xmlString = bfxString.replace('<?bfx', '<?xml');
+            const doc = this.loadXml(xmlString);
+            
+            const metadata = doc.querySelector('metadata');
+            const blocks = doc.querySelector('blocks');
+            const variables = doc.querySelector('variables');
+            
+            return {
+                metadata: {
+                    name: metadata?.getAttribute('name'),
+                    version: metadata?.getAttribute('version'),
+                    created: metadata?.getAttribute('created'),
+                    modified: metadata?.getAttribute('modified'),
+                },
+                blocksXml: blocks ? atob(blocks.textContent || '') : '',
+                variables: variables ? JSON.parse(atob(variables.textContent || '')) : undefined
+            };
+        } catch (error) {
+            console.error('Error loading BFX content:', error);
+            throw error;
+        }
+    }
 }
