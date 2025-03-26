@@ -1,3 +1,5 @@
+import { BOT_FORMAT } from '@/constants/bot-format';
+
 export class XmlHelper {
     static loadXml(xmlString: string): Document {
         const parser = new DOMParser();
@@ -140,5 +142,17 @@ export class XmlHelper {
             console.error('Error loading BFX content:', error);
             throw error;
         }
+    }
+
+    static downloadBotFile(content: string, filename: string): void {
+        const blob = new Blob([content], { type: 'application/x-bfx' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename + BOT_FORMAT.extension;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 }
