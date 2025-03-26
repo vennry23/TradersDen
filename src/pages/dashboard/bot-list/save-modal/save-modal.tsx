@@ -20,25 +20,52 @@ import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import IconRadio from './icon-radio';
 import './save-modal.scss';
-import HmacSHA256 from 'crypto-js/hmac-sha256';
-import Hex from 'crypto-js/enc-hex';
 import { XmlHelper } from '@/XmlHelper';
 
 type TSaveModalForm = {
     bot_name: string;
     button_status: number;
+    google_drive_connected?: boolean;
     is_authorised: boolean;
     is_mobile?: boolean;
     is_onscreen_keyboard_active?: boolean;
+    is_save_modal_open?: boolean;
+    icon?: string;
+    text?: string;
+    onDriveConnect?: () => void;
+    onConfirmSave: (values: { is_local: boolean; save_as_collection: boolean; bot_name: string }) => void;
     setCurrentFocus: (current_focus: string) => void;
     toggleSaveModal: () => void;
     validateBotName: (values: string) => { [key: string]: string };
+};
+
+type TSaveModalValues = {
+    is_local: boolean;
+    save_as_collection: boolean;
+    bot_name: string;
+};
+
+const generateBotXml = (values: TSaveModalValues, workspace: any) => {
+    if (!workspace) return '';
+    
+    const xmlDom = workspace.toXML();
+    const botDoc = XmlHelper.loadXml(xmlDom);
+    
+    // Add metadata
+    const rootNode = botDoc.documentElement;
+    rootNode.setAttribute('name', values.bot_name);
+    rootNode.setAttribute('collection', values.save_as_collection.toString());
+    rootNode.setAttribute('timestamp', new Date().toISOString());
+    
+    return XmlHelper.saveXml(botDoc);
 };
 
 const SaveModalForm: React.FC<TSaveModalForm> = ({
     bot_name,
     button_status,
     is_authorised,
+    onConfirmSave,
+    onDriveConnect,
     validateBotName,
     toggleSaveModal,
     is_mobile,
@@ -53,10 +80,13 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         }}
         validate={validateBotName}
         onSubmit={async (values) => {
-            const xmlContent = XmlHelper.generateXMLContent(values);
-            const signature = HmacSHA256(xmlContent, 'your-secret-key').toString(Hex);
-            const signedXMLContent = `${xmlContent}\n<!-- SIGNATURE: ${signature} -->`;
-            saveToFile(signedXMLContent);
+            try {
+                const workspace = window.Blockly?.derivWorkspace;
+                const xmlContent = generateBotXml(values, workspace);
+                onConfirmSave(values);
+            } catch (error) {
+                console.error('Error saving bot:', error);
+            }
         }}
     >
         {({ values: { is_local }, setFieldValue, touched, errors }) => {
@@ -66,7 +96,9 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
                     <Form className={classNames({ 'form--active-keyboard': is_onscreen_keyboard_active })}>
                         <div className='modal__content'>
                             <Text size='xs' lineHeight='l'>
-                                {localize('Enter your bot name, choose to save on your computer or Google Drive, and hit ')}
+                                {localize(
+                                    'Enter your bot name, choose to save on your computer or Google Drive, and hit '
+                                )}
                                 <strong>{localize('Save.')}</strong>
                             </Text>
                             <div className='modal__content-row'>
@@ -84,6 +116,50 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
                                         />
                                     )}
                                 </Field>
+                            </div>
+                            <div className='modal__content-row'>
+                                <RadioGroup
+                                    className='radio-group__save-type'
+                                    name='is_local'
+                                    selected={() => {
+                                        if (is_authorised && !is_local) return save_types.GOOGLE_DRIVE;
+                                        return save_types.LOCAL;
+                                    }}
+                                    onToggle={() => setFieldValue('is_local', !is_local)}
+                                >
+                                    <RadioGroup.Item
+                                        id='local'
+                                        label={
+                                            <IconRadio
+                                                text={localize('Local')}
+                                                icon={
+                                                    is_mobile ? (
+                                                        <DerivLightLocalDeviceIcon height='48px' width='48px' />
+                                                    ) : (
+                                                        <DerivLightMyComputerIcon height='48px' width='48px' />
+                                                    )
+                                                }
+                                            />
+                                        }
+                                        value={save_types.LOCAL}
+                                    />
+                                    <RadioGroup.Item
+                                        id='drive'
+                                        label={
+                                            <IconRadio
+                                                text={'Google Drive'}
+                                                icon={<DerivLightGoogleDriveIcon height='48px' width='48px' />}
+                                                google_drive_connected={is_authorised}
+                                                onDriveConnect={onDriveConnect}
+                                            />
+                                        }
+                                        value={save_types.GOOGLE_DRIVE}
+                                        disabled={!is_authorised}
+                                        className={classNames({
+                                            'dc-radio-group__item-disabled': !is_authorised,
+                                        })}
+                                    />
+                                </RadioGroup>
                             </div>
                         </div>
                         <div
@@ -113,12 +189,19 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         }}
     </Formik>
 );
-
 const SaveModal = observer(() => {
     const { save_modal, google_drive, dashboard, load_modal, ui } = useStore();
     const { dashboard_strategies } = load_modal;
-    const { button_status, bot_name, is_save_modal_open, toggleSaveModal, updateBotName, validateBotName } = save_modal;
-    const { is_authorised } = google_drive;
+    const {
+        button_status,
+        bot_name,
+        is_save_modal_open,
+        onConfirmSave,
+        toggleSaveModal,
+        updateBotName,
+        validateBotName,
+    } = save_modal;
+    const { is_authorised, onDriveConnect } = google_drive;
     const { is_onscreen_keyboard_active, setCurrentFocus } = ui;
     const { isMobile } = useDevice();
     const { active_tab } = dashboard;
@@ -142,6 +225,8 @@ const SaveModal = observer(() => {
                 bot_name={bot_name}
                 button_status={button_status}
                 is_authorised={is_authorised}
+                onConfirmSave={onConfirmSave}
+                onDriveConnect={onDriveConnect}
                 validateBotName={validateBotName}
                 toggleSaveModal={toggleSaveModal}
                 is_mobile={isMobile}
@@ -162,6 +247,8 @@ const SaveModal = observer(() => {
                 bot_name={bot_name}
                 button_status={button_status}
                 is_authorised={is_authorised}
+                onConfirmSave={onConfirmSave}
+                onDriveConnect={onDriveConnect}
                 validateBotName={validateBotName}
                 toggleSaveModal={toggleSaveModal}
                 setCurrentFocus={setCurrentFocus}
