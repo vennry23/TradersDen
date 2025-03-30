@@ -7,8 +7,8 @@ import DBotStore from '../scratch/dbot-store';
 
 export const saveWorkspaceToRecent = async (xml, save_type = save_types.UNSAVED) => {
     const xml_dom = convertStrategyToIsDbot(xml);
+    // Ensure strategies don't go through expensive conversion.
     xml_dom.setAttribute('is_dbot', 'true');
-
     const {
         load_modal: { updateListStrategies },
         save_modal,
@@ -23,10 +23,7 @@ export const saveWorkspaceToRecent = async (xml, save_type = save_types.UNSAVED)
 
     if (current_workspace_index >= 0) {
         const current_workspace = workspaces[current_workspace_index];
-        current_workspace.xml = XmlHelper.saveBotFormat(current_xml, {
-            name: save_modal.bot_name,
-            timestamp: current_timestamp,
-        });
+        current_workspace.xml = current_xml;
         current_workspace.name = save_modal.bot_name;
         current_workspace.timestamp = current_timestamp;
         current_workspace.save_type = save_type;
@@ -35,33 +32,28 @@ export const saveWorkspaceToRecent = async (xml, save_type = save_types.UNSAVED)
             id: workspace_id,
             timestamp: current_timestamp,
             name: save_modal.bot_name || config().default_file_name,
-            xml: XmlHelper.saveBotFormat(current_xml, {
-                name: save_modal.bot_name || config().default_file_name,
-                timestamp: current_timestamp,
-            }),
+            xml: current_xml,
             save_type,
         });
     }
 
-    workspaces.sort((a, b) => b.timestamp - a.timestamp);
+    workspaces
+        .sort((a, b) => {
+            return new Date(a.timestamp) - new Date(b.timestamp);
+        })
+        .reverse();
 
     if (workspaces.length > 10) {
         workspaces.pop();
     }
-
     updateListStrategies(workspaces);
-    await localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspaces)));
+    localForage.setItem('saved_workspaces', LZString.compress(JSON.stringify(workspaces)));
 };
 
 export const getSavedWorkspaces = async () => {
     try {
-        const workspaces = JSON.parse(LZString.decompress(await localForage.getItem('saved_workspaces'))) || [];
-        return workspaces.map(workspace => ({
-            ...workspace,
-            xml: XmlHelper.loadBotFormat(workspace.xml).blocksXml,
-        }));
+        return JSON.parse(LZString.decompress(await localForage.getItem('saved_workspaces'))) || [];
     } catch (e) {
-        console.error('Error loading saved workspaces:', e);
         return [];
     }
 };

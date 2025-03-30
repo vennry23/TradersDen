@@ -60,34 +60,6 @@ const LoadModal: React.FC = observer((): JSX.Element => {
         }
     };
 
-    const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-    
-        const reader = new FileReader();
-        reader.onload = async (e: ProgressEvent<FileReader>) => {
-            try {
-                const content = e.target?.result as string;
-                const file_extension = file.name.split('.').pop()?.toLowerCase();
-    
-                let xmlDoc: XMLDocument;
-                if (file_extension === 'bfx') {
-                    const botFormat = XmlHelper.loadBotFormat(content);
-                    xmlDoc = new DOMParser().parseFromString(botFormat.blocksXml, 'text/xml');
-                } else {
-                    xmlDoc = new DOMParser().parseFromString(content, 'text/xml');
-                }
-    
-                const workspace = Blockly.getMainWorkspace();
-                workspace.clear();
-                Blockly.Xml.domToWorkspace(xmlDoc.documentElement, workspace);
-            } catch (error) {
-                console.error('Error loading file:', error);
-            }
-        };
-        reader.readAsText(file);
-    };
-
     if (!isDesktop) {
         return (
             <MobileFullPageModal
