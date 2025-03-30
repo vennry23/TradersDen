@@ -46,25 +46,18 @@ type TSaveModalValues = {
 };
 
 const generateBotXml = (values: TSaveModalValues, workspace: any) => {
-    try {
-        if (!workspace || !window.Blockly?.Xml) {
-            throw new Error('Blockly workspace not initialized');
-        }
-
-        // Get XML DOM from Blockly workspace
-        const xml = window.Blockly.Xml.workspaceToDom(workspace);
-        
-        // Add metadata attributes
-        xml.setAttribute('name', values.bot_name);
-        xml.setAttribute('collection', values.save_as_collection.toString());
-        xml.setAttribute('timestamp', new Date().toISOString());
-        
-        // Convert to string with proper formatting
-        return window.Blockly.Xml.domToPrettyText(xml);
-    } catch (error) {
-        console.error('Error generating bot XML:', error);
-        throw error;
-    }
+    if (!workspace) return '';
+    
+    const xmlDom = workspace.toXML();
+    const botDoc = XmlHelper.loadXml(xmlDom);
+    
+    // Add metadata
+    const rootNode = botDoc.documentElement;
+    rootNode.setAttribute('name', values.bot_name);
+    rootNode.setAttribute('collection', values.save_as_collection.toString());
+    rootNode.setAttribute('timestamp', new Date().toISOString());
+    
+    return XmlHelper.saveXml(botDoc);
 };
 
 const SaveModalForm: React.FC<TSaveModalForm> = ({
@@ -89,14 +82,10 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
         onSubmit={async (values) => {
             try {
                 const workspace = window.Blockly?.derivWorkspace;
-                if (!workspace) {
-                    throw new Error('Bot workspace not found');
-                }
                 const xmlContent = generateBotXml(values, workspace);
-                onConfirmSave({ ...values, xmlContent });
+                onConfirmSave(values);
             } catch (error) {
                 console.error('Error saving bot:', error);
-                // Consider adding user notification here
             }
         }}
     >
