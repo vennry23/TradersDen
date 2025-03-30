@@ -1,14 +1,17 @@
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom'; // Ensure @xmldom/xmldom is installed
+import { DOMParser, XMLSerializer } from 'xmldom';
+import * as fs from 'fs';
 
 export class XmlHelper {
-    static loadXml(xmlString: string): Document {
+    static loadXml(filePath: string): Document {
+        const xmlContent = fs.readFileSync(filePath, 'utf-8');
         const parser = new DOMParser();
-        return parser.parseFromString(xmlString, 'text/xml');
+        return parser.parseFromString(xmlContent, 'text/xml');
     }
 
-    static saveXml(doc: Document): string {
+    static saveXml(doc: Document, filePath: string): void {
         const serializer = new XMLSerializer();
-        return serializer.serializeToString(doc);
+        const xmlString = serializer.serializeToString(doc);
+        fs.writeFileSync(filePath, xmlString, 'utf-8');
     }
 
     static getSetting(doc: Document, settingName: string): string | null {
