@@ -55,4 +55,36 @@ export class XmlHelper {
             }
         }
     }
+
+    static generateXMLContent(values: { [key: string]: any }): string {
+        try {
+            const doc = new DOMParser().parseFromString(
+                '<?xml version="1.0" encoding="UTF-8"?><appConfig version="1.0"></appConfig>',
+                'text/xml'
+            );
+            
+            const rootNode = doc.documentElement;
+            const settingsNode = doc.createElement('settings');
+            
+            Object.entries(values).forEach(([key, value]) => {
+                if (key !== 'is_local' && value !== undefined) { // Skip special form fields
+                    const settingNode = doc.createElement('setting');
+                    settingNode.setAttribute('name', key);
+                    settingNode.setAttribute('value', String(value));
+                    settingsNode.appendChild(settingNode);
+                }
+            });
+            
+            rootNode.appendChild(settingsNode);
+            
+            const serializer = new XMLSerializer();
+            let xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n';
+            xmlString += this.formatXml(serializer.serializeToString(doc));
+            
+            return xmlString;
+        } catch (error) {
+            console.error('Error generating XML content:', error);
+            throw error;
+        }
+    }
 }
