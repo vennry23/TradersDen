@@ -1,3 +1,4 @@
+import { XmlHelper } from '@/XmlHelper';
 export { handleError, initErrorHandlingListener, removeErrorHandlingEventListener } from './error-handling';
 export { importExternal } from './html-helper';
 export { observer } from './observer';
