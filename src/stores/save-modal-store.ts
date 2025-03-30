@@ -152,7 +152,6 @@ export default class SaveModalStore implements ISaveModalStore {
             if (is_local) {
                 // Save locally
                 XmlHelper.downloadBotFile(bfxContent, bot_name);
-                await saveWorkspaceToRecent(bfxContent, save_types.LOCAL); // Pass bfxContent and save_types.LOCAL
             } else {
                 // Save to Google Drive
                 await this.root_store.google_drive.saveFile({
@@ -160,11 +159,11 @@ export default class SaveModalStore implements ISaveModalStore {
                     content: bfxContent,
                     mimeType: 'application/x-bfx',
                 });
-                await saveWorkspaceToRecent(bfxContent, save_types.GOOGLE_DRIVE); // Pass bfxContent and save_types.GOOGLE_DRIVE
             }
 
             // Update workspace metadata
             workspace.current_strategy_id = window.Blockly.utils.idGenerator.genUid();
+            await saveWorkspaceToRecent(bfxContent, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
             
             this.setButtonStatus(button_status.SUCCESS);
             setTimeout(() => this.toggleSaveModal(), 500);
