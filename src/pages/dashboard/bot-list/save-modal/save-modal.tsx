@@ -20,8 +20,7 @@ import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import IconRadio from './icon-radio';
 import './save-modal.scss';
-import HmacSHA256 from 'crypto-js/hmac-sha256';
-import Hex from 'crypto-js/enc-hex';
+import { XmlHelper } from '@/XmlHelper';
 
 type TSaveModalForm = {
     bot_name: string;
@@ -38,6 +37,33 @@ type TSaveModalForm = {
     setCurrentFocus: (current_focus: string) => void;
     toggleSaveModal: () => void;
     validateBotName: (values: string) => { [key: string]: string };
+};
+
+type TSaveModalValues = {
+    is_local: boolean;
+    save_as_collection: boolean;
+    bot_name: string;
+};
+
+const generateBotXml = (values: TSaveModalValues, workspace: any) => {
+    try {
+        if (!workspace || !window.Blockly?.Xml) {
+            throw new Error('Blockly workspace not initialized');
+        }
+
+        // Get XML from workspace
+        const blocksXml = window.Blockly.Xml.domToPrettyText(
+            window.Blockly.Xml.workspaceToDom(workspace)
+        );
+        
+        // Generate .bfx format and trigger download
+        const bfxContent = XmlHelper.generateBotFormat(values, blocksXml);
+        XmlHelper.downloadBotFile(bfxContent, values.bot_name);
+        return bfxContent;
+    } catch (error) {
+        console.error('Error generating bot file:', error);
+        throw error;
+    }
 };
 
 const SaveModalForm: React.FC<TSaveModalForm> = ({
@@ -59,7 +85,14 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
             bot_name: bot_name === config().default_file_name ? '' : bot_name,
         }}
         validate={validateBotName}
-        onSubmit={onConfirmSave}
+        onSubmit={async (values) => {
+            try {
+                await onConfirmSave(values);
+            } catch (error) {
+                console.error('Error saving bot:', error);
+                // Consider adding user notification here
+            }
+        }}
     >
         {({ values: { is_local }, setFieldValue, touched, errors }) => {
             const content_height = !is_mobile ? '500px' : `calc(100%)`;
@@ -68,7 +101,9 @@ const SaveModalForm: React.FC<TSaveModalForm> = ({
                     <Form className={classNames({ 'form--active-keyboard': is_onscreen_keyboard_active })}>
                         <div className='modal__content'>
                             <Text size='xs' lineHeight='l'>
-                                {localize('Enter your bot name, choose to save on your computer or Google Drive, and hit ')}
+                                {localize(
+                                    'Enter your bot name, choose to save on your computer or Google Drive, and hit '
+                                )}
                                 <strong>{localize('Save.')}</strong>
                             </Text>
                             <div className='modal__content-row'>

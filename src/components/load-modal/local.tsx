@@ -12,6 +12,7 @@ import { notification_message } from '../bot-notification/bot-notification-utils
 import LocalFooter from './local-footer';
 import SectionMessage from './section-message';
 import WorkspaceControl from './workspace-control';
+import { BOT_FORMAT } from '@/constants/bot-format';
 
 const LocalComponent = observer(() => {
     const { dashboard, load_modal, blockly_store } = useStore();
@@ -76,7 +77,7 @@ const LocalComponent = observer(() => {
                 <input
                     type='file'
                     ref={file_input_ref}
-                    accept='application/xml, text/xml'
+                    accept={`application/xml, text/xml, ${BOT_FORMAT.mimeType}`}
                     style={{ display: 'none' }}
                     onChange={e => setIsFileSupported(handleFileChange(e, false))}
                     data-testid='dt-load-strategy-file-input'
