@@ -163,7 +163,7 @@ export default class SaveModalStore implements ISaveModalStore {
 
             // Update workspace metadata
             workspace.current_strategy_id = window.Blockly.utils.idGenerator.genUid();
-            await saveWorkspaceToRecent(bfxContent, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
+            await saveWorkspaceToRecent(workspace, is_local ? save_types.LOCAL : save_types.GOOGLE_DRIVE);
             
             this.setButtonStatus(button_status.SUCCESS);
             setTimeout(() => this.toggleSaveModal(), 500);
