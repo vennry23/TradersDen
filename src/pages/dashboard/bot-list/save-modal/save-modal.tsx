@@ -56,10 +56,11 @@ const generateBotXml = (values: TSaveModalValues, workspace: any) => {
             window.Blockly.Xml.workspaceToDom(workspace)
         );
         
-        // Generate .bfx format and trigger download
-        const bfxContent = XmlHelper.generateBotFormat(values, blocksXml);
-        XmlHelper.downloadBotFile(bfxContent, values.bot_name);
-        return bfxContent;
+        // Get variables if they exist
+        const variables = workspace.getAllVariables?.();
+        
+        // Generate .bfx format
+        return XmlHelper.generateBotFormat(values, blocksXml);
     } catch (error) {
         console.error('Error generating bot file:', error);
         throw error;
