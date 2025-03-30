@@ -22,7 +22,6 @@ import { getStrategyType } from '../analytics/utils';
 import { tabs_title } from '../constants/load-modal';
 import { waitForDomElement } from '../utils/dom-observer';
 import RootStore from './root-store';
-import { XmlHelper } from '@/XmlHelper';
 
 export default class LoadModalStore {
     root_store: RootStore;
@@ -404,61 +403,33 @@ export default class LoadModalStore {
     };
 
     handleFileChange = (
-        event: DragEvent | Event,
-        fromDropzone: boolean,
-        file?: File | null
-    ): void => {
-        let files: File[] = [];
-
-        if (file) {
-            files = [file];
-        } else if (event instanceof DragEvent) {
+        event: React.MouseEvent | React.FormEvent<HTMLFormElement> | DragEvent,
+        is_body = true
+    ): boolean => {
+        this.imported_strategy_type = 'pending';
+        this.upload_id = uuidv4();
+        let files;
+        if (event.type === 'drop') {
+            event.stopPropagation();
             event.preventDefault();
-            files = Array.from(event.dataTransfer?.files || []);
+            ({ files } = event.dataTransfer as DragEvent);
         } else {
-            const target = event.target as HTMLInputElement;
-            files = Array.from(target.files || []);
+            ({ files } = event.target);
         }
 
-        if (files.length === 0) {
-            return;
+        const [file] = files;
+
+        if (!is_body) {
+            if (file.name.includes('xml')) {
+                this.setLoadedLocalFile(file);
+                this.getDashboardStrategies();
+            } else {
+                return false;
+            }
         }
-
-        const file_obj = files[0];
-        const file_name = file_obj?.name.replace(/\.[^/.]+$/, '') || '';
-
-        const reader = new FileReader();
-
-        reader.onload = action(async e => {
-            let block_string = e?.target?.result as string;
-            if (file_obj.name.endsWith('.bfx')) {
-                try {
-                    const botFormat = XmlHelper.loadBotFormat(block_string);
-                    block_string = botFormat.blocksXml;
-                } catch (err) {
-                    console.error('Error loading .bfx file:', err);
-                    return;
-                }
-            }
-
-            const load_options = {
-                block_string,
-                drop_event: event,
-                from: save_types.LOCAL,
-                workspace: null as window.Blockly.WorkspaceSvg | null,
-                file_name,
-                strategy_id: '',
-                showIncompatibleStrategyDialog: false,
-            };
-            if (this.local_workspace) {
-                this.local_workspace.dispose();
-                this.local_workspace = null;
-            }
-            this.loadStrategyOnModalLocalPreview(load_options);
-            this.setOpenButtonDisabled(false);
-        });
-
-        reader.readAsText(file_obj);
+        this.readFile(!is_body, event as DragEvent, file);
+        (event.target as HTMLInputElement).value = '';
+        return true;
     };
 
     readFile = (is_preview: boolean, drop_event: DragEvent, file: File): void => {

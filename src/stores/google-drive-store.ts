@@ -10,7 +10,6 @@ import {
 } from '../analytics/rudderstack-common-events';
 import { getStrategyType } from '../analytics/utils';
 import RootStore from './root-store';
-import { XmlHelper } from '@/XmlHelper';
 
 export type TErrorWithStatus = Error & { status?: number; result?: { error: { message: string } } };
 
@@ -313,18 +312,7 @@ export default class GoogleDriveStore {
                         fileId,
                     });
 
-                    let xml_doc = response.body;
-                    if (file_name.endsWith('.bfx')) {
-                        try {
-                            const botFormat = XmlHelper.loadBotFormat(xml_doc);
-                            xml_doc = botFormat.blocksXml;
-                        } catch (err) {
-                            console.error('Error loading .bfx file from Google Drive:', err);
-                            return;
-                        }
-                    }
-
-                    resolve({ xml_doc, file_name });
+                    resolve({ xml_doc: response.body, file_name });
                     setOpenSettings(NOTIFICATION_TYPE.BOT_IMPORT);
                     const upload_type = getStrategyType(response.body);
                     rudderStackSendUploadStrategyCompletedEvent({
@@ -332,8 +320,6 @@ export default class GoogleDriveStore {
                         upload_type,
                         upload_id: this.upload_id,
                     });
-                } else if (data.action === google.picker.Action.CANCEL) {
-                    // ...existing code...
                 }
             };
 
