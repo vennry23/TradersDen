@@ -20,7 +20,6 @@ import PlatformSwitcher from './platform-switcher';
 import './header.scss';
 import React, { useState } from 'react';
 import Modal from '@/components/shared_ui/modal'; // Import the modal component
-import { fetchSignals } from '@/signals/signals'; // Import signal logic
 
 const TelegramIcon = () => (
     <a href="https://t.me/binaryfx_site" target="_blank" rel="noopener noreferrer" className="telegram-icon">
@@ -53,14 +52,12 @@ const AppHeader = observer(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [stake, setStake] = useState('');
     const [martingale, setMartingale] = useState('');
-    const [isRunning, setIsRunning] = useState(false);
 
     const handleToggle = () => {
         if (!isToggled) {
             setIsModalOpen(true); // Open modal when toggled on
         } else {
             setIsToggled(false); // Turn off toggle
-            setIsRunning(false); // Stop trading
         }
     };
 
@@ -70,24 +67,6 @@ const AppHeader = observer(() => {
             setIsModalOpen(false); // Close modal
         } else {
             alert('Please enter valid Stake and Martingale values.');
-        }
-    };
-
-    const handleRun = async () => {
-        if (!isToggled) return;
-
-        setIsRunning(true);
-        try {
-            const signals = await fetchSignals(); // Fetch signals
-            signals.forEach(signal => {
-                // Example trading logic
-                console.log(`Trading signal: ${signal}`);
-                // Add your trading logic here, e.g., executeTrade(signal, stake, martingale);
-            });
-        } catch (error) {
-            console.error('Error fetching signals:', error);
-        } finally {
-            setIsRunning(false);
         }
     };
 
@@ -203,13 +182,6 @@ const AppHeader = observer(() => {
                         </label>
                         <button onClick={handleProceed} className="proceed-button">
                             Proceed
-                        </button>
-                        <button
-                            onClick={handleRun}
-                            className="run-button"
-                            disabled={!isToggled || isRunning}
-                        >
-                            {isRunning ? 'Running...' : 'Run'}
                         </button>
                     </div>
                 </Modal>
