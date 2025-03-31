@@ -41,115 +41,35 @@ const calculateTrendPercentage = (symbol, ticksCount) => {
     };
 };
 
-let auth_token = ''; // Store the authorization token
-let last_digit_trades = {}; // Track active trades per symbol
-
-const initializeAPI = () => {
-    ws.send(JSON.stringify({
-        authorize: auth_token
-    }));
-};
-
-const executeTrade = async (symbol, action) => {
-    if (!isTrading || !auth_token) return;
-
-    // Prevent multiple trades for the same symbol/action
-    const tradeKey = `${symbol}_${action}`;
-    if (last_digit_trades[tradeKey]) return;
-
-    let contractType, barrier;
-    switch (action) {
-        case 'over':
-            contractType = 'DIGITOVER';
-            barrier = '2';
-            break;
-        case 'under':
-            contractType = 'DIGITUNDER';
-            barrier = '7';
-            break;
-        case 'rise':
-            contractType = 'CALL';
-            break;
-        case 'fall':
-            contractType = 'PUT';
-            break;
-        default:
-            return;
-    }
-
-    const params = {
-        proposal: 1,
-        amount: stake,
-        basis: "stake",
-        contract_type: contractType,
-        currency: "USD",
-        symbol: symbol,
-        duration: 1,
-        duration_unit: "t"
-    };
-
-    // Add barrier for digit trades only
-    if (barrier) {
-        params.barrier = barrier;
-    }
-
-    last_digit_trades[tradeKey] = true;
-
-    ws.send(JSON.stringify({
-        buy: 1,
-        price: stake,
-        parameters: params
-    }));
-};
-
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    
-    // Handle authorizations
-    if (data.msg_type === 'authorize') {
-        console.log('Successfully authorized');
-    }
-    
-    // Handle buy responses
-    if (data.msg_type === 'buy') {
-        if (data.error) {
-            console.error('Trade error:', data.error.message);
-            return;
-        }
-        const contract_id = data.buy.contract_id;
-        console.log(`Trade executed: ${contract_id}`);
-        monitorTrade(contract_id);
-    }
-
-    // Handle contract updates
-    if (data.msg_type === 'proposal_open_contract') {
-        const contract = data.proposal_open_contract;
-        if (contract.is_sold) {
-            handleTradeResult(contract);
-        }
-    }
-
-    // Handle tick data
-    if (data.history || data.tick) {
-        if (data.history && data.history.prices) {
-            const symbol = data.echo_req.ticks_history;
-            ticksStorage[symbol] = data.history.prices.map(price => parseFloat(price));
-        } else if (data.tick) {
-            const symbol = data.tick.symbol;
-            ticksStorage[symbol].push(parseFloat(data.tick.quote));
-            if (ticksStorage[symbol].length > 255) ticksStorage[symbol].shift();
-        }
+    if (data.history && data.history.prices) {
+        const symbol = data.echo_req.ticks_history;
+        ticksStorage[symbol] = data.history.prices.map(price => parseFloat(price));
+    } else if (data.tick) {
+        const symbol = data.tick.symbol;
+        ticksStorage[symbol].push(parseFloat(data.tick.quote));
+        if (ticksStorage[symbol].length > 255) ticksStorage[symbol].shift();
     }
 };
 
-const handleTradeResult = (contract) => {
-    const profit = contract.profit;
+let isTrading = false;
+let stake = 1; // Default stake
+let martingaleFactor = 2; // Default martingale factor
+
+const startTrading = (initialStake, martingale) => {
+    isTrading = true;
+    stake = initialStake;
+    martingaleFactor = martingale;
+    console.log('Trading started with stake:', stake, 'and martingale factor:', martingaleFactor);
+};
+
 const stopTrading = () => {
     isTrading = false;
     console.log('Trading stopped.');
 };
 
-const executeTradeOld = (symbol, action) => {
+const executeTrade = (symbol, action) => {
     if (!isTrading) return; // Ensure trading is active
 
     console.log(`Executing ${action} trade on ${symbol} with stake ${stake}`);
@@ -186,8 +106,8 @@ function updateTables() {
 
         // Execute trades based on signals
         if (isTrading) { // Ensure trading is active
-            if (isBuy) executeTradeOld(symbol, 'buy');
-            if (isSell) executeTradeOld(symbol, 'sell');
+            if (isBuy) executeTrade(symbol, 'buy');
+            if (isSell) executeTrade(symbol, 'sell');
         }
 
         // Define status classes for signals
@@ -220,13 +140,6 @@ function updateTables() {
             <td><span class="signal-box ${overClass}">${overClass === "over" ? "Over 2" : "----"}</span></td>
             <td><span class="signal-box ${underClass}">${underClass === "under" ? "Under 7" : "----"}</span></td>
         </tr>`;
-
-        // Modify the trade execution part
-        if (isTrading) {
-            if (overClass === 'over') {
-                executeTrade(symbol, 'over');
-            }
-        }
     });
 }
 
@@ -236,17 +149,8 @@ setInterval(updateTables, 1000); // Update every second
 window.startTrading = (initialStake, martingale) => {
     isTrading = true;
     stake = initialStake;
-    window.initialStake = initialStake; // Store initial stake
     martingaleFactor = martingale;
-    
-    // Get token from localStorage or another source
-    auth_token = localStorage.getItem('deriv_token') || '';
-    if (auth_token) {
-        initializeAPI();
-    } else {
-        console.error('No authorization token found');
-        isTrading = false;
-    }
+    console.log('Trading started with stake:', stake, 'and martingale factor:', martingaleFactor);
 };
 
 window.stopTrading = () => {
