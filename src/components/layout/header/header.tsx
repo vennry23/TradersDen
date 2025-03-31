@@ -18,6 +18,7 @@ import MenuItems from './menu-items';
 import MobileMenu from './mobile-menu';
 import PlatformSwitcher from './platform-switcher';
 import './header.scss';
+import React, { useState } from 'react';
 
 const TelegramIcon = () => (
     <a href="https://t.me/binaryfx_site" target="_blank" rel="noopener noreferrer" className="telegram-icon">
@@ -45,6 +46,12 @@ const AppHeader = observer(() => {
     const { localize } = useTranslations();
 
     const { isOAuth2Enabled } = useOauth2();
+
+    const [isToggled, setIsToggled] = useState(false);
+
+    const handleToggle = () => {
+        setIsToggled(prevState => !prevState);
+    };
 
     const renderAccountSection = () => {
         if (isAuthorizing) {
@@ -121,6 +128,13 @@ const AppHeader = observer(() => {
                 <AppLogo />
                 <MobileMenu />
                 <TelegramIcon />
+                <button
+                    className="app-header__toggle"
+                    onClick={handleToggle}
+                    aria-pressed={isToggled}
+                >
+                    {isToggled ? 'ON' : 'OFF'}
+                </button>
             </Wrapper>
             <Wrapper variant='right'>{renderAccountSection()}</Wrapper>
         </Header>
