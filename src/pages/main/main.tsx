@@ -219,17 +219,12 @@ const AppWrapper = observer(() => {
                         </div>
                         <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
                             {isAnalysisToolActive && (
-                                <div style={{ 
-                                    position: 'relative',
-                                    width: '100%',
-                                    height: '600px',
-                                    zIndex: 0 // Set a base z-index for the container
-                                }}>
+                                <div style={{ position: 'relative' }}>
                                     <div style={{
                                         position: 'absolute',
                                         top: '10px',
                                         right: '10px',
-                                        zIndex: 2, // Higher z-index for buttons
+                                        zIndex: 1000,
                                         display: 'flex',
                                         gap: '8px',
                                         background: 'var(--general-main-1)',
@@ -251,9 +246,9 @@ const AppWrapper = observer(() => {
                                             A Tool
                                         </button>
                                         <button 
-                                            onClick={() => toggleAnalysisTool('market analyzer 2025')}
+                                            onClick={() => toggleAnalysisTool('market-analyzer-2025')}
                                             style={{ 
-                                                backgroundColor: analysisToolUrl === 'market analyzer 2025' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
+                                                backgroundColor: analysisToolUrl === 'market-analyzer-2025' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
                                                 color: analysisToolUrl === 'market-analyzer-2025' ? 'white' : 'var(--text-general)',
                                                 padding: '8px 16px',
                                                 border: 'none',
@@ -267,25 +262,8 @@ const AppWrapper = observer(() => {
                                     <div className={classNames('dashboard__chart-wrapper', {
                                         'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                         'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
-                                    })}
-                                    style={{
-                                        position: 'relative',
-                                        zIndex: 1, // Set iframe container z-index between base and buttons
-                                        width: '100%',
-                                        height: '100%'
-                                    }}>
-                                        <iframe 
-                                            src={analysisToolUrl} 
-                                            frameBorder='0' 
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0
-                                            }}
-                                            scrolling="yes" 
-                                        />
+                                    })}>
+                                        <iframe src={analysisToolUrl} frameBorder='0' height='600px' scrolling="yes" />
                                     </div>
                                 </div>
                             )}
