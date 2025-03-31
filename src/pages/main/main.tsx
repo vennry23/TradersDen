@@ -246,10 +246,10 @@ const AppWrapper = observer(() => {
                                             A Tool
                                         </button>
                                         <button 
-                                            onClick={() => toggleAnalysisTool('market-analyzer-2025')}
+                                            onClick={() => toggleAnalysisTool('ldpanalyzer')}
                                             style={{ 
                                                 backgroundColor: analysisToolUrl === 'ldpanalyzer' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
-                                                color: analysisToolUrl === 'market-analyzer-2025' ? 'white' : 'var(--text-general)',
+                                                color: analysisToolUrl === 'lpdanalyzer' ? 'white' : 'var(--text-general)',
                                                 padding: '8px 16px',
                                                 border: 'none',
                                                 borderRadius: '4px',
