@@ -6,19 +6,33 @@ const RunPanel = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [useSignals, setUseSignals] = useState(false); // Toggle for trading source
 
+    const stopBotBuilderTrading = () => {
+        console.log('Stopping bot builder trading');
+        // TODO: Add logic to stop the bot builder's trading
+        if (window.DBot && typeof window.DBot.stopBot === 'function') {
+            window.DBot.stopBot();
+        }
+    };
+
     const handleRunClick = () => {
         if (!isRunning) {
             if (useSignals) {
+                stopBotBuilderTrading(); // Ensure bot builder trading is stopped
                 window.startTrading(stake, martingale); // Start trading from signals
             } else {
-                console.log('Trading from bot builder logic'); // Placeholder for bot builder trading logic
+                console.log('Trading from bot builder logic');
                 // TODO: Add logic to start trading from the bot builder
+                if (window.DBot && typeof window.DBot.runBot === 'function') {
+                    window.DBot.runBot();
+                }
             }
             setIsRunning(true);
         } else {
-            window.stopTrading(); // Stop trading from signals
-            console.log('Stopping bot builder trading'); // Placeholder for stopping bot builder trading
-            // TODO: Add logic to stop trading from the bot builder
+            if (useSignals) {
+                window.stopTrading(); // Stop trading from signals
+            } else {
+                stopBotBuilderTrading(); // Stop trading from bot builder
+            }
             setIsRunning(false);
         }
     };
