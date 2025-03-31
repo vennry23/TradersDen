@@ -17,6 +17,11 @@ const RunPanel = () => {
     const handleRunClick = () => {
         if (!isRunning) {
             if (useSignals) {
+                const token = localStorage.getItem('deriv_token');
+                if (!token) {
+                    alert('Please login to Deriv first');
+                    return;
+                }
                 stopBotBuilderTrading(); // Ensure bot builder trading is stopped
                 window.startTrading(stake, martingale); // Start trading from signals
             } else {
