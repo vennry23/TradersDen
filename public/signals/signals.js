@@ -143,5 +143,15 @@ function updateTables() {
 
 setInterval(updateTables, 1000); // Update every second
 
-// Expose startTrading and stopTrading for external use
-export { startTrading, stopTrading };
+// Expose startTrading and stopTrading globally
+window.startTrading = (initialStake, martingale) => {
+    isTrading = true;
+    stake = initialStake;
+    martingaleFactor = martingale;
+    console.log('Trading started with stake:', stake, 'and martingale factor:', martingaleFactor);
+};
+
+window.stopTrading = () => {
+    isTrading = false;
+    console.log('Trading stopped.');
+};

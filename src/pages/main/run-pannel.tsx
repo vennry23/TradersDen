@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { startTrading, stopTrading } from '../../../public/signals/signals';
 
 const RunPanel = () => {
     const [stake, setStake] = useState(1);
@@ -10,14 +9,14 @@ const RunPanel = () => {
     const handleRunClick = () => {
         if (!isRunning) {
             if (useSignals) {
-                startTrading(stake, martingale); // Start trading from signals
+                window.startTrading(stake, martingale); // Start trading from signals
             } else {
                 console.log('Trading from bot builder logic'); // Placeholder for bot builder trading logic
                 // TODO: Add logic to start trading from the bot builder
             }
             setIsRunning(true);
         } else {
-            stopTrading(); // Stop trading from signals
+            window.stopTrading(); // Stop trading from signals
             console.log('Stopping bot builder trading'); // Placeholder for stopping bot builder trading
             // TODO: Add logic to stop trading from the bot builder
             setIsRunning(false);
