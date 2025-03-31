@@ -185,21 +185,6 @@ const AppWrapper = observer(() => {
         // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
     }, [load_modal, setActiveTab]);
 
-    const handleRun = useCallback(async () => {
-        if (dashboard.is_link_signals_to_workflow) {
-            const active_signals = await getActiveSignals(); // Fetch active signals
-            if (active_signals.length) {
-                active_signals.forEach(signal => {
-                    buyContract(signal.symbol, signal.contract_type); // Buy contracts based on signals
-                });
-            } else {
-                console.warn('No active signals available.');
-            }
-        } else {
-            startTradingWorkflow(); // Default trading workflow
-        }
-    }, [dashboard.is_link_signals_to_workflow]);
-
     const showRunPanel = [DBOT_TABS.BOT_BUILDER, DBOT_TABS.CHART, DBOT_TABS.ANALYSIS_TOOL, DBOT_TABS.SIGNALS].includes(active_tab);
 
     return (

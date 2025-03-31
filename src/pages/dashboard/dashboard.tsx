@@ -9,7 +9,6 @@ import OnboardTourHandler from '../tutorials/dbot-tours/onboarding-tour';
 import Announcements from './announcements';
 import Cards from './cards';
 import InfoPanel from './info-panel';
-import ToggleSwitch from '@/components/shared_ui/toggle-switch'; // Import a toggle switch component
 
 type TMobileIconGuide = {
     handleTabChange: (active_number: number) => void;
@@ -18,7 +17,7 @@ type TMobileIconGuide = {
 const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
     const { load_modal, dashboard } = useStore();
     const { dashboard_strategies } = load_modal;
-    const { active_tab, active_tour, is_link_signals_to_workflow, setLinkSignalsToWorkflow } = dashboard; // Add state for the toggle
+    const { active_tab, active_tour } = dashboard;
     const has_dashboard_strategies = !!dashboard_strategies?.length;
     const { isDesktop, isTablet } = useDevice();
 
@@ -37,11 +36,6 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                                 'tab__dashboard__header--listed': isDesktop && has_dashboard_strategies,
                             })}
                         >
-                            <ToggleSwitch
-                                label={localize('Link signals to trading workflow')}
-                                isChecked={is_link_signals_to_workflow}
-                                onChange={setLinkSignalsToWorkflow}
-                            />
                             {!has_dashboard_strategies && (
                                 <Text
                                     className='title'

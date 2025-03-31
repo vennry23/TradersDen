@@ -119,7 +119,6 @@ export default class DashboardStore implements IDashboardStore {
             setShowMobileTourDialog: action.bound,
             is_chart_modal_visible: observable,
             is_trading_view_modal_visible: observable,
-            is_link_signals_to_workflow: observable, // Add observable for the new state
         });
         this.root_store = root_store;
         this.core = core;
@@ -205,7 +204,6 @@ export default class DashboardStore implements IDashboardStore {
     is_chart_modal_visible = false;
     is_trading_view_modal_visible = false;
     faq_title = '';
-    is_link_signals_to_workflow = false; // State for the toggle
 
     setFaqTitle = (faq_title: string) => {
         this.faq_title = faq_title;
@@ -399,9 +397,5 @@ export default class DashboardStore implements IDashboardStore {
             this.setTourEnd(tour_type);
             this.setActiveTour('');
         }
-    };
-
-    setLinkSignalsToWorkflow = (value: boolean) => {
-        this.is_link_signals_to_workflow = value;
     };
 }
