@@ -29,13 +29,6 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     'tab__dashboard--tour-active': active_tour,
                 })}
             >
-                <div className='tab__dashboard__header'>
-                    <ToggleSwitch
-                        label={localize('Link signals to trading workflow')}
-                        isChecked={is_link_signals_to_workflow}
-                        onChange={setLinkSignalsToWorkflow}
-                    />
-                </div>
                 <div className='tab__dashboard__content'>
                     <Announcements is_mobile={!isDesktop} is_tablet={isTablet} handleTabChange={handleTabChange} />
                     <div className='quick-panel'>
@@ -44,6 +37,11 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                                 'tab__dashboard__header--listed': isDesktop && has_dashboard_strategies,
                             })}
                         >
+                            <ToggleSwitch
+                                label={localize('Link signals to trading workflow')}
+                                isChecked={is_link_signals_to_workflow}
+                                onChange={setLinkSignalsToWorkflow}
+                            />
                             {!has_dashboard_strategies && (
                                 <Text
                                     className='title'
