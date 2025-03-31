@@ -37,6 +37,15 @@ const RunPanel = () => {
         }
     };
 
+    const handleToggleChange = (e) => {
+        const useSignalsToggle = e.target.checked;
+        setUseSignals(useSignalsToggle);
+
+        if (useSignalsToggle) {
+            stopBotBuilderTrading(); // Stop bot builder trading immediately when toggled
+        }
+    };
+
     return (
         <div className="run-panel">
             <div className="settings">
@@ -61,7 +70,7 @@ const RunPanel = () => {
                     <input
                         type="checkbox"
                         checked={useSignals}
-                        onChange={(e) => setUseSignals(e.target.checked)}
+                        onChange={handleToggleChange}
                     />
                 </label>
             </div>

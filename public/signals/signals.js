@@ -70,7 +70,7 @@ const stopTrading = () => {
 };
 
 const executeTrade = (symbol, action) => {
-    if (!isTrading) return;
+    if (!isTrading) return; // Ensure trading is active
 
     console.log(`Executing ${action} trade on ${symbol} with stake ${stake}`);
     // Simulate trade execution
@@ -105,8 +105,10 @@ function updateTables() {
         const isSell = fall255 > 57 && fall55 > 55;
 
         // Execute trades based on signals
-        if (isBuy) executeTrade(symbol, 'buy');
-        if (isSell) executeTrade(symbol, 'sell');
+        if (isTrading) { // Ensure trading is active
+            if (isBuy) executeTrade(symbol, 'buy');
+            if (isSell) executeTrade(symbol, 'sell');
+        }
 
         // Define status classes for signals
         const riseClass = isBuy ? "rise" : "neutral";
