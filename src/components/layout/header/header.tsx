@@ -91,6 +91,28 @@ const AppHeader = observer(() => {
         }
     };
 
+    export const isToggleOn = () => isToggled; // Export toggle state
+
+    const handleRunFromPanel = async () => {
+        if (!isToggled) return;
+
+        setIsRunning(true);
+        try {
+            const signals = await fetchSignals(); // Fetch signals
+            signals.forEach(signal => {
+                console.log(`Trading signal: ${signal}`);
+                // Add your trading logic here, e.g., executeTrade(signal, stake, martingale);
+            });
+        } catch (error) {
+            console.error('Error fetching signals:', error);
+        } finally {
+            setIsRunning(false);
+        }
+    };
+
+    // Attach the run handler to the global window object for the run panel
+    window.handleRunFromPanel = handleRunFromPanel;
+
     const renderAccountSection = () => {
         if (isAuthorizing) {
             return <AccountsInfoLoader isLoggedIn isMobile={!isDesktop} speed={3} />;
