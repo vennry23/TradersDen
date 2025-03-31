@@ -54,20 +54,15 @@ const AppHeader = observer(() => {
     const [martingale, setMartingale] = useState('');
 
     const handleToggle = () => {
+        setIsToggled(prevState => !prevState);
         if (!isToggled) {
             setIsModalOpen(true); // Open modal when toggled on
-        } else {
-            setIsToggled(false); // Turn off toggle
         }
     };
 
     const handleProceed = () => {
-        if (stake.trim() && martingale.trim()) {
-            setIsToggled(true); // Enable toggle only if inputs are valid
-            setIsModalOpen(false); // Close modal
-        } else {
-            alert('Please enter valid Stake and Martingale values.');
-        }
+        console.log('Stake:', stake, 'Martingale:', martingale);
+        setIsModalOpen(false); // Close modal on proceed
     };
 
     const renderAccountSection = () => {
