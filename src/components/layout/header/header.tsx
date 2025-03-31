@@ -19,7 +19,6 @@ import MobileMenu from './mobile-menu';
 import PlatformSwitcher from './platform-switcher';
 import './header.scss';
 import React, { useState } from 'react';
-import Modal from '@/components/shared_ui/modal'; // Import the modal component
 
 const TelegramIcon = () => (
     <a href="https://t.me/binaryfx_site" target="_blank" rel="noopener noreferrer" className="telegram-icon">
@@ -49,20 +48,9 @@ const AppHeader = observer(() => {
     const { isOAuth2Enabled } = useOauth2();
 
     const [isToggled, setIsToggled] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [stake, setStake] = useState('');
-    const [martingale, setMartingale] = useState('');
 
     const handleToggle = () => {
         setIsToggled(prevState => !prevState);
-        if (!isToggled) {
-            setIsModalOpen(true); // Open modal when toggled on
-        }
-    };
-
-    const handleProceed = () => {
-        console.log('Stake:', stake, 'Martingale:', martingale);
-        setIsModalOpen(false); // Close modal on proceed
     };
 
     const renderAccountSection = () => {
@@ -149,38 +137,6 @@ const AppHeader = observer(() => {
                 </button>
             </Wrapper>
             <Wrapper variant='right'>{renderAccountSection()}</Wrapper>
-
-            {isModalOpen && (
-                <Modal
-                    is_open={isModalOpen}
-                    toggleModal={() => setIsModalOpen(false)}
-                    title="Select Stake and Martingale"
-                >
-                    <div className="modal-content">
-                        <label>
-                            Stake:
-                            <input
-                                type="number"
-                                value={stake}
-                                onChange={e => setStake(e.target.value)}
-                                placeholder="Enter stake"
-                            />
-                        </label>
-                        <label>
-                            Martingale:
-                            <input
-                                type="number"
-                                value={martingale}
-                                onChange={e => setMartingale(e.target.value)}
-                                placeholder="Enter martingale"
-                            />
-                        </label>
-                        <button onClick={handleProceed} className="proceed-button">
-                            Proceed
-                        </button>
-                    </div>
-                </Modal>
-            )}
         </Header>
     );
 });
