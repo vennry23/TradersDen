@@ -53,6 +53,38 @@ ws.onmessage = (event) => {
     }
 };
 
+let isTrading = false;
+let stake = 1; // Default stake
+let martingaleFactor = 2; // Default martingale factor
+
+const startTrading = (initialStake, martingale) => {
+    isTrading = true;
+    stake = initialStake;
+    martingaleFactor = martingale;
+    console.log('Trading started with stake:', stake, 'and martingale factor:', martingaleFactor);
+};
+
+const stopTrading = () => {
+    isTrading = false;
+    console.log('Trading stopped.');
+};
+
+const executeTrade = (symbol, action) => {
+    if (!isTrading) return;
+
+    console.log(`Executing ${action} trade on ${symbol} with stake ${stake}`);
+    // Simulate trade execution
+    // TODO: Replace with actual trading API logic
+    const tradeResult = Math.random() > 0.5 ? 'win' : 'loss';
+    console.log(`Trade result: ${tradeResult}`);
+
+    if (tradeResult === 'loss') {
+        stake *= martingaleFactor; // Apply martingale
+    } else {
+        stake = 1; // Reset stake on win
+    }
+};
+
 function updateTables() {
     const riseFallTable = document.getElementById("riseFallTable");
     const overUnderTable = document.getElementById("overUnderTable");
@@ -71,6 +103,10 @@ function updateTables() {
         // Check if both conditions are met for a buy/sell signal
         const isBuy = rise255 > 57 && rise55 > 55;
         const isSell = fall255 > 57 && fall55 > 55;
+
+        // Execute trades based on signals
+        if (isBuy) executeTrade(symbol, 'buy');
+        if (isSell) executeTrade(symbol, 'sell');
 
         // Define status classes for signals
         const riseClass = isBuy ? "rise" : "neutral";
@@ -106,3 +142,6 @@ function updateTables() {
 }
 
 setInterval(updateTables, 1000); // Update every second
+
+// Expose startTrading and stopTrading for external use
+export { startTrading, stopTrading };
