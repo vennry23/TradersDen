@@ -6,8 +6,9 @@
     <variable id="Xzq:)(u%ys]O-!`Q;lCB">Win Stake</variable>
     <variable id="s0$L(G)j.Ut,5laZ1b;M">text1</variable>
     <variable id="Auj:w#]sAt;peXV=?YBf">text2</variable>
-    <variable id="{8SIVgnOS_Lk}I2~hH/?">Take Profit</variable>
+    <variable id=")yeto6;GS+0oleckKc=V">martingale</variable>
     <variable id="m_LK!?8lI0aGA4G0^z.[">Stop Loss</variable>
+    <variable id="{8SIVgnOS_Lk}I2~hH/?">Take Profit</variable>
   </variables>
   <block type="trade_definition" id="5;D6gZ2MG.myk6NGZT-C" deletable="false" x="0" y="60">
     <statement name="TRADE_OPTIONS">
@@ -47,7 +48,7 @@
       <block type="text_print" id="W{=4y)bFOnh]/DikW7W-">
         <value name="TEXT">
           <shadow type="text" id="8P;kPS@CnGz[1P@tEA6g">
-            <field name="TEXT">Welcome to Derivlite</field>
+            <field name="TEXT">Welcome to Derivlite.com</field>
           </shadow>
         </value>
         <next>
@@ -67,26 +68,36 @@
                   </block>
                 </value>
                 <next>
-                  <block type="variables_set" id="a`^a-.[oyx{{S+fDQNay">
-                    <field name="VAR" id="{8SIVgnOS_Lk}I2~hH/?">Take Profit</field>
+                  <block type="variables_set" id="c(L2x;)yLyM|;+yS3EX:">
+                    <field name="VAR" id=")yeto6;GS+0oleckKc=V">martingale</field>
                     <value name="VALUE">
-                      <block type="text_prompt_ext" id="^F}d}L{^Bvej[ui73LfP">
-                        <field name="TYPE">NUMBER</field>
-                        <value name="TEXT">
-                          <shadow type="text" id=";t3~TVL/vcHRTpOBd)ej">
-                            <field name="TEXT">Expected Profit [$]</field>
-                          </shadow>
-                        </value>
+                      <block type="math_number" id="Ww0fM_|#U)?,K5)T47i~">
+                        <field name="NUM">6</field>
                       </block>
                     </value>
                     <next>
-                      <block type="variables_set" id="Vxs}ng//6C~j=fYpk;(P">
-                        <field name="VAR" id="m_LK!?8lI0aGA4G0^z.[">Stop Loss</field>
+                      <block type="variables_set" id="a`^a-.[oyx{{S+fDQNay">
+                        <field name="VAR" id="{8SIVgnOS_Lk}I2~hH/?">Take Profit</field>
                         <value name="VALUE">
-                          <block type="math_number" id="^82o~TDeG@W@4|_b|P23">
-                            <field name="NUM">100</field>
+                          <block type="text_prompt_ext" id="^F}d}L{^Bvej[ui73LfP">
+                            <field name="TYPE">NUMBER</field>
+                            <value name="TEXT">
+                              <shadow type="text" id=";t3~TVL/vcHRTpOBd)ej">
+                                <field name="TEXT">Expected Profit [$]</field>
+                              </shadow>
+                            </value>
                           </block>
                         </value>
+                        <next>
+                          <block type="variables_set" id="Vxs}ng//6C~j=fYpk;(P">
+                            <field name="VAR" id="m_LK!?8lI0aGA4G0^z.[">Stop Loss</field>
+                            <value name="VALUE">
+                              <block type="math_number" id="^82o~TDeG@W@4|_b|P23">
+                                <field name="NUM">100</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
                       </block>
                     </next>
                   </block>
@@ -135,31 +146,6 @@
                 <field name="TEXT">Green</field>
               </block>
             </value>
-            <next>
-              <block type="trade_definition_tradeoptions" id="#eX5PwG3gOY1WS_A5,o2">
-                <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="true" has_second_barrier="false" has_prediction="false"></mutation>
-                <field name="DURATIONTYPE_LIST">t</field>
-                <field name="BARRIEROFFSETTYPE_LIST">+</field>
-                <value name="DURATION">
-                  <shadow type="math_number" id="4Uz|6ytz6uqS7je:@*c(">
-                    <field name="NUM">5</field>
-                  </shadow>
-                </value>
-                <value name="AMOUNT">
-                  <shadow type="math_number" id="s(%F;.lcTic`*Ij2`p_t">
-                    <field name="NUM">0.35</field>
-                  </shadow>
-                  <block type="variables_get" id="JjlzcZvhFntcbE;[})iv">
-                    <field name="VAR" id="fJ~.6q%X-TisEdMAx^ap">Initial Stake</field>
-                  </block>
-                </value>
-                <value name="BARRIEROFFSET">
-                  <shadow type="math_number" id="=f__d$?9lR{SVD8y*16X">
-                    <field name="NUM">1.05</field>
-                  </shadow>
-                </value>
-              </block>
-            </next>
           </block>
         </statement>
         <value name="IF1">
@@ -217,7 +203,7 @@
                 </value>
                 <value name="BARRIEROFFSET">
                   <shadow type="math_number" id="+_vXR:,SKqhBA`nfu?H8">
-                    <field name="NUM">1.05</field>
+                    <field name="NUM">1.03</field>
                   </shadow>
                 </value>
               </block>
@@ -254,6 +240,9 @@
                   <shadow type="math_number" id="[T^ZiM4CBrkUF5CQKW!:">
                     <field name="NUM">6</field>
                   </shadow>
+                  <block type="variables_get" id="1OyG:0vc#G10xFJ!qZsJ">
+                    <field name="VAR" id=")yeto6;GS+0oleckKc=V">martingale</field>
+                  </block>
                 </value>
               </block>
             </value>
@@ -409,7 +398,7 @@
       </block>
     </statement>
   </block>
-  <block type="before_purchase" id="]VyNm*RHFmZVfy`6]tp!" collapsed="true" deletable="false" x="0" y="1182">
+  <block type="before_purchase" id="]VyNm*RHFmZVfy`6]tp!" collapsed="true" deletable="false" x="0" y="1126">
     <statement name="BEFOREPURCHASE_STACK">
       <block type="text_join" id="8giIa^U^l,J;w~g#(`=`">
         <field name="VARIABLE" id="JtxUD(OVXCF(mrVUbWF:">text</field>
@@ -738,5 +727,28 @@
         </next>
       </block>
     </statement>
+  </block>
+  <block type="trade_definition_tradeoptions" id="#eX5PwG3gOY1WS_A5,o2" x="0" y="1222">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="true" has_second_barrier="false" has_prediction="false"></mutation>
+    <field name="DURATIONTYPE_LIST">t</field>
+    <field name="BARRIEROFFSETTYPE_LIST">+</field>
+    <value name="DURATION">
+      <shadow type="math_number" id="4Uz|6ytz6uqS7je:@*c(">
+        <field name="NUM">5</field>
+      </shadow>
+    </value>
+    <value name="AMOUNT">
+      <shadow type="math_number" id="s(%F;.lcTic`*Ij2`p_t">
+        <field name="NUM">0.35</field>
+      </shadow>
+      <block type="variables_get" id="JjlzcZvhFntcbE;[})iv">
+        <field name="VAR" id="fJ~.6q%X-TisEdMAx^ap">Initial Stake</field>
+      </block>
+    </value>
+    <value name="BARRIEROFFSET">
+      <shadow type="math_number" id="=f__d$?9lR{SVD8y*16X">
+        <field name="NUM">1.03</field>
+      </shadow>
+    </value>
   </block>
 </xml>
