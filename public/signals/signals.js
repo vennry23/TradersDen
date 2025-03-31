@@ -102,89 +102,9 @@ const executeTrade = async (symbol, action) => {
     }));
 };
 
-let isTrading = false;
-let stake = 1;
-let martingaleFactor = 2;
-let activeContract = null;
-let shouldRestartAfterComplete = false;
-
-const proposalRequest = {
-    proposal: 1,
-    amount: 1,
-    basis: "stake",
-    contract_type: "DIGITOVER",
-    currency: "USD",
-    symbol: "R_10",
-    duration: 1,
-    duration_unit: "t",
-    barrier: "2"
-};
-
-const tradeContract = (proposal_id) => {
-    if (!isTrading) return;
-
-    ws.send(JSON.stringify({
-        buy: proposal_id,
-        price: proposalRequest.amount
-    }));
-};
-
-const initializeTradeSubscription = () => {
-    // Subscribe to proposal
-    ws.send(JSON.stringify(proposalRequest));
-};
-
-const updateProposal = () => {
-    if (!isTrading) return;
-    proposalRequest.amount = stake;
-    ws.send(JSON.stringify(proposalRequest));
-};
-
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
-
-    if (data.msg_type === 'proposal') {
-        if (data.error) {
-            console.error('Proposal error:', data.error.message);
-            return;
-        }
-        if (isTrading && !activeContract) {
-            tradeContract(data.proposal.id);
-        }
-    }
-
-    if (data.msg_type === 'buy') {
-        if (data.error) {
-            console.error('Buy error:', data.error.message);
-            return;
-        }
-        activeContract = data.buy.contract_id;
-        subscribeToContract(activeContract);
-    }
-
-    if (data.msg_type === 'proposal_open_contract') {
-        const contract = data.proposal_open_contract;
-        
-        if (contract.is_sold) {
-            const profit = contract.profit;
-            console.log(`Contract completed. Profit: ${profit}`);
-            
-            if (profit < 0) {
-                stake *= martingaleFactor;
-            } else {
-                stake = window.initialStake || 1;
-            }
-            
-            activeContract = null;
-            updateProposal();
-            
-            // Start new trade if trading should continue
-            if (shouldRestartAfterComplete && isTrading) {
-                initializeTradeSubscription();
-            }
-        }
-    }
-
+    
     // Handle authorizations
     if (data.msg_type === 'authorize') {
         console.log('Successfully authorized');
@@ -302,10 +222,9 @@ function updateTables() {
         </tr>`;
 
         // Modify the trade execution part
-        if (isTrading && !activeContract) {
-            if (symbol === 'R_10' && overClass === 'over') {
-                proposalRequest.symbol = symbol;
-                initializeTradeSubscription();
+        if (isTrading) {
+            if (overClass === 'over') {
+                executeTrade(symbol, 'over');
             }
         }
     });
@@ -313,21 +232,12 @@ function updateTables() {
 
 setInterval(updateTables, 1000); // Update every second
 
-const subscribeToContract = (contract_id) => {
-    ws.send(JSON.stringify({
-        proposal_open_contract: 1,
-        contract_id: contract_id,
-        subscribe: 1
-    }));
-};
-
 // Expose startTrading and stopTrading globally
 window.startTrading = (initialStake, martingale) => {
     isTrading = true;
     stake = initialStake;
     window.initialStake = initialStake; // Store initial stake
     martingaleFactor = martingale;
-    shouldRestartAfterComplete = true;
     
     // Get token from localStorage or another source
     auth_token = localStorage.getItem('deriv_token') || '';
@@ -341,12 +251,5 @@ window.startTrading = (initialStake, martingale) => {
 
 window.stopTrading = () => {
     isTrading = false;
-    shouldRestartAfterComplete = false;
-    
-    // If there's an active contract, wait for it to complete
-    if (!activeContract) {
-        console.log('Trading stopped.');
-    } else {
-        console.log('Waiting for active contract to complete...');
-    }
+    console.log('Trading stopped.');
 };
