@@ -96,6 +96,8 @@ const AppWrapper = observer(() => {
     const navigate = useNavigate();
 
     const [bots, setBots] = useState([]);
+    // Add new state for analysis tool URL
+    const [analysisToolUrl, setAnalysisToolUrl] = useState('ai');
 
     useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {
@@ -185,6 +187,11 @@ const AppWrapper = observer(() => {
         // rudderStackSendDashboardClickEvent({ dashboard_click_name: 'open', subpage_name: 'bot_builder' });
     }, [load_modal, setActiveTab]);
 
+    // Add toggle function
+    const toggleAnalysisTool = (url: string) => {
+        setAnalysisToolUrl(url);
+    };
+
     const showRunPanel = [DBOT_TABS.BOT_BUILDER, DBOT_TABS.CHART, DBOT_TABS.ANALYSIS_TOOL, DBOT_TABS.SIGNALS].includes(active_tab);
 
     return (
@@ -208,11 +215,40 @@ const AppWrapper = observer(() => {
                             </Suspense>
                         </div>
                         <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
+                            <div className='analysis-tool-buttons' style={{ marginBottom: '10px' }}>
+                                <button 
+                                    onClick={() => toggleAnalysisTool('ai')}
+                                    style={{ 
+                                        marginRight: '10px',
+                                        backgroundColor: analysisToolUrl === 'ai' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
+                                        color: analysisToolUrl === 'ai' ? 'white' : 'var(--text-general)',
+                                        padding: '8px 16px',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    A Tool
+                                </button>
+                                <button 
+                                    onClick={() => toggleAnalysisTool('market-analyzer-2025')}
+                                    style={{ 
+                                        backgroundColor: analysisToolUrl === 'market-analyzer-2025' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
+                                        color: analysisToolUrl === 'market-analyzer-2025' ? 'white' : 'var(--text-general)',
+                                        padding: '8px 16px',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    LDP Tool
+                                </button>
+                            </div>
                             <div className={classNames('dashboard__chart-wrapper', {
                                 'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                 'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
                             })}>
-                                <iframe src='ai' frameBorder='0' height='600px' scrolling="yes" />
+                                <iframe src={analysisToolUrl} frameBorder='0' height='600px' scrolling="yes" />
                             </div>
                         </div>
                         <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
