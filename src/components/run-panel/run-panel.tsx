@@ -267,12 +267,6 @@ const RunPanel = observer(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleRunClick = () => {
-        if (typeof window.handleRunFromPanel === 'function') {
-            window.handleRunFromPanel(); // Call the signal trading logic
-        }
-    };
-
     const content = (
         <DrawerContent
             active_index={active_index}
@@ -325,9 +319,6 @@ const RunPanel = observer(() => {
                     {content}
                 </Drawer>
                 {!isDesktop && <MobileDrawerFooter />}
-                <button onClick={handleRunClick} className="run-panel__run-button">
-                    Run
-                </button>
             </div>
             <SelfExclusion onRunButtonClick={onRunButtonClick} />
             <StatisticsInfoModal
