@@ -1,9 +1,23 @@
+:root {
+    /* General colors */
+    --general-main-1: #f9fafb;
+    --text-general: #333;
+    --button-primary-default: #0056a3;
+    --border-color: #ccc;
+    --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --highlight-yellow: rgba(255, 223, 0, 1);
+    --highlight-yellow-bg: rgba(255, 223, 0, 0.2);
+    --highlight-glow: rgba(255, 223, 0, 0.8);
+    --success-color: #17db4e;
+    --error-color: rgba(255, 0, 0, 1);
+}
+
 body {
     font-family: 'Rubik', Arial, sans-serif;
     margin: 10px;
     padding: 10px;
-    background-color: #f9fafb;
-    color: #333;
+    background-color: var(--general-main-1);
+    color: var(--text-general);
     line-height: 1.2;
     height: 520px;
     overflow-y: auto;
@@ -23,11 +37,11 @@ body {
 }
 
 header {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    background-color: var(--general-main-1);
+    color: var(--text-general);
     padding: 1.5rem 0;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px var(--box-shadow-color);
 }
 
 header h1 {
@@ -57,7 +71,7 @@ header label {
 
 header select, header input {
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 12px;
     width: 200px;
@@ -67,7 +81,7 @@ header select, header input {
 }
 
 header select:hover, header input:hover {
-    border-color: #0056a3;
+    border-color: var(--button-primary-default);
     box-shadow: 0 0 5px rgba(0, 86, 163, 0.5);
 }
 
@@ -134,24 +148,24 @@ canvas {
     font-size: 1.4rem;
     font-weight:500;
     border-radius: 50%;
-    border: 4px solid #d3d3d3;
-    background-color: white;
-    color: #333;
+    border: 4px solid var(--border-color);
+    background-color: var(--general-main-1);
+    color: var(--text-general);
     transition: all 0.3s ease;
 }
 
 .digit-box.lowest {
-    border-color: rgba(255, 0, 0, 1);
+    border-color: var(--error-color);
 }
 
 .digit-box.highest {
-    border-color: #17db4e;
+    border-color: var(--success-color);
 }
 
 .digit-box.current {
-    border-color: rgba(255, 223, 0, 1) !important; /* Bright yellow border */
-    background-color: rgba(255, 223, 0, 0.2); /* Light yellow background */
-    box-shadow: 0 0 10px rgba(255, 223, 0, 0.8); /* Glow effect */
+    border-color: var(--highlight-yellow) !important; /* Bright yellow border */
+    background-color: var(--highlight-yellow-bg); /* Light yellow background */
+    box-shadow: 0 0 10px var(--highlight-glow); /* Glow effect */
 }
 
 .digit-container {
@@ -170,7 +184,7 @@ canvas {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid rgba(255, 223, 0, 1);
+    border-bottom: 10px solid var(--highlight-yellow);
     position: absolute;
     top: -15px;
     display: none;
@@ -181,14 +195,14 @@ canvas {
 }
 
 .digit-container.current .digit-box {
-    border-color: rgba(255, 223, 0, 1) !important; /* Bright yellow border */
-    background-color: rgba(255, 223, 0, 0.2); /* Light yellow background */
-    box-shadow: 0 0 10px rgba(255, 223, 0, 0.8); /* Glow effect */
+    border-color: var(--highlight-yellow) !important; /* Bright yellow border */
+    background-color: var(--highlight-yellow-bg); /* Light yellow background */
+    box-shadow: 0 0 10px var(--highlight-glow); /* Glow effect */
 }
 
 .digit-percentage {
     font-size: 0.9rem;
-    color: #555;
+    color: var(--text-general);
     margin-top: 0.3rem;
 }
 
@@ -210,8 +224,8 @@ canvas {
     align-items: center;
     font-size: 14px;
     border-radius: 5px;
-    color: #333;
-    border: 1px solid #ccc;
+    color: var(--text-general);
+    border: 1px solid var(--border-color);
     transition: all 0.3s ease;
 }
 
@@ -273,5 +287,15 @@ canvas {
         width: 26px;
         height: 26px;
         font-size: 14px;
+    }
+}
+
+/* Add dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --general-main-1: #1a1a1a;
+        --text-general: #e0e0e0;
+        --border-color: #404040;
+        --box-shadow-color: rgba(0, 0, 0, 0.3);
     }
 }
