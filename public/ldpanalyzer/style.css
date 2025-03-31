@@ -21,14 +21,16 @@ h1 {
 .menu {
   margin-bottom: 15px;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 0 15px;
+  justify-content: center;
 }
 
 .menu span {
   padding: 8px 15px;
-  flex-basis: auto;
-  flex-grow: 1;
+  flex: 0 1 auto;
+  min-width: 120px;
   text-align: center;
   font-size: 14px;
   border-radius: 8px;
@@ -49,10 +51,64 @@ span.menu-active {
   font-weight: 600;
 }
 
+@media screen and (min-width: 769px) {
+  .menu span {
+    min-width: 160px;
+  }
+  
+  .menu span::before {
+    content: attr(data-full-name);
+  }
+  
+  .menu span:not([data-full-name])::before {
+    content: none;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .menu span {
+    font-size: 0;
+  }
+  .menu span::before {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .menu {
+    gap: 6px;
+    padding: 0 10px;
+  }
+  
+  .menu span {
+    min-width: calc(50% - 6px);
+    padding: 10px 8px;
+    font-size: 13px;
+    min-width: 45px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .menu {
+    gap: 1px;
+    padding: 0 1px;
+  }
+  
+  .menu span {
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  .digits {
+    gap: 2px;
+    padding: 0 4px;
+  }
+}
+
 .digits {
   margin: 0 15px 10px;
   display: flex;
-  gap: 5px;
+  gap: 3px;
 }
 
 .digits span {

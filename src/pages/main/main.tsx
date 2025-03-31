@@ -120,6 +120,7 @@ const AppWrapper = observer(() => {
                 'Upgraded Candlemine.xml',
                 'Envy-differ.xml',
                 'H_L auto vault.xml',
+                'Top-notch 2.xml',
                 // Add more paths to your XML files
             ];
             const botPromises = botFiles.map(async (file) => {
@@ -218,62 +219,64 @@ const AppWrapper = observer(() => {
                             </Suspense>
                         </div>
                         <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Analysis Tool' /></>} id='id-analysis-tool'>
-                            {isAnalysisToolActive && (
-                                <div style={{ position: 'relative' }}>
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: '10px',
-                                        right: '10px',
-                                        zIndex: 1000,
-                                        display: 'flex',
-                                        gap: '8px',
-                                        background: 'var(--general-main-1)',
-                                        padding: '8px',
-                                        borderRadius: '4px',
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                                    }}>
-                                        <button 
-                                            onClick={() => toggleAnalysisTool('ai')}
-                                            style={{ 
-                                                backgroundColor: analysisToolUrl === 'ai' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
-                                                color: analysisToolUrl === 'ai' ? 'white' : 'var(--text-general)',
-                                                padding: '8px 16px',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            A Tool
-                                        </button>
-                                        <button 
-                                            onClick={() => toggleAnalysisTool('ldpanalyzer')}
-                                            style={{ 
-                                                backgroundColor: analysisToolUrl === 'ldpanalyzer' ? 'var(--button-primary-default)' : 'var(--general-main-1)',
-                                                color: analysisToolUrl === 'lpdanalyzer' ? 'white' : 'var(--text-general)',
-                                                padding: '8px 16px',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            LDP Tool
-                                        </button>
-                                    </div>
-                                    <div className={classNames('dashboard__chart-wrapper', {
-                                        'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
-                                        'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
-                                    })}>
-                                        <iframe src={analysisToolUrl} frameBorder='0' height='600px' scrolling="yes" />
-                                    </div>
+                            <div className={classNames('dashboard__chart-wrapper', {
+                                'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
+                                'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
+                            })}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    gap: '8px', 
+                                    padding: '8px', 
+                                    borderBottom: '1px solid var(--border-normal)'
+                                }}>
+                                    <button 
+                                        onClick={() => toggleAnalysisTool('ai')}
+                                        style={{ 
+                                            backgroundColor: analysisToolUrl === 'ai' ? 'var(--button-primary-default)' : 'transparent',
+                                            color: analysisToolUrl === 'ai' ? 'white' : 'var(--text-general)',
+                                            padding: '8px 16px',
+                                            border: '1px solid var(--border-normal)',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        A Tool
+                                    </button>
+                                    <button 
+                                        onClick={() => toggleAnalysisTool('ldpanalyzer')}
+                                        style={{ 
+                                            backgroundColor: analysisToolUrl === 'ldpanalyzer' ? 'var(--button-primary-default)' : 'transparent',
+                                            color: analysisToolUrl === 'ldpanalyzer' ? 'white' : 'var(--text-general)',
+                                            padding: '8px 16px',
+                                            border: '1px solid var(--border-normal)',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        LDP Tool
+                                    </button>
                                 </div>
-                            )}
+                                <iframe 
+                                    src={analysisToolUrl} 
+                                    width="100%"
+                                    height="600px"
+                                    style={{ border: 'none', display: 'block' }}
+                                    scrolling="yes"
+                                />
+                            </div>
                         </div>
                         <div label={<><SignalsIcon /><Localize i18n_default_text='Signals' /></>} id='id-signals'>
                             <div className={classNames('dashboard__chart-wrapper', {
                                 'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
                                 'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
                             })}>
-                                <iframe src='signals' frameBorder='0' height='600px' scrolling="yes" />
+                                <iframe 
+                                    src='signals' 
+                                    width="100%"
+                                    height="600px"
+                                    style={{ border: 'none', display: 'block' }}
+                                    scrolling="yes" 
+                                />
                             </div>
                         </div>
                         <div label={<><TradingHubIcon /><Localize i18n_default_text='Trading Hub' /></>} id='id-Trading-Hub'>
