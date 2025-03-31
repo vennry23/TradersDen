@@ -9,7 +9,7 @@
     <variable id="{8SIVgnOS_Lk}I2~hH/?">Take Profit</variable>
     <variable id="m_LK!?8lI0aGA4G0^z.[">Stop Loss</variable>
   </variables>
-  <block type="trade_definition" id="5;D6gZ2MG.myk6NGZT-C" deletable="false" x="0" y="0">
+  <block type="trade_definition" id="5;D6gZ2MG.myk6NGZT-C" deletable="false" x="0" y="60">
     <statement name="TRADE_OPTIONS">
       <block type="trade_definition_market" id="jIOiZNNVm^.x%uMoVj|T" deletable="false" movable="false">
         <field name="MARKET_LIST">synthetic_index</field>
@@ -47,7 +47,7 @@
       <block type="text_print" id="W{=4y)bFOnh]/DikW7W-">
         <value name="TEXT">
           <shadow type="text" id="8P;kPS@CnGz[1P@tEA6g">
-            <field name="TEXT">Welcome to Derivlite.com</field>
+            <field name="TEXT">Welcome to Derivlite</field>
           </shadow>
         </value>
         <next>
@@ -227,7 +227,7 @@
       </block>
     </statement>
   </block>
-  <block type="after_purchase" id=")^}IibqaEq*H]DiMy_~e" x="714" y="0">
+  <block type="after_purchase" id=")^}IibqaEq*H]DiMy_~e" x="1597" y="60">
     <statement name="AFTERPURCHASE_STACK">
       <block type="controls_if" id="dz)bpKh;g-~kkb.~`T2)">
         <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
@@ -409,7 +409,7 @@
       </block>
     </statement>
   </block>
-  <block type="before_purchase" id="]VyNm*RHFmZVfy`6]tp!" collapsed="true" deletable="false" x="0" y="96">
+  <block type="before_purchase" id="]VyNm*RHFmZVfy`6]tp!" collapsed="true" deletable="false" x="0" y="1182">
     <statement name="BEFOREPURCHASE_STACK">
       <block type="text_join" id="8giIa^U^l,J;w~g#(`=`">
         <field name="VARIABLE" id="JtxUD(OVXCF(mrVUbWF:">text</field>
