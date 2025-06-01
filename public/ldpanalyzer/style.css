@@ -1,207 +1,113 @@
+:root {
+  --primary: #6c5ce7;
+  --primary-dark: #5649c0;
+  --secondary: #00cec9;
+  --accent: #fd79a8;
+  --background: #1a1a2e;
+  --card-bg: #16213e;
+  --text: #e2e2e2;
+  --text-secondary: #b8b8b8;
+  --up-color: #00b894;
+  --down-color: #d63031;
+  --neutral: #636e72;
+}
+
 body {
   margin: 0;
   padding: 20px;
   font-size: 16px;
   text-align: center;
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f5f7fa;
+  background: var(--background);
+  color: var(--text);
   min-height: 100vh;
 }
 
 h1 {
   text-align: center;
-  color: #2c3e50;
-  font-size: 36px;
-  font-weight: 600;
+  color: var(--secondary);
+  font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 30px;
-  text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .menu {
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   padding: 0 15px;
   justify-content: center;
 }
 
 .menu span {
-  padding: 8px 15px;
+  padding: 10px 20px;
   flex: 0 1 auto;
   min-width: 120px;
   text-align: center;
   font-size: 14px;
   border-radius: 8px;
-  color: #fff;
-  background-color: #4a5568;
+  color: white;
+  background-color: var(--primary);
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-weight: 500;
 }
 
 .menu span:hover {
-  background: #3182ce;
-  transform: translateY(-1px);
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0,0,0,0.15);
 }
 
 span.menu-active {
-  background: #2c5282;
+  background: var(--secondary);
+  color: #1a1a2e;
   font-weight: 600;
 }
 
-@media screen and (min-width: 769px) {
-  .menu span {
-    min-width: 160px;
-  }
-  
-  .menu span::before {
-    content: attr(data-full-name);
-  }
-  
-  .menu span:not([data-full-name])::before {
-    content: none;
-  }
-}
-
-@media screen and (min-width: 769px) {
-  .menu span {
-    font-size: 0;
-  }
-  .menu span::before {
-    font-size: 14px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .menu {
-    gap: 6px;
-    padding: 0 10px;
-  }
-  
-  .menu span {
-    min-width: calc(50% - 6px);
-    padding: 10px 8px;
-    font-size: 13px;
-    min-width: 45px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .menu {
-    gap: 1px;
-    padding: 0 1px;
-  }
-  
-  .menu span {
-    font-size: 12px;
-    min-width: 0;
-  }
-
-  .digits {
-    gap: 2px;
-    padding: 0 4px;
-  }
-}
-
 .digits {
-  margin: 0 15px 10px;
+  margin: 0 auto 20px;
   display: flex;
-  gap: 3px;
+  gap: 8px;
+  max-width: 900px;
+  padding: 0 15px;
 }
 
 .digits span {
-  padding: 8px 0;
-  flex-grow: 2;
+  padding: 12px 0;
+  flex-grow: 1;
   text-align: center;
   font-size: 16px;
   border-radius: 6px;
-  color: #fff;
+  color: white;
   transition: all 0.2s ease;
+  font-weight: 600;
+  background: rgba(255,255,255,0.1);
 }
 
 .digits_moved_down {
-  background-color: #e53e3e;
-  box-shadow: 0 2px 4px rgba(229,62,62,0.2);
+  background-color: var(--down-color);
+  box-shadow: 0 2px 8px rgba(214, 48, 49, 0.3);
 }
 
 .digits_moved_up {
-  background-color: #3182ce;
-  box-shadow: 0 2px 4px rgba(49,130,206,0.2);
-}
-
-.headcol {
-  margin-left: 10px;
-  margin-right: 14px;
-  margin-bottom: 0px;
-  display: flex;
-}
-
-.headcol span {
-  padding: 2px 0;
-  flex-basis: auto;
-  flex-grow: 1;
-  text-align: center;
-  font-size: 0px;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.Head_moved_down {
-  background-color: #c03;
-}
-
-.Head_moved_up {
-  background-color: blue;
-}
-
-.Head_moved_mid {
-  background-color: #32cd32;
-}
-
-.placecol {
-  margin-bottom: 5px;
-  display: flex;
-}
-
-.placecol span {
-  padding: 2px 0;
-  flex-basis: auto;
-  flex-grow: 1;
-  text-align: center;
-  font-size: 0px;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.Place_moved_down {
-  background-color: #c03;
-}
-
-.Place_moved_up {
-  background-color: blue;
-}
-
-.Place_moved_none {
-  background-color: #fff;
-}
-
-.chart-wrapper {
-  position: relative;
-  height: 100px;
-  width: 100%;
-  margin-bottom: 20px;
+  background-color: var(--up-color);
+  box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
 }
 
 .chartContainer {
   position: relative;
-  margin-bottom: 5px;
-  height: 150px;
-  width: 100%;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin: 0 auto 25px;
+  height: 200px;
+  max-width: 1000px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .chartContainerAxisCord,
@@ -209,94 +115,145 @@ span.menu-active {
 .chartContainerDigitOdd,
 .chartContainerDigit {
   position: relative;
-  margin-bottom: 5px;
-  height: 150px;
-  width: 100%;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.arrow_up span {
-  font-family: "Wingdings";
-  padding: 3px 0;
-  flex-basis: auto;
-  flex-grow: 5;
-  text-align: center;
-  font-size: 25px;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.arrow_down span {
-  font-family: "Wingdings";
-  padding: 3px 0;
-  flex-basis: auto;
-  flex-grow: 5;
-  text-align: center;
-  font-size: 25px;
-  border-radius: 5px;
-  color: #fff;
-}
-
-.Arrow_Bg_Up {
-  background: #3182ce;
-  transition: all 0.3s ease;
-}
-
-.Arrow_Bg_Down {
-  background: #e53e3e;
-  transition: all 0.3s ease;
-}
-
-.Arrow_Bg_Start {
-  background: #718096;
-  transition: all 0.3s ease;
-}
-
-.Arrow_Bg_Wait {
-  background: #ed64a6;
-  transition: all 0.3s ease;
+  margin: 0 auto 25px;
+  height: 200px;
+  max-width: 1000px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .SpotArrow {
-  margin: 0 15px 10px;
+  margin: 0 auto 20px;
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  max-width: 900px;
+  padding: 0 15px;
 }
 
 .SpotArrow span {
-  padding: 8px 0;
-  flex-grow: 2;
+  padding: 12px 0;
+  flex-grow: 1;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 6px;
   margin-bottom: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.1);
+  font-weight: 600;
 }
 
 .Spot_Arrow_Up {
-  font-family: "Wingdings";
-  background: #c03;
+  background: var(--up-color);
   color: white;
-  transition: background 1s;
+  box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
 }
 
 .Spot_Arrow_Down {
-  font-family: "Wingdings";
-  background: blue;
+  background: var(--down-color);
   color: white;
-  transition: background 1s;
+  box-shadow: 0 2px 8px rgba(214, 48, 49, 0.3);
 }
 
 .Spot_Arrow_Equal {
-  background: white;
-  color: black;
-  transition: background 1s;
+  background: var(--neutral);
+  color: white;
 }
 
 .Spot_Arrow_M {
-  color: #fff;
-  background: #29abe2;
-  transition: background 1s;
+  color: white;
+  background: var(--primary);
+}
+
+.arrow_up span, .arrow_down span {
+  display: inline-block;
+  padding: 12px 0;
+  width: 100%;
+  text-align: center;
+  font-size: 28px;
+  border-radius: 8px;
+  color: white;
+  margin: 10px 0;
+}
+
+.Arrow_Bg_Up {
+  background: var(--up-color);
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+}
+
+.Arrow_Bg_Down {
+  background: var(--down-color);
+  box-shadow: 0 4px 12px rgba(214, 48, 49, 0.3);
+}
+
+.Arrow_Bg_Start {
+  background: var(--neutral);
+}
+
+.Arrow_Bg_Wait {
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(253, 121, 168, 0.3);
+}
+
+#footer {
+  margin-top: 30px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+p {
+  color: var(--text-secondary);
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .menu {
+    gap: 8px;
+  }
+  
+  .menu span {
+    min-width: calc(50% - 8px);
+    padding: 10px 5px;
+  }
+  
+  .digits, .SpotArrow {
+    gap: 5px;
+    padding: 0 10px;
+  }
+  
+  .digits span, .SpotArrow span {
+    padding: 8px 0;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .menu span {
+    font-size: 12px;
+    min-width: calc(50% - 6px);
+  }
+  
+  .digits, .SpotArrow {
+    gap: 4px;
+  }
+  
+  .digits span, .SpotArrow span {
+    padding: 6px 0;
+    font-size: 12px;
+  }
+  
+  .chartContainer, 
+  .chartContainerAxisCord,
+  .chartContainerDigitEven,
+  .chartContainerDigitOdd,
+  .chartContainerDigit {
+    height: 180px;
+  }
 }
