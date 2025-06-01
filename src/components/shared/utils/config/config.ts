@@ -2,15 +2,15 @@ import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/u
 import { isStaging } from '../url/helpers';
 
 export const APP_IDS = {
-    LOCALHOST: 69811,
-    TMP_STAGING: 69811,
-    STAGING: 69811,
-    STAGING_BE: 69811,
-    STAGING_ME: 69811,
-    PRODUCTION: 69811,
-    PRODUCTION_BE: 69811,
-    PRODUCTION_ME: 69811,
-    LIVE: 69811,
+    LOCALHOST: 80058,  // Changed to 80058
+    TMP_STAGING: 80058, // Changed to 80058
+    STAGING: 80058, // Changed to 80058
+    STAGING_BE: 80058, // Changed to 80058
+    STAGING_ME: 80058, // Changed to 80058
+    PRODUCTION: 80058, // Changed to 80058
+    PRODUCTION_BE: 80058, // Changed to 80058
+    PRODUCTION_ME: 80058, // Changed to 80058
+    LIVE: 80058 // Changed to 80058
 };
 
 export const livechat_license_id = 12049137;
@@ -24,7 +24,7 @@ export const domain_app_ids = {
     'dbot.deriv.com': APP_IDS.PRODUCTION,
     'dbot.deriv.be': APP_IDS.PRODUCTION_BE,
     'dbot.deriv.me': APP_IDS.PRODUCTION_ME,
-    'bot.derivlite.com': APP_IDS.LIVE, // ✅ Added support for your domain
+    'bot.derivlite.com': APP_IDS.LIVE,
 };
 
 export const getCurrentProductionDomain = () =>
@@ -71,9 +71,9 @@ export const getDefaultAppIdAndUrl = () => {
 export const getAppId = () => {
     let app_id = window.localStorage.getItem('config.app_id');
 
-    if (!app_id || app_id === '69811') {
-        console.warn("⚠️ App ID is invalid, forcing correct App ID...");
-        app_id = '80058'; // ✅ Corrected App ID for your domain
+    if (!app_id || app_id !== '80058') { // Modified check
+        console.warn("⚠️ Forcing App ID to 80058...");
+        app_id = '80058';
         window.localStorage.setItem('config.app_id', app_id);
     }
 
@@ -95,8 +95,8 @@ export const checkAndSetEndpointFromUrl = () => {
         url_params.delete('qa_server');
         url_params.delete('app_id');
 
-        if (/^(www\.)?qa[0-9]{1,4}\.deriv.dev|(.*)\.derivws\.com$/.test(qa_server) && /^[0-9]+$/.test(app_id)) {
-            localStorage.setItem('config.app_id', app_id);
+        if (/^(www\.)?qa[0-9]{1,4}\.deriv.dev|(.*)\.derivws\.com$/.test(qa_server) && app_id === '80058') { // Added strict check
+            localStorage.setItem('config.app_id', '80058'); // Force 80058
             localStorage.setItem('config.server_url', qa_server.replace(/"/g, ''));
         }
 
@@ -125,5 +125,7 @@ export const generateOAuthURL = () => {
         original_url.hostname = configured_server_url;
     }
 
+    // Ensure app_id is always 80058 in OAuth URL
+    original_url.searchParams.set('app_id', '80058');
     return original_url.toString();
 };
