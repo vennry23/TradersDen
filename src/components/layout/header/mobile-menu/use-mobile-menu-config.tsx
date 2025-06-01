@@ -55,8 +55,8 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
         [
             {
                 as: 'a',
-                href: 'https://derivlite.com',
-                label: localize('derivlite.com'),
+                href: 'https://mesoflix.online',
+                label: localize('mesoflix.online'),
                 LeftComponent: BrandDerivLogoCoralIcon,
             },
             {
