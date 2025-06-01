@@ -73,7 +73,7 @@ export const getAppId = () => {
 
     if (!app_id || app_id === '69811') {
         console.warn("⚠️ App ID is invalid, forcing correct App ID...");
-        app_id = '69811'; // ✅ Corrected App ID for your domain
+        app_id = '80058'; // ✅ Corrected App ID for your domain
         window.localStorage.setItem('config.app_id', app_id);
     }
 
