@@ -1,5 +1,5 @@
-import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/utils';
-import { isStaging } from '../url/helpers';
+   import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/utils';
+   import { isStaging } from '../url/helpers';
 
 export const APP_IDS = {
     LOCALHOST: 80058,  // Changed to 80058
