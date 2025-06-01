@@ -1,120 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deriv Tick Data</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fc;
-            text-align: center;
-            margin: 0;
-            padding: 10px;
-            height: 520px;
-            overflow-y: auto;
-            margin-bottom: 150px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deriv Tick Data</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --accent: #9f87ff;
+      --accent2: #00f7ff;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+    }
 
-        h2 {
-            color: #222;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        table {
-            width: 90%;
-            max-width: 800px;
-            margin: 12px auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-            border-radius: 10px;
-            overflow: hidden;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 20px;
+      height: auto;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            font-size: 14px;
-        }
+    h2 {
+      color: var(--accent2);
+      margin-top: 20px;
+      font-size: 26px;
+    }
 
-        th {
-            background-color: #ffffff;
-            color: rgb(0, 0, 0);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    table {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+    }
 
-        .signal-box {
-            padding-right: 3px;
-            padding-left: 3px;
-            font-weight:600;
-            border-radius: 4px;
-            display: inline-block;
-            width: 65px;
-            text-transform:initial;
-            font-size: 14px;
-        }
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
 
-        .rise, .fall, .over {
-            background-color: #B9F4CA;
-            color: rgb(0, 0, 0);
-        }
+    th {
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        .under {
-            background-color: #B9F4CA;
-            color: rgb(0, 0, 0);
-        }
+    .signal-box {
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 6px 10px;
+      display: inline-block;
+      font-size: 14px;
+      min-width: 70px;
+    }
 
-        .neutral {
-            background-color: #FFB2B2;
-            color: rgb(0, 0, 0);
-        }
+    .rise, .fall, .over {
+      background: linear-gradient(135deg, #9f87ff, #00f7ff);
+      color: #000;
+    }
 
-        @media (max-width: 600px) {
-            table {
-                width: 100%;
-            }
+    .under {
+      background: linear-gradient(135deg, #00f7ff, #9f87ff);
+      color: #000;
+    }
 
-            th, td {
-                padding: 5px;
-                font-size: 14px;
-            }
+    .neutral {
+      background-color: #ffb2b2;
+      color: #000;
+    }
 
-            .signal-box {
-                width: 70px;
-            }
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    @media (max-width: 600px) {
+      table {
+        width: 100%;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 13px;
+      }
+
+      .signal-box {
+        min-width: 60px;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Rise/Fall</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>MARKET</th>
-                <th>RISE 📈</th>
-                <th>FALL 📉</th>
-            </tr>
-        </thead>
-        <tbody id="riseFallTable"></tbody>
-    </table>
+  <h2>Rise / Fall</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th>Rise 📈</th>
+        <th>Fall 📉</th>
+      </tr>
+    </thead>
+    <tbody id="riseFallTable">
+      <!-- Example row -->
+      <tr>
+        <td>Volatility 100</td>
+        <td><span class="signal-box rise">RISE</span></td>
+        <td><span class="signal-box fall">FALL</span></td>
+      </tr>
+    </tbody>
+  </table>
 
-    <h2>Over 2 / Under 7</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>MARKET</th>
-                <th>Over 2</th>
-                <th>Under 7</th>
-            </tr>
-        </thead>
-        <tbody id="overUnderTable"></tbody>
-    </table>
+  <h2>Over 2 / Under 7</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th>Over 2</th>
+        <th>Under 7</th>
+      </tr>
+    </thead>
+    <tbody id="overUnderTable">
+      <!-- Example row -->
+      <tr>
+        <td>Volatility 75</td>
+        <td><span class="signal-box over">OVER</span></td>
+        <td><span class="signal-box under">UNDER</span></td>
+      </tr>
+    </tbody>
+  </table>
 
-    <script src="signals/signals.js" type="text/javascript"></script>
+  <script src="signals/signals.js" type="text/javascript"></script>
 </body>
-</html>
+    </html>
