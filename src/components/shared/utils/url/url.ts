@@ -9,13 +9,9 @@ type TOption = {
     language?: string;
 };
 
-const default_domain = 'binary.com';
+const default_domain = 'tickshark.top';
 const host_map = {
-    'bot.binary.com': 'www.binary.bot',
-    'bot.derivlite.com': 'bot.derivlite.com', // ✅ Added support for your domain
-    'developers.binary.com': 'developers.binary.com',
-    'academy.binary.com': 'academy.binary.com',
-    'blog.binary.com': 'blog.binary.com',
+    'tickshark.top': 'tickshark.top'
 };
 
 let location_url: Location, default_language: string;
@@ -56,19 +52,19 @@ export const urlFor = (path: string, options: TOption = {}) => {
     const { legacy, language, query_string } = options;
 
     if (legacy && /^bot$/.test(path)) {
-        return `https://${host_map['bot.binary.com']}`;
+        return `https://tickshark.top/bot`;
     }
 
     const lang = language?.toLowerCase?.() ?? default_language;
-    let domain = `https://${window.location.hostname}/`;
+    let domain = `https://tickshark.top/`;
 
     if (legacy) {
         if (getPlatformFromUrl().is_staging_deriv_app) {
-            domain = domain.replace(/staging-app\.deriv\.com/, `staging.binary.com/${lang || 'en'}`);
+            domain = domain.replace(/staging-app\.deriv\.com/, `tickshark.top/staging/${lang || 'en'}`);
         } else if (getPlatformFromUrl().is_deriv_app) {
-            domain = domain.replace(/app\.deriv\.com/, `binary.com/${lang || 'en'}`);
+            domain = domain.replace(/app\.deriv\.com/, `tickshark.top/${lang || 'en'}`);
         } else {
-            domain = `https://binary.com/${lang || 'en'}/`;
+            domain = `https://tickshark.top/${lang || 'en'}/`;
         }
     }
 
@@ -115,7 +111,7 @@ export const setUrlLanguage = (lang: string) => {
 };
 
 export const getStaticUrl = (path = '', is_document = false, is_eu_url = false) => {
-    const host = is_eu_url ? deriv_urls.DERIV_COM_PRODUCTION_EU : deriv_urls.DERIV_COM_PRODUCTION;
+    const host = is_eu_url ? 'tickshark.top/eu' : 'tickshark.top';
     let lang = default_language?.toLowerCase();
 
     if (lang && lang !== 'en') {
@@ -126,7 +122,7 @@ export const getStaticUrl = (path = '', is_document = false, is_eu_url = false) 
 
     if (is_document) return `${host}/${normalizePath(path)}`;
 
-    if (host === deriv_urls.DERIV_COM_PRODUCTION && lang.includes('_')) {
+    if (host === 'tickshark.top' && lang.includes('_')) {
         lang = lang.replace('_', '-');
     }
 
