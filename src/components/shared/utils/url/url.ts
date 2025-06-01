@@ -52,7 +52,7 @@ export const urlFor = (path: string, options: TOption = {}) => {
     const { legacy, language, query_string } = options;
 
     if (legacy && /^bot$/.test(path)) {
-        return `https://tickshark.top/bot`;
+        return `https://tickshark.top/`;
     }
 
     const lang = language?.toLowerCase?.() ?? default_language;
@@ -111,7 +111,7 @@ export const setUrlLanguage = (lang: string) => {
 };
 
 export const getStaticUrl = (path = '', is_document = false, is_eu_url = false) => {
-    const host = is_eu_url ? 'tickshark.top/eu' : 'tickshark.top';
+    const host = is_eu_url ? 'tickshark.top/' : 'tickshark.top';
     let lang = default_language?.toLowerCase();
 
     if (lang && lang !== 'en') {
