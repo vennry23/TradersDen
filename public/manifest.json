@@ -1,6 +1,6 @@
 {
-"name":"Deriv Lite",
-"short_name":"Deriv Lite",
+"name":"TICKSHARK",
+"short_name":"TICKSHARK",
 "theme_color":"#414652",
 "description":"Trade on your finger prints.",
 "background_color":"#414652",
@@ -8,9 +8,9 @@
 "start_url":"/",
 "icons": [
  {
-"src":"deriv-logo.png",
+"src":"E0BCB7A8-2F8A-4CE2-BADC-BE2A67E38C01.jpeg",
 "sizes":"512x512",
-"type":"image/png"
+"type":"image/jpeg"
  }
    ]
 }
