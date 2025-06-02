@@ -1,21 +1,35 @@
 @use 'components/shared/styles/constants' as *;
 @use 'components/shared/styles/mixins' as *;
 
+
 :root {
-  --bg-gradient: linear-gradient(to right, #0f0c29, #302b63, #24243e);
-  --card-bg: rgba(255, 255, 255, 0.02);
-  --accent: #9f87ff;
-  --accent2: #00f7ff;
-  --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --border-normal: rgba(255, 255, 255, 0.05);
-  --general-main-1: #0f0c29;
-  --general-section-1: #1a173a;
-  --purchase-main-1: #9f87ff;
-  --button-primary-hover: #00f7ff;
-  --brand-red-coral: #ff407b;
+  --bg-gradient: linear-gradient(to right, #1a1a2e, #16213e, #0f3460);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --accent: #7f5af0;
+  --accent2: #2cb67d;
+  --text-primary: #f8f8f8;
+  --text-secondary: #b8c2cc;
+  --border-normal: rgba(255, 255, 255, 0.08);
+  --general-main-1: #1a1a2e;
+  --general-section-1: #242444;
+  --purchase-main-1: #7f5af0;
+  --button-primary-hover: #2cb67d;
+  --brand-red-coral: #ff6b6b;
   --text-prominent: #ffffff;
 }
+
+// The rest of your SCSS code remains exactly the same...
+
+
+
+
+
+
+
+
+
+
+
 
 .run-panel {
   // fix for the RTL issue on tab active line
