@@ -3,18 +3,18 @@
 
 
 :root {
-  --bg-gradient: linear-gradient(to right, #1a1a2e, #16213e, #0f3460);
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --accent: #7f5af0;
-  --accent2: #2cb67d;
-  --text-primary: #f8f8f8;
-  --text-secondary: #b8c2cc;
-  --border-normal: rgba(255, 255, 255, 0.08);
-  --general-main-1: #1a1a2e;
-  --general-section-1: #242444;
-  --purchase-main-1: #7f5af0;
-  --button-primary-hover: #2cb67d;
-  --brand-red-coral: #ff6b6b;
+  --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #2a0845 50%, #4a00e0 100%);
+  --card-bg: rgba(30, 30, 60, 0.6);
+  --accent: #8a2be2;  // Vibrant purple
+  --accent2: #00d2ff; // Electric cyan
+  --text-primary: #ffffff;
+  --text-secondary: #a1a8c7;
+  --border-normal: rgba(255, 255, 255, 0.1);
+  --general-main-1: #0f0c29;
+  --general-section-1: #1a1a3a;
+  --purchase-main-1: #8a2be2;
+  --button-primary-hover: #00d2ff;
+  --brand-red-coral: #ff4d6d; // Modern pink-red
   --text-prominent: #ffffff;
 }
 
