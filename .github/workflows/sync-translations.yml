@@ -7,7 +7,7 @@ on:
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
-        
+
 jobs:
   sync_translations:
     runs-on: ubuntu-latest
@@ -15,9 +15,19 @@ jobs:
     steps:
       - name: Ensure Secrets Are Loaded
         run: |
-          if [[ -z "${{ secrets.CROWDIN_PROJECT_ID }}" || -z "${{ secrets.CROWDIN_PERSONAL_TOKEN }}" || -z "${{ secrets.R2_ACCOUNT_ID }}" || -z "${{ secrets.R2_ACCESS_KEY_ID }}" || -z "${{ secrets.R2_SECRET_ACCESS_KEY }}" ]]; then
-            echo "Error: Secrets are not properly configured."
+          missing_secrets=()
+          [[ -z "${{ secrets.CROWDIN_PROJECT_ID }}" ]] && missing_secrets+=("CROWDIN_PROJECT_ID")
+          [[ -z "${{ secrets.CROWDIN_PERSONAL_TOKEN }}" ]] && missing_secrets+=("CROWDIN_PERSONAL_TOKEN")
+          [[ -z "${{ secrets.R2_ACCOUNT_ID }}" ]] && missing_secrets+=("R2_ACCOUNT_ID")
+          [[ -z "${{ secrets.R2_ACCESS_KEY_ID }}" ]] && missing_secrets+=("R2_ACCESS_KEY_ID")
+          [[ -z "${{ secrets.R2_SECRET_ACCESS_KEY }}" ]] && missing_secrets+=("R2_SECRET_ACCESS_KEY")
+          [[ -z "${{ secrets.R2_BUCKET_NAME }}" ]] && missing_secrets+=("R2_BUCKET_NAME")
+
+          if [[ ${#missing_secrets[@]} -gt 0 ]]; then
+            echo "Error: The following secrets are missing: ${missing_secrets[*]}"
             exit 1
+          else
+            echo "Success: All required secrets are configured."
           fi
 
       - name: Sync Bots translations
