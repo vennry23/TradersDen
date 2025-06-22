@@ -3,20 +3,22 @@
 
 
 :root {
-  --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #6a3093 50%, #a044ff 100%);
-  --card-bg: rgba(40, 20, 60, 0.6);
-  --accent: #9c27b0;       // Rich purple
-  --accent2: #ff9e00;      // Golden yellow
+  --main-theme: #00bcd4;           // Vibrant cyan
+  --bg-gradient: #00bcd4;          // Use cyan for background
+  --card-bg: rgba(0, 188, 212, 0.07);
+  --accent: #00bcd4;
+  --accent2: #00bcd4;
   --text-primary: #ffffff;
-  --text-secondary: #d1b3ff;
-  --border-normal: rgba(255, 255, 255, 0.1);
-  --general-main-1: #0f0c29;
-  --general-section-1: #2a1a4a;
-  --purchase-main-1: #9c27b0;
-  --button-primary-hover: #ff9e00;
-  --brand-red-coral: #ff4d6d;  // Vibrant pink-red
+  --text-secondary: #b2ffff;
+  --border-normal: rgba(0, 188, 212, 0.15);
+  --general-main-1: #00bcd4;
+  --general-section-1: #2fceda;
+  --purchase-main-1: #00bcd4;
+  --button-primary-hover: #33e4f7;
+  --brand-red-coral: #ff4d6d;
   --text-prominent: #ffffff;
-}
+  --profit-green: #3fc380;
+  --loss-red: #ff4d6d;
 
 // The rest of your SCSS code remains exactly the same...
 
