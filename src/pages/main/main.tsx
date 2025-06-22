@@ -119,7 +119,7 @@ const AppWrapper = observer(() => {
             const botFiles = [
                 'Massive-recovery-by-Tickshark.xml',
                 'Envy-differ.xml',
-                'H_L auto vault.xml',
+                'Account-builder-by Tradersden.xm',
                 'Tradersden-market-killer.xml',
                 // Add more paths to your XML files
             ];
