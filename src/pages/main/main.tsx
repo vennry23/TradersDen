@@ -117,8 +117,8 @@ const AppWrapper = observer(() => {
         // Fetch the XML files and parse them
         const fetchBots = async () => {
             const botFiles = [
-                'Massive-recovery-by-Tickshark.xml',
-                'Envy-differ.xml',
+                
+            
                 'Account-builder-by Tradersden.xm',
                 'Tradersden-market-killer.xml',
                 // Add more paths to your XML files
