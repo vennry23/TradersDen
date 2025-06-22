@@ -1,24 +1,21 @@
 @use 'components/shared/styles/constants' as *;
 @use 'components/shared/styles/mixins' as *;
 
+
 :root {
-  --main-theme: #00bcd4;           // Vibrant cyan
-  --bg-gradient: #00bcd4;          // Use cyan for background
-  --card-bg: rgba(0, 188, 212, 0.07);
-  --accent: #00bcd4;
-  --accent2: #00bcd4;
+  --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #6a3093 50%, #a044ff 100%);
+  --card-bg: rgba(40, 20, 60, 0.6);
+  --accent: #9c27b0;       // Rich purple
+  --accent2: #ff9e00;      // Golden yellow
   --text-primary: #ffffff;
-  --text-secondary: #b2ffff;
-  --border-normal: rgba(0, 188, 212, 0.15);
-  --general-main-1: #00bcd4;
-  --general-section-1: #2fceda;
-  --purchase-main-1: #00bcd4;
-  --button-primary-hover: #33e4f7;
-  --brand-red-coral: #ff4d6d;
+  --text-secondary: #d1b3ff;
+  --border-normal: rgba(255, 255, 255, 0.1);
+  --general-main-1: #0f0c29;
+  --general-section-1: #2a1a4a;
+  --purchase-main-1: #9c27b0;
+  --button-primary-hover: #ff9e00;
+  --brand-red-coral: #ff4d6d;  // Vibrant pink-red
   --text-prominent: #ffffff;
-  --profit-green: #3fc380;
-  --loss-red: #ff4d6d;
-  --free-bots-text: #00bcd4;       // Add for Free Bots section
 }
 
 // The rest of your SCSS code remains exactly the same...
@@ -54,13 +51,11 @@
 }
 
 .free-bots {
-  /* Standalone styles for Free Bots section */
-  background-color: #e0f7fa !important; // Light blue background
-  color: #000 !important;               // Black text
+  padding: 20px;
+  background-color: var(--card-bg);
   border-radius: 8px;
-  border: 1px solid #b2ebf2;            // Slightly darker blue border for contrast
-  box-shadow: 0 0 15px rgba(0, 188, 212, 0.08);
-  font-size: 1.125rem;                  // 18px for readability
+  border: 1px solid var(--border-normal);
+  box-shadow: 0 0 15px rgba(159, 135, 255, 0.1);
 }
 
 .free-bots__heading {
@@ -68,7 +63,7 @@
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  color: #000;
+  color: var(--accent2);
 }
 
 .free-bots__content {
@@ -79,17 +74,14 @@
 }
 
 .free-bot {
-  background-color: #e0f7fa !important; // Light blue background
-  border: 1px solid #b2ebf2;            // Slightly darker blue border
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-normal);
   border-radius: 8px;
   padding: 15px;
   width: 200px;
   text-align: center;
-  color: #000 !important;                // Black text
-  box-shadow: 0 0 15px rgba(0, 188, 212, 0.10);
+  box-shadow: 0 0 15px rgba(159, 135, 255, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
 
   &:hover {
     transform: translateY(-5px);
