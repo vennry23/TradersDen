@@ -193,7 +193,7 @@ const AppHeader = observer(() => {
                     <Button
                         tertiary
                         onClick={() => {
-                            window.location.replace('https://oauth.deriv.com/oauth2/authorize?app_id=82255&l=EN&brand=Tradersden);
+                            window.location.replace('https://oauth.deriv.com/oauth2/authorize?app_id=82255&l=EN&brand=Tradersden');
                         }}
                     >
                         <Localize i18n_default_text='Log in' />
