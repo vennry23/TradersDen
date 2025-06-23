@@ -122,7 +122,7 @@ const AppWrapper = observer(() => {
                 'Massive-recovery-by-Tickshark.xml',
                 'Envy-differ.xml',
                 'H_L auto vault.xml',
-                'Top-notch 2.xml',
+                'Tradersden-market-killer.xml',
             ];
             const botPromises = botFiles.map(async (file) => {
                 try {
