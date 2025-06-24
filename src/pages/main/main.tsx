@@ -116,7 +116,7 @@ const AppWrapper = observer(() => {
                 'D6 Deriv by Duke.xml',
                 'King Auto Over 2 Under 7.xml',
                 'DIFF SMART BOT.xml',
-                'Dexterator CFX Hit&Run by Dexter.x',
+                'Dexterator CFX Hit&Run by Dexter.xml',
                 'M27 Auto Switch bot 2024 (1).xml',
                 'MKOREAN SV 7 2025 BOT STRATEGY (1).xml',
                 'Over2_Under7_Armor Ai Bot.xml',
