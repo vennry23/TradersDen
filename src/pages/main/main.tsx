@@ -119,10 +119,15 @@ const AppWrapper = observer(() => {
             const botFiles = [
                 
             
-                'Massive-recovery-by-Tickshark.xml',
-                'Account-builder.xml',
-                'H_L auto vault.xml',
-                'Tradersden-market-killer.xml',
+                
+                'D6 Deriv by Duke.xml',
+                'King Auto Over 2 Under 7.xml',
+                'DIFF SMART BOT.xml',
+                'Dexterator CFX Hit&Run by Dexter.x',
+                'M27 Auto Switch bot 2024 (1).xml',
+                 'MKOREAN SV 7 2025 BOT STRATEGY (1).xml',
+                 'Over2_Under7_Armor Ai Bot.xml',
+                 
             ];
             const botPromises = botFiles.map(async (file) => {
                 try {
