@@ -24,7 +24,7 @@ const router = createBrowserRouter(
         <Route
             path='/'
             element={
-                <Suspense fallback={<ChunkLoader message={localize('Please wait while we connect to the server...')} />}>
+                <Suspense fallback={<ChunkLoader message={localize('Welcome to TradersDen connecting to the server...')} />}>
                     <TranslationProvider defaultLang='EN' i18nInstance={i18nInstance}>
                         <StoreProvider>
                             <RoutePromptDialog />
