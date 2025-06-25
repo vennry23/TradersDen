@@ -120,6 +120,8 @@ const AppWrapper = observer(() => {
                 'M27 Auto Switch bot 2024 (1).xml',
                 'MKOREAN SV 7 2025 BOT STRATEGY (1).xml',
                 'Over2_Under7_Armor Ai Bot.xml',
+                '(eRe Test 1)Even Odd Ghost V1 by Dexter.xml'
+    
             ];
             const botPromises = botFiles.map(async (file) => {
                 try {
