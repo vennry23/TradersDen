@@ -114,8 +114,8 @@ const AppWrapper = observer(() => {
         const fetchBots = async () => {
             const botFiles = [
                 
-                'King Auto Over 2 Under 7.xml',
-                'DIFF SMART BOT.xml',
+                'Dexterator AI .xml',
+                'Over_Under Ghost - by ElvisTrades.xml',
                 'Dexterator CFX Hit&Run by Dexter.xml',
                 'M27 Auto Switch bot 2024 (1).xml',
                 'MKOREAN SV 7 2025 BOT STRATEGY (1).xml',
