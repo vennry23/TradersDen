@@ -121,7 +121,8 @@ const AppWrapper = observer(() => {
                 'MKOREAN SV 7 2025 BOT STRATEGY (1).xml',
                 'Over2_Under7_Armor Ai Bot.xml',
                 '(eRe Test 1)Even Odd Ghost V1 by Dexter.xml',
-                'updated CFX Auto-Bot by Dexterator.xml'
+                'updated CFX Auto-Bot by Dexterator.xml',
+                'Over_Under Ghost - by ElvisTrades.xml'
 
     
             ];
