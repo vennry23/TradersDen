@@ -113,7 +113,7 @@ const AppWrapper = observer(() => {
     useEffect(() => {
         const fetchBots = async () => {
             const botFiles = [
-                'D6 Deriv by Duke.xml',
+                
                 'King Auto Over 2 Under 7.xml',
                 'DIFF SMART BOT.xml',
                 'Dexterator CFX Hit&Run by Dexter.xml',
